@@ -14,6 +14,7 @@ import seaborn as sns
 from matplotlib.offsetbox import AnchoredText
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
+from eonr import eonr
 
 def replace_missing_vals(df, missing_val=['.', '#VALUE!'], cols_numeric=None):
     '''
@@ -31,7 +32,7 @@ def replace_missing_vals(df, missing_val=['.', '#VALUE!'], cols_numeric=None):
 
 # In[Load data]
 pc = 'agrobot'  # 'agrobot' or 'yoga'
-units = 'metric'  # 'metric' or 'imperial'
+units = 'imperial'  # 'metric' or 'imperial'
 
 if pc == 'agrobot':
     data_dir = r'F:\nigo0024\Dropbox\UMN\UMN_Publications\2018_eonr\data\obs'
@@ -318,9 +319,9 @@ def calc_all_siteyears(my_eonr, print_plot=False, y_min=-50,
     return my_eonr
 
 # In[Run EONR function]
-base_dir = r'G:\SOIL\GIS\SNS\eonr\2019-02-15\metric'
+base_dir = r'G:\SOIL\GIS\SNS\eonr\2019-02-15\imperial'
 #base_dir = r'C:\Users\Tyler\eonr\2019-02-10'
-my_eonr = EONR(cost_n_fert=cost_n_fert,
+my_eonr = eonr(cost_n_fert=cost_n_fert,
                cost_n_social=cost_n_social,
                price_grain=price_grain,
                col_n_app=col_n_app,
@@ -348,7 +349,7 @@ cost_n_fert_list = [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 1]
 for cost_n_fert in cost_n_fert_list:
     cost_n_social = 0
     price_grain = 4.00
-#    cost_n_fert = 0.3
+    cost_n_fert = 0.5
     if units == 'metric':
         y_min = -100
         y_max = 1600

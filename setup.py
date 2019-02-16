@@ -30,5 +30,5 @@ setup(name='eonr',
       author='Tyler J. Nigon',
       author_email='nigo0024@umn.edu',
       license='MIT',
-      packages=['eonr'],
+#      packages=['eonr'],
       zip_safe=False)

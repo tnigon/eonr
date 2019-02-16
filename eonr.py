@@ -28,7 +28,7 @@ import warnings
 plt.style.use('ggplot')
 
 
-class EONR(object):
+class eonr(object):
     '''
     Calculates Economic Optimum N Rate given table of N applied and yield
 
@@ -459,22 +459,23 @@ class EONR(object):
         '''
         if info is None:
             popt, pcov = curve_fit(f, xdata, ydata, p0=p0, maxfev=maxfev)
-            return popt, pcov
+#            return popt, pcov
         else:
             with warnings.catch_warnings():
                 warnings.simplefilter("error", OptimizeWarning)
                 try:
                     popt, pcov = curve_fit(f, xdata, ydata, p0=p0,
                                            maxfev=maxfev)
-                    return popt, pcov
+#                    return popt, pcov
                 except OptimizeWarning as err:
                     if self.print_out is True:
                         print('Information for which the OptimizeWarning was '
                               'thrown:\n{0}'.format(info))
-                        # essentially ignore warning and run anyway
-                        popt, pcov = curve_fit(f, xdata, ydata, p0=p0,
-                                               maxfev=maxfev)
-                        return popt, pcov
+                warnings.simplefilter('ignore', OptimizeWarning)  # hides warning
+                # essentially ignore warning and run anyway
+                popt, pcov = curve_fit(f, xdata, ydata, p0=p0,
+                                       maxfev=maxfev)
+        return popt, pcov
 
     def _curve_fit_runtime(self, func, x, y, guess, maxfev=800, info=None):
         '''
@@ -727,6 +728,7 @@ class EONR(object):
         info = ('func = {0}\ncol_x = {1}\ncol_y = {2}\n'
                 ''.format('_calc_nrtn() -> _f_qp_theta2',
                           col_x, col_y))
+
         popt, pcov = self._curve_fit_opt(self._f_qp_theta2, x, y,
                                          p0=guess, maxfev=1000, info=info)
         res = y - self._f_qp_theta2(x, *popt)
@@ -1102,11 +1104,60 @@ class EONR(object):
         info = ('func = {0}\ncol_x = {1}\ncol_y = {2}\n'
                 ''.format('_compute_bootstrap() -> _f_qp_theta2',
                           col_x, col_y))
-        popt, _ = self._curve_fit_opt(self._f_qp_theta2, x, y,
-                                      p0=guess, maxfev=1000, info=info)
+#        try:
+#            popt, _ = self._curve_fit_opt(self._f_qp_theta2, x, y,
+#                                          p0=guess, maxfev=1000, info=info)
+#        except TypeError as err:
+#            print(err)
+#            print('Was not able to fit data to bootstrapped data. Quitting '
+#                  'without calculating bootstrap confidence intervals.')
         boot_ci = bootstrap.ci((x, y), statfunction=self._bs_statfunction,
                                alpha=alpha, n_samples=9999, method='bca')
         return boot_ci
+
+    def _compute_cis(self, col_x, col_y):
+        '''
+        Computes Wald, Profile Likelihood, and Bootstrap confidence intervals.
+        '''
+        df = self.df_data.copy()
+        x = df[col_x].values
+        y = df[col_y].values
+        theta2_start = self.eonr
+        alpha_list = self.alpha_list
+        df_ci = self._build_df_ci()
+
+        cols = df_ci.columns
+        for alpha in alpha_list:
+            pl_l, tau_l, wald_l, wald_u, df_l = self._get_likelihood(
+                    theta2_start, alpha, x, y, 'lower')
+            pl_u, tau_u, _, _, df_u = self._get_likelihood(
+                    theta2_start, alpha, x, y, side='upper')
+            level = 1 - alpha
+            tau = np.mean((tau_l, tau_u))  # should be same (to epsilon precis)
+            t_stat = stats.t.ppf(level, len(self.df_data) - 3)
+            df_row = pd.DataFrame([[self.df_data.iloc[0]['location'],
+                                    self.df_data.iloc[0]['year'],
+                                    self.df_data.iloc[0]['time_n'],
+                                    self.cost_n_fert,
+                                    self.cost_n_social,
+                                    tau, t_stat, level,
+                                    wald_l, wald_u, pl_l,
+                                    pl_u]],
+                                  columns=cols)
+            df_ci = df_ci.append(df_row, ignore_index=True)
+            if df_row['level'].item() == self.ci_level:
+                self.df_ci_temp = df_row
+        df_ci = self._run_bootstrap(df_ci, alpha_list, n_samples=9999)
+        if self.df_ci is None:
+            df_ci.insert(loc=0, column='run_n', value=1)
+            self.df_ci = df_ci
+        else:
+            last_run_n = self.df_ci.iloc[-1, :]['run_n']
+            df_ci.insert(loc=0, column='run_n', value=last_run_n+1)
+            self.df_ci = self.df_ci.append(df_ci, ignore_index=True)
+        last_run_n = self.df_ci.iloc[-1, :]['run_n']
+        self.df_ci_temp = self.df_ci[(self.df_ci['run_n'] == last_run_n) &
+                                     (self.df_ci['level'] == self.ci_level)]
 
     def _compute_residuals(self):
         '''
