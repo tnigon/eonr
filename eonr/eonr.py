@@ -28,7 +28,7 @@ import warnings
 plt.style.use('ggplot')
 
 
-class eonr(object):
+class EONR(object):
     '''
     Calculates Economic Optimum N Rate given table of N applied and yield
 
@@ -1014,14 +1014,17 @@ class eonr(object):
         df_ci = pd.DataFrame(data=[[self.df_data.iloc[0]['location'],
                                     self.df_data.iloc[0]['year'],
                                     self.df_data.iloc[0]['time_n'],
+                                    self.price_grain,
                                     self.cost_n_fert,
                                     self.cost_n_social,
+                                    self.price_ratio,
                                     0, 0, 0, self.eonr,
                                     self.eonr, self.eonr, self.eonr]],
                              columns=['location', 'year', 'time_n',
+                                      'price_grain',
                                       'cost_n_fert', 'cost_n_social',
-                                      'f_stat', 't_stat', 'level',
-                                      'wald_l', 'wald_u',
+                                      'price_ratio', 'f_stat', 't_stat',
+                                      'level', 'wald_l', 'wald_u',
                                       'pl_l', 'pl_u'])
         return df_ci
 
@@ -1138,8 +1141,10 @@ class eonr(object):
             df_row = pd.DataFrame([[self.df_data.iloc[0]['location'],
                                     self.df_data.iloc[0]['year'],
                                     self.df_data.iloc[0]['time_n'],
+                                    self.price_grain,
                                     self.cost_n_fert,
                                     self.cost_n_social,
+                                    self.price_ratio,
                                     tau, t_stat, level,
                                     wald_l, wald_u, pl_l,
                                     pl_u]],
@@ -1381,6 +1386,7 @@ class eonr(object):
             df_row = pd.DataFrame([[self.df_data.iloc[0]['location'],
                                     self.df_data.iloc[0]['year'],
                                     self.df_data.iloc[0]['time_n'],
+                                    self.price_grain,
                                     self.cost_n_fert,
                                     self.cost_n_social,
                                     np.nan, t_stat, level,
@@ -1915,25 +1921,77 @@ class eonr(object):
         fname = os.path.join(base_dir, fname)
         self.figure.savefig(fname, dpi=dpi)
 
-    def plot_profile_likelihood(self):
+    def eonr_delta(self, df_results=None):
+        '''
+        Inserts a new column "eonr_delta" into df_results. All data is filtered
+        by location, year, and N timing, then "eonr_delta" is calculated as the
+        difference from the economic scenario resulting in the highest EONR
+        '''
+        if df_results is None:
+            df = self.df_results.unique()
+        else:
+            df = df_results.copy()
+
+        years = df['year'].unique()
+        years.sort()
+        df_out = None
+        for year in years:
+            df_year = df[df['year'] == year]
+            locs = df_year['location'].unique()
+            locs.sort()
+            for loc in locs:
+                df_loc = df_year[df_year['location'] == loc]
+                times = df_loc['time_n'].unique()
+                for time in times:
+                    df_yloct = df_loc[df_loc['time_n'] == time]
+                    eonr_base = df_yloct['eonr'].max()  # lowest fert:grain rat
+                    eonr_delta = df_yloct['eonr'] - eonr_base
+                    df_yloct.insert(8, 'eonr_delta', eonr_delta)
+                    if df_out is None:
+                        df_out = pd.DataFrame(columns=df_yloct.columns)
+                    df_out = df_out.append(df_yloct)
+        return df_out
+
+    def plot_profile_likelihood(self, df_ci=None):
         '''
         Plots the profile likelihood confidence curve for a range of alpha
         values (see Cook and Weisberg, 1990)
         '''
-        df_ci = self.df_ci
+        if df_ci is None:
+            df_ci = self.df_ci
 #        def convert_axis(df_ci, ax, ax2):
 #            ax2.set_ylim(df_ci['level'].iloc[0], df_ci['level'].iloc[-1])
 #            ax2.figure.canvas.draw()
 #            ax2.grid(False)
 
-        fig, ax = plt.subplots()
-#        ax2 = plt.twinx()
-#        ax.callbacks.connect("ylim_changed", convert_axis(df_ci, ax, ax2))
-        sns.lineplot(df_ci['wald_l'], df_ci['t_stat'], ax=ax, color='#7b7b7b')
-        sns.lineplot(df_ci['wald_u'], df_ci['t_stat'], ax=ax, color='#7b7b7b')
-        sns.scatterplot(df_ci['pl_l'], df_ci['t_stat'], ax=ax)
-        sns.scatterplot(df_ci['pl_u'], df_ci['t_stat'], ax=ax)
-        sns.scatterplot(df_ci['boot_l'], df_ci['t_stat'], ax=ax)
-        sns.scatterplot(df_ci['boot_u'], df_ci['t_stat'], ax=ax)
-        ax.set_xlabel('EONR')
-        ax.set_ylabel('T Statistic')
+        years = df_ci['year'].unique()
+        years.sort()
+        for year in years:
+            df_year = df_ci[df_ci['year'] == year]
+            locs = df_year['location'].unique()
+            locs.sort()
+            for loc in locs:
+                df_loc = df_year[df_year['location'] == loc]
+                times = df_loc['time_n'].unique()
+                for time in times:
+                    df_yloct = df_loc[df_loc['time_n'] == time]
+                    ratios = df_yloct['time_n'].unique()
+                    for ratio in ratios:
+                        df_filt = df_yloct[df_yloct['price_ratio'] == ratio]
+                        fig, ax = plt.subplots()
+                #        ax2 = plt.twinx()
+                #        ax.callbacks.connect("ylim_changed", convert_axis(df_ci, ax, ax2))
+                        sns.lineplot(df_filt['wald_l'], df_filt['t_stat'], ax=ax, color='#7b7b7b')
+                        sns.lineplot(df_filt['wald_u'], df_filt['t_stat'], ax=ax, color='#7b7b7b')
+                        sns.scatterplot(df_filt['pl_l'], df_filt['t_stat'], ax=ax)
+                        sns.scatterplot(df_filt['pl_u'], df_filt['t_stat'], ax=ax)
+                        sns.scatterplot(df_filt['boot_l'], df_filt['t_stat'], ax=ax)
+                        sns.scatterplot(df_filt['boot_u'], df_filt['t_stat'], ax=ax)
+                        ax.set_xlabel('EONR')
+                        ax.set_ylabel('T Statistic')
+                        plt.tight_layout()
+                        break
+                    break
+                break
+            break
+

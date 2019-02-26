@@ -23,12 +23,12 @@ __email__ = 'nigo0024@umn.edu'
 
 from setuptools import setup
 
-setup(name='eonr',
+setup(name='EONR',
       version='0.1',
       description='A tool for calculating economic optimum nitrogen rates',
       url='https://github.com/tnigon/eonr',
       author='Tyler J. Nigon',
       author_email='nigo0024@umn.edu',
-      license='MIT',
-#      packages=['eonr'],
+#      license='MIT',
+      packages=['eonr'],
       zip_safe=False)

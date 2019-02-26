@@ -273,9 +273,9 @@ def calc_all_siteyears(my_eonr, print_plot=False, y_min=-50,
     if print_plot is True:
         plot_and_save(my_eonr, fname='eonr_nue13j_pre.png', y_min=y_min, y_max=y_max)
     # Willmar 2013 - There is a lot of yield variability, so plots were divided into low yielding and high yielding
-    my_eonr.calculate_eonr(df_nue13wil_pre)
-    if print_plot is True:
-        plot_and_save(my_eonr, fname='eonr_nue13wil_pre.png', y_min=y_min, y_max=y_max)
+#    my_eonr.calculate_eonr(df_nue13wil_pre)
+#    if print_plot is True:
+#        plot_and_save(my_eonr, fname='eonr_nue13wil_pre.png', y_min=y_min, y_max=y_max)
     # Willmar 2013 (Reps 2, 4, 5, 9, & 13)
     my_eonr.calculate_eonr(df_nue13wil_pre_low)
     if print_plot is True:
@@ -285,9 +285,9 @@ def calc_all_siteyears(my_eonr, print_plot=False, y_min=-50,
     if print_plot is True:
         plot_and_save(my_eonr, fname='eonr_nue13wil_pre_high.png', y_min=y_min, y_max=y_max)
     # New Richland 2014
-    my_eonr.calculate_eonr(df_nue14nr_pre)
-    if print_plot is True:
-        plot_and_save(my_eonr, fname='eonr_nue14nr_pre.png', y_min=y_min, y_max=y_max)
+#    my_eonr.calculate_eonr(df_nue14nr_pre)
+#    if print_plot is True:
+#        plot_and_save(my_eonr, fname='eonr_nue14nr_pre.png', y_min=y_min, y_max=y_max)
     # New Richland 2014 (Reps 1-8)
     my_eonr.calculate_eonr(df_nue14nr_pre_low)
     if print_plot is True:
@@ -319,7 +319,7 @@ def calc_all_siteyears(my_eonr, print_plot=False, y_min=-50,
     return my_eonr
 
 # In[Run EONR function]
-base_dir = r'G:\SOIL\GIS\SNS\eonr\2019-02-15\imperial'
+base_dir = os.path.join(r'G:\SOIL\GIS\SNS\eonr\2019-02-19', units)
 #base_dir = r'C:\Users\Tyler\eonr\2019-02-10'
 my_eonr = eonr(cost_n_fert=cost_n_fert,
                cost_n_social=cost_n_social,
@@ -349,10 +349,10 @@ cost_n_fert_list = [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 1]
 for cost_n_fert in cost_n_fert_list:
     cost_n_social = 0
     price_grain = 4.00
-    cost_n_fert = 0.5
+#    cost_n_fert = 0.5
     if units == 'metric':
         y_min = -100
-        y_max = 1600
+        y_max = 1400
         cost_n_fert, cost_n_social, price_grain = imperial_to_metric(
                 cost_n_fert=cost_n_fert, cost_n_social=cost_n_social,
                 price_grain=price_grain)
@@ -363,23 +363,23 @@ for cost_n_fert in cost_n_fert_list:
                                  y_max=y_max)
     plt.close("all")
 
-my_eonr.df_results.to_csv(os.path.join(os.path.split(my_eonr.base_dir)[0], 'trad_results.csv'))
-my_eonr.df_ci.to_csv(os.path.join(os.path.split(my_eonr.base_dir)[0], 'trad_ci.csv'))
+my_eonr.df_results.to_csv(os.path.join(os.path.split(my_eonr.base_dir)[0], 'trad_results.csv'), index=False)
+my_eonr.df_ci.to_csv(os.path.join(os.path.split(my_eonr.base_dir)[0], 'trad_ci.csv'), index=False)
 
 # In[Run social]
 social = True
 print_plot = True
-y_min = -200
-y_max = 1100
+y_min = -300
+y_max = 700
 
-cost_n_social_list = [0.01, 0.1, 0.25, 0.5, 1, 2, 5]
+cost_n_social_list = [0.01, 0.1, 0.25, 0.5, 1, 2, 3, 5]
 
 for cost_n_social in cost_n_social_list:
     cost_n_fert = 0.4
     price_grain = 4.00
     if units == 'metric':
-        y_min = -400
-        y_max = 2000
+        y_min = -600
+        y_max = 1700
         cost_n_fert, cost_n_social, price_grain = imperial_to_metric(
                 cost_n_fert=cost_n_fert, cost_n_social=cost_n_social,
                 price_grain=price_grain)
@@ -390,21 +390,32 @@ for cost_n_social in cost_n_social_list:
                                  y_max=y_max)
     plt.close("all")
 
-my_eonr.df_results.to_csv(os.path.join(os.path.split(my_eonr.base_dir)[0], 'social_results.csv'))
-my_eonr.df_ci.to_csv(os.path.join(os.path.split(my_eonr.base_dir)[0], 'social_ci.csv'))
+my_eonr.df_results.to_csv(os.path.join(os.path.split(my_eonr.base_dir)[0], 'social_results.csv'), index=False)
+my_eonr.df_ci.to_csv(os.path.join(os.path.split(my_eonr.base_dir)[0], 'social_ci.csv'), index=False)
+
+# In[Plot profile likelihood]
+fname = r'G:\SOIL\GIS\SNS\eonr\2019-02-19\imperial\social_ci.csv'
+df_ci_imper_soc = pd.read_csv(fname)
+
+my_eonr.plot_profile_likelihood(df_ci_imper_soc)
 
 # In[Plot all]
-df_results = my_eonr.df_results
+import pandas as pd
+import seaborn as sns
 
-fname = r'G:\SOIL\GIS\SNS\eonr\eonr_social1.csv'
-df_results.to_csv(fname, index=False)
-df_results_dif1 = pd.read_csv(fname)
+fname = r'G:\SOIL\GIS\SNS\eonr\2019-02-15\imperial\trad_results.csv'
+df_results_imper_trad = pd.read_csv(fname)
 
 fname2 = r'G:\SOIL\GIS\SNS\eonr\trad_v3_final\eonr_trad3.csv'
 df_results_dif2 = pd.read_csv(fname2) # traditional
 
 fig1, ax1 = plt.subplots()
-ax1 = sns.scatterplot(x='eonr', y='mrtn', hue='time_n', size='r2_adj', data=df_results)
+ax1 = sns.scatterplot(x='eonr', y='mrtn', hue='time_n', size='grtn_r2_adj', data=df_results_imper_trad)
+
+# In[Add column to df showing EONR relative to cheapest economic scenartio]
+fname = r'G:\SOIL\GIS\SNS\eonr\2019-02-19\imperial\social_results.csv'
+df_results_imper_soc = pd.read_csv(fname)
+df_results_imper_soc = my_eonr.eonr_delta(df_results_imper_soc)
 
 # In[Plot functions]
 def _add_title(title_text, ax):
@@ -420,8 +431,8 @@ def _add_title(title_text, ax):
     cax.add_artist(at)
 
 # In[Plot EONR difference in subplots]
-df = df_results_dif1.copy()
-fname_out = r'G:\SOIL\GIS\SNS\eonr\eonr_social1_priceratio.png'
+df = df_results_imper_trad.copy()
+#fname_out = r'G:\SOIL\GIS\SNS\eonr\eonr_social1_priceratio.png'
 
 f, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2, sharex=True, sharey=True)
 xlabel = 'Price Ratio'
@@ -431,6 +442,8 @@ df_ax1 = df[(df['location'] == 'Waseca') & (df['year'] == 2015)]
 df_ax2 = df[(df['location'] == 'Waseca') & (df['year'] == 2016)]
 df_ax3 = df[(df['location'] == 'Waseca') & (df['year'] == 2017)]
 df_ax4 = df[(df['location'] == 'Stewart') & (df['year'] == 2015)]
+
+dif_05 = 248.707 - 240.919
 
 sns.pointplot(x='price_ratio', y='dif_05', hue='time_n', data=df_ax1, ax=ax1, palette='muted')
 sns.pointplot(x='price_ratio', y='dif_05', hue='time_n', data=df_ax2, ax=ax2, palette='muted')
@@ -490,400 +503,6 @@ f.tight_layout()  # not sure why, but this has to be here twice..
 
 f.savefig(fname_out, bbox_inches="tight")
 
-# In[Clean digitized data]
-import pandas as pd
-import numpy as np
-
-def interpolate_daily(fname):
-    '''
-    Takes csv data from a digitized plot (https://apps.automeris.io/wpd/),
-    takes mean of duplicate values, and interpolates to daily values. Returns a
-    daily dataframe.
-    '''
-    df = pd.read_csv(fname, header=None, names=['date', 'usd_lb_N'],
-                     parse_dates={'dt' : ['date']})
-    df = df.set_index('dt')
-    df = df.sort_index()
-    df_dly = df.resample('D').mean().interpolate('linear')
-    df_monthly = df_dly[df_dly.index.day == 1]
-    return df_dly, df_monthly
-
-fname_aa = r'F:\nigo0024\Dropbox\UMN\UMN_Publications\2018_eonr\appendix\dtn_aa_price_digitize.csv'
-_, df_aa = interpolate_daily(fname_aa)
-df_aa.columns = ['aa_usd_lb']
-
-fname_urea = r'F:\nigo0024\Dropbox\UMN\UMN_Publications\2018_eonr\appendix\dtn_urea_price_digitize.csv'
-_, df_urea = interpolate_daily(fname_urea)
-df_urea.columns = ['urea_usd_lb']
-
-fname_uan28 = r'F:\nigo0024\Dropbox\UMN\UMN_Publications\2018_eonr\appendix\dtn_uan28_price_digitize.csv'
-_, df_uan28 = interpolate_daily(fname_uan28)
-df_uan28.columns = ['uan28_usd_lb']
-
-fname_uan32 = r'F:\nigo0024\Dropbox\UMN\UMN_Publications\2018_eonr\appendix\dtn_uan32_price_digitize.csv'
-_, df_uan32 = interpolate_daily(fname_uan32)
-df_uan32.columns = ['uan32_usd_lb']
-
-# In[Prep cost data]
-
-# Monthly grain
-fname_grain = r'F:\nigo0024\Dropbox\UMN\UMN_Publications\2018_eonr\data\nass\MN_corn_grain_price_all.csv'
-df_grain = pd.read_csv(fname_grain)
-df_grain.index = (pd.to_datetime(df_grain['year'].astype(str) + df_grain['month'].astype(str), format='%Y%m'))
-df_grain = df_grain[df_grain.index.year > 1995].sort_index()
-df_grain = df_grain[['price_usd_bu']]
-
-# Annual fertilizer (1996-2014)
-fname_prices = r'F:\nigo0024\Dropbox\UMN\UMN_Publications\2018_eonr\data\nass\MN_N_corn_prices.csv'
-df_prices = pd.read_csv(fname_prices)
-df_prices.index = (pd.to_datetime(df_prices['year'].astype(str) + df_prices['month'].astype(str), format='%Y%m'))
-df_prices = df_prices.sort_index()
-df_prices = df_prices[['price_aa', 'price_nsol', 'price_urea', 'price_nh4no3']]
-
-df_merge = df_grain.join(df_prices, how='left', rsuffix='fert')
-df_merge = df_merge.join(df_aa, how='left')
-df_merge = df_merge.join(df_uan32, how='left')
-df_merge = df_merge.join(df_urea, how='left')
-
-df_merge['price2_aa'] = np.NaN
-df_merge['price2_nsol'] = np.NaN
-df_merge['price2_urea'] = np.NaN
-df_merge['price2_nh4no3'] = np.NaN
-
-df_merge['ratio_aa'] = np.NaN
-df_merge['ratio_nsol'] = np.NaN
-df_merge['ratio_urea'] = np.NaN
-df_merge['ratio_nh4no3'] = np.NaN
-
-df_merge1 = df_merge[df_merge.index.year < 2010]
-df_merge2 = df_merge[df_merge.index.year >= 2010]
-
-df_merge.loc[:, 'price2_aa'] = pd.concat([df_merge1['price_aa'], df_merge2['aa_usd_lb']])
-df_merge['ratio_aa'] = df_merge['price2_aa'] / df_merge['price_usd_bu']
-
-df_merge.loc[:, 'price2_nsol'] = pd.concat([df_merge1['price_nsol'], df_merge2['uan32_usd_lb']])
-df_merge['ratio_nsol'] = df_merge['price2_nsol'] / df_merge['price_usd_bu']
-
-df_merge.loc[:, 'price2_urea'] = pd.concat([df_merge1['price_urea'], df_merge2['urea_usd_lb']])
-df_merge['ratio_urea'] = df_merge['price2_urea'] / df_merge['price_usd_bu']
-
-df_merge.loc[:, 'ratio_nh4no3'] = df_merge1['price_nh4no3'] / df_merge1['price_usd_bu']
-
-# In[Plot Historical price ratio]
-import pandas as pd
-import seaborn as sns
-from datetime import datetime as dt
-import matplotlib.pyplot as plt
-from matplotlib.lines import Line2D
-
-plt.style.use('ggplot')
-pal = sns.color_palette('muted', 8)
-
-fig, (ax1, ax2, ax3) = plt.subplots(3, 1, figsize=(8, 6), sharex=True)
-
-sns.lineplot(x=df_merge.index, y='price_usd_bu', data=df_merge, ax=ax1)
-sns.lineplot(data=df_merge[['price2_aa', 'price2_nsol', 'price2_urea', 'price2_nh4no3']],
-             palette=pal[0:4], ax=ax2)
-sns.lineplot(data=df_merge[['ratio_aa', 'ratio_nsol', 'ratio_urea', 'ratio_nh4no3']],
-             palette=pal[0:4], ax=ax3)
-
-# Legend
-custom_lines = [Line2D([0], [0], color=pal[7], lw=2, linestyle='--')]
-ax1.legend(custom_lines,
-           ['Maize Grain Price'],
-           loc='upper left',
-           frameon=True,
-           framealpha=0.75,
-           facecolor='white',
-           fancybox=True,
-           borderpad=0.5,
-           edgecolor=(0.5, 0.5, 0.5),
-           prop={
-                 'weight': 'bold',
-                 'size': 9
-                 })
-
-handles, labels1 = ax2.get_legend_handles_labels()
-labels = ['Anhydrous Ammonia', 'UAN Solution', 'Urea', 'Ammonium Nitrate']
-order = [0, 2, 3, 1]
-handles = [handles[idx] for idx in order]
-labels = [labels[idx] for idx in order]
-ax2.get_legend().remove()
-ax3.get_legend().remove()
-
-plt.figlegend(handles,
-              labels,
-              loc='lower center',
-              ncol=4,
-              frameon=True,
-              framealpha=0.75,
-              facecolor='white',
-              fancybox=True,
-              borderpad=0.5,
-              edgecolor=(0.5, 0.5, 0.5),
-              prop={
-                      'weight': 'bold',
-                      'size': 9
-                      })
-
-# clean up Plot
-fig.suptitle('Nitrogen Fertilizer:Grain Price Ratios (1996 - 2018)', weight='bold')
-ax3.set_xlabel('Year', weight='bold')
-ax1.set_ylabel('Price per bu ($)', weight='bold')
-ax2.set_ylabel('Cost per lb N ($)', weight='bold')
-ax3.set_ylabel('Price Ratio', weight='bold')
-
-ax1_ticks = ax1.get_yticks().tolist()
-ax1_ticks_new = []
-for item in ax1_ticks:
-    ax1_ticks_new.append('${0:.2f}'.format(float(item)))
-ax1.set_yticklabels(ax1_ticks_new)
-
-ax2_ticks = ax2.get_yticks().tolist()
-ax2_ticks_new = []
-for item in ax2_ticks:
-    ax2_ticks_new.append('${0:.2f}'.format(float(item)))
-ax2.set_yticklabels(ax2_ticks_new)
-
-ax3_ticks = [0.05, 0.1, 0.15, 0.2, 0.25, 0.3]
-ax3_tick_labels = []
-for item in ax3_ticks:
-    ax3_tick_labels.append(str(item))
-ax3.set_yticks(ax3_ticks)
-
-plt.rcParams['font.weight'] = 'bold'
-plt.tight_layout()
-plt.subplots_adjust(bottom=0.14, top=0.95)
-
-# In[Plot Grain price, fertilizer cost, and price ratio]
-import seaborn as sns
-import matplotlib.pyplot as plt
-plt.style.use('ggplot')
-pal = sns.color_palette('muted', 8)
-#sns.palplot(pal)
-
-fig, (ax1, ax2, ax3) = plt.subplots(3, 1, figsize=(8, 6), sharex=True)
-
-sns.lineplot(x=df_merge.index, y='price_usd_bu', data=df_merge, ax=ax1)
-sns.lineplot(data=df_merge[['price2_aa', 'price2_nsol', 'price2_urea']],
-             palette=pal[0:3], ax=ax2)
-sns.lineplot(data=df_merge[['ratio_aa', 'ratio_nsol', 'ratio_urea']],
-             palette=pal[0:3], ax=ax3)
-
-fig.suptitle('Nitrogen Fertilizer:Grain Price Ratios (1996 - 2018)',
-          fontweight='bold', fontsize=15)
-ax1.set_ylabel('Price per bu ($)', fontweight='bold')
-ax2.set_ylabel('Cost per lb N ($)', fontweight='bold')
-ax3.set_ylabel('Price Ratio', fontweight='bold')
-
-ax3.set_xlabel('Date', fontweight='bold')
-
-
-
-
-# In[Corn usage by segment]
-import seaborn as sns
-import matplotlib.pyplot as plt
-plt.style.use('ggplot')
-pal = sns.color_palette('muted', 8)
-
-fname_cornuse = r'F:\nigo0024\Dropbox\UMN\UMN_Publications\2018_eonr\data\nass\feed_grains_use_organized.csv'
-df_cornuse = pd.read_csv(fname_cornuse)
-
-df_cornuse_tot1 = df_cornuse.iloc[1:3]
-df_cornuse_tot2 = df_cornuse.iloc[3:6]
-df_cornuse_dom = df_cornuse.iloc[6:]
-
-fig2, (ax1, ax2, ax3) = plt.subplots(3, 1, figsize=(8, 6), sharex=True)
-
-ax1 = sns.catplot(x="million_bu", y='level1', data=df_cornuse_tot1, kind="bar", palette="muted", ax=ax1)
-ax2 = sns.catplot(x="million_bu", y='level2', data=df_cornuse_tot2, kind="bar", palette="muted", ax=ax2)
-ax3 = sns.catplot(x="million_bu", y='level3', data=df_cornuse_dom, kind="bar", palette="muted", ax=ax3)
-
-df_cornuse_dom = df_cornuse.iloc[5:]
-
-ct = pd.crosstab(df_cornuse.million_bu, df_cornuse.level2)
-ct.plot.bar(stacked=True)
-
-
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Nov  6 12:31:32 2017
-
-@author: nigo0024
-"""
-# In[Packages and functions]
-import pandas as pd
-import numpy as np
-
-
-def replace_missing_vals(df, missing_val='.'):
-    '''
-    Finds missing data in pandas dataframe and replaces with np.nan
-    '''
-    for row in df.index:
-        for col in df.columns:
-            if df.at[row, col] == missing_val:
-                df.at[row, col] = np.nan
-    return df
-
-sns_fname = r'G:\SOIL\GIS\Master Data Files\SNS_consistent_heading.xlsx'
-sns_xlsx = pd.ExcelFile(sns_fname)
-print(sns_xlsx.sheet_names)
-df_agron = pd.read_excel(sns_fname, 'Agronomic')
-df_repeat = pd.read_excel(sns_fname, 'Repeated')
-
-# Calculate EONR
-cost_N = 0.30  # in USD per lb
-price_grain15 = 3.00  # in USD
-x_min=-5
-x_max=365
-y_min=0
-y_max=800
-
-# ========================== Waseca 2015 ===================================
-df_2015W = df_agron[(df_agron['Location']=='Waseca') & (df_agron['Year']==2015)]
-df_2015W_pre = df_2015W[(df_2015W['Time']=='Pre')]
-df_2015W_V5 = df_2015W[(df_2015W['Time']=='V5')]
-df_2015W_V10 = df_2015W[(df_2015W['Time']=='V10')]
-
-df_repeat = replace_missing_vals(df_repeat, missing_val='.')
-df_repeat_2015W = df_repeat[(df_repeat['Location']=='Waseca') & (df_repeat['Year']==2015)]
-df_repeat_2016W = df_repeat[(df_repeat['Location']=='Waseca') & (df_repeat['Year']==2016)]
-print(df_repeat_2015W.columns)
-df_repeat_2015W_pre = df_repeat_2015W[(df_repeat_2015W['Time']=='Pre')]
-df_repeat_2015W_v5 = df_repeat_2015W[(df_repeat_2015W['Time']=='V5')]
-df_repeat_2015W_v10 = df_repeat_2015W[(df_repeat_2015W['Time']=='V10')]
-
-# ======================================================================
-#import EONR
-dpi = 300
-eonr_W15_pre = EONR(df_2015W_pre, cost_N=cost_N, price_grain=price_grain15,
-                Napplied_str='Napplied', yield_str='YieldOUT', show_plot=False)
-eonr_W15_pre.Plot_EONR(x_min=x_min, x_max=x_max, y_min=y_min, y_max=y_max)
-fname_out = r'F:\nigo0024\Dropbox\UMN\UMN_Publications\NCEISFC_2017\eonr_W15_pre_10.png'
-eonr_W15_pre.figure.savefig(fname_out, dpi=dpi)
-
-eonr_W15_v5 = EONR(df_2015W_V5, cost_N=cost_N, price_grain=price_grain15,
-                Napplied_str='Napplied', yield_str='YieldOUT', show_plot=False)
-eonr_W15_v5.Plot_EONR(x_min=x_min, x_max=x_max, y_min=y_min, y_max=y_max)
-fname_out = r'F:\nigo0024\Dropbox\UMN\UMN_Publications\NCEISFC_2017\eonr_W15_v5_10.png'
-eonr_W15_v5.figure.savefig(fname_out, dpi=dpi)
-
-eonr_W15_v10 = EONR(df_2015W_V10, cost_N=cost_N, price_grain=price_grain15,
-                Napplied_str='Napplied', yield_str='YieldOUT', show_plot=False)
-eonr_W15_v10.Plot_EONR(x_min=x_min, x_max=x_max, y_min=y_min, y_max=y_max)
-fname_out = r'F:\nigo0024\Dropbox\UMN\UMN_Publications\NCEISFC_2017\eonr_W15_v10_10.png'
-eonr_W15_v10.figure.savefig(fname_out, dpi=dpi)
-
-
-# In[2017 NCEISFC]
-
-sns_fname = r'G:\SOIL\GIS\Master Data Files\SNS_consistent_heading.xlsx'
-sns_xlsx = pd.ExcelFile(sns_fname)
-print(sns_xlsx.sheet_names)
-df_agron = pd.read_excel(sns_fname, 'Agronomic')
-df_agron = replace_missing_vals(df_agron, missing_val='.')
-df_repeat = pd.read_excel(sns_fname, 'Repeated')
-df_repeat = replace_missing_vals(df_repeat, missing_val='.')
-timing_N = df_agron[(df_agron['Location']=='Waseca') & (df_agron['Year']==2015)].Time  # timing of N application
-rate_N = df_agron[(df_agron['Location']=='Waseca') & (df_agron['Year']==2015)].Nrate  # in lbs per acre
-grain_yield = df_agron[(df_agron['Location']=='Waseca') & (df_agron['Year']==2015)].YieldOUT  # in bushels per acre
-
-# In[Querying pandas dataframe examples]
-test = df_agron[df_agron['Location']=='Waseca']
-test = df_agron[(df_agron['Location']=='Waseca') & (df_agron['Year']==2015)]
-test = df_agron[(df_agron['Location']=='Waseca') & (df_agron['Year']==2015) & (df_agron['TRT']==1)]
-
- Get grouping means:
-df_agron[(df_agron['Location']=='Waseca') & (df_agron['Year']==2015)].groupby('TRT').YieldOUT.mean()
-
-# In[Waseca 2016]
-df_2016W = df_agron[(df_agron['Location']=='Waseca') & (df_agron['Year']==2016)]
-df_2016W_pre = df_2016W[(df_2016W['Time']=='Pre')]
-df_2016W_V5 = df_2016W[(df_2016W['Time']=='V5')]
-df_2016W_V10 = df_2016W[(df_2016W['Time']=='V10')]
-
-eonr_W16_pre = EONR(df_2016W_pre, cost_N=cost_N, price_grain=price_grain15,
-                Napplied_str='Napplied', yield_str='YieldOUT', show_plot=False)
-eonr_W16_pre.Plot_EONR(x_min=x_min, x_max=x_max, y_min=y_min, y_max=y_max)
-fname_out = r'F:\nigo0024\Dropbox\UMN\UMN_Publications\NCEISFC_2017\eonr_W16_pre_10.png'
-eonr_W16_pre.figure.savefig(fname_out, dpi=dpi)
-
-eonr_W16_v5 = EONR(df_2016W_V5, cost_N=cost_N, price_grain=price_grain15,
-                Napplied_str='Napplied', yield_str='YieldOUT', show_plot=False)
-eonr_W16_v5.Plot_EONR(x_min=x_min, x_max=x_max, y_min=y_min, y_max=y_max)
-fname_out = r'F:\nigo0024\Dropbox\UMN\UMN_Publications\NCEISFC_2017\eonr_W16_v5_10.png'
-eonr_W16_v5.figure.savefig(fname_out, dpi=dpi)
-
-eonr_W16_v10 = EONR(df_2016W_V10, cost_N=cost_N, price_grain=price_grain15,
-                Napplied_str='Napplied', yield_str='YieldOUT', show_plot=False)
-eonr_W16_v10.Plot_EONR(x_min=x_min, x_max=x_max, y_min=y_min, y_max=y_max)
-fname_out = r'F:\nigo0024\Dropbox\UMN\UMN_Publications\NCEISFC_2017\eonr_W16_v10_10.png'
-eonr_W16_v10.figure.savefig(fname_out, dpi=dpi)
-
-# In[Waseca 2015 by rep]
-def EONR_byrep(df, cost_N, price_grain, Napplied_str='Napplied',
-               yield_str='YieldOUT', show_plot=False):
-    '''Calculates the EONR for each replication'''
-    array_reps = df.Rep.unique()
-    eonr_dict = {}
-    for rep in array_reps.tolist():
-        df_rep = df[(df['Rep'] == rep)]
-        dict_key = 'Key{0}'.format(rep)
-        eonr_dict[dict_key] = EONR(df_rep,
-                                   cost_N=cost_N,
-                                   price_grain=price_grain,
-                                   Napplied_str='Napplied',
-                                   yield_str='YieldOUT',
-                                   show_plot=False)
-    return eonr_dict
-
-cost_N = 0.50  # in USD per lb
-price_grain15 = 3.00  # in USD
-
-df_2015W_pre = df_2015W[(df_2015W['Time']=='Pre')]
-df_2015W_V5 = df_2015W[(df_2015W['Time']=='V5')]
-df_2015W_V10 = df_2015W[(df_2015W['Time']=='V10')]
-
-eonr_rep_W15 = EONR_byrep(df_2015W_pre, cost_N, price_grain15)
-
-
-df_2015W_pre1 = df_2015W_pre[(df_2015W_pre['Rep'] == 1)]
-df_2015W_pre2 = df_2015W_pre[(df_2015W_pre['Rep'] == 2)]
-df_2015W_pre3 = df_2015W_pre[(df_2015W_pre['Rep'] == 3)]
-df_2015W_pre4 = df_2015W_pre[(df_2015W_pre['Rep'] == 4)]
-
-# In[import EONR]
-eonr_W15_pre1 = EONR(df_2015W_pre1, cost_N=cost_N, price_grain=price_grain15,
-                Napplied_str='Napplied', yield_str='YieldOUT', show_plot=False)
-eonr_W15_pre2 = EONR(df_2015W_pre2, cost_N=cost_N, price_grain=price_grain15,
-                Napplied_str='Napplied', yield_str='YieldOUT', show_plot=False)
-eonr_W15_pre3 = EONR(df_2015W_pre3, cost_N=cost_N, price_grain=price_grain15,
-                Napplied_str='Napplied', yield_str='YieldOUT', show_plot=False)
-eonr_W15_pre4 = EONR(df_2015W_pre4, cost_N=cost_N, price_grain=price_grain15,
-                Napplied_str='Napplied', yield_str='YieldOUT', show_plot=False)
-
-eonr_W15_pre1.Plot_EONR(x_min=x_min, x_max=x_max, y_min=y_min, y_max=y_max)
-eonr_W15_pre2.Plot_EONR(x_min=x_min, x_max=x_max, y_min=y_min, y_max=y_max)
-eonr_W15_pre3.Plot_EONR(x_min=x_min, x_max=x_max, y_min=y_min, y_max=y_max)
-eonr_W15_pre4.Plot_EONR(x_min=x_min, x_max=x_max, y_min=y_min, y_max=y_max)
-
-eonr_W15_pre.Plot_EONR(x_min=x_min, x_max=x_max, y_min=y_min, y_max=y_max)
-fname_out = r'F:\nigo0024\Dropbox\UMN\UMN_Publications\NCEISFC_2017\eonr_W15_pre.png'
-eonr_W15_pre.figure.savefig(fname_out, dpi=150)
-
-eonr_W15_v5 = EONR(df_2015W_V5, cost_N=cost_N, price_grain=price_grain15,
-                Napplied_str='Napplied', yield_str='YieldOUT', show_plot=False)
-eonr_W15_v5.Plot_EONR(x_min=x_min, x_max=x_max, y_min=y_min, y_max=y_max)
-fname_out = r'F:\nigo0024\Dropbox\UMN\UMN_Publications\NCEISFC_2017\eonr_W15_v5.png'
-eonr_W15_v5.figure.savefig(fname_out, dpi=150)
-
-eonr_W15_v10 = EONR(df_2015W_V10, cost_N=cost_N, price_grain=price_grain15,
-                Napplied_str='Napplied', yield_str='YieldOUT', show_plot=False)
-eonr_W15_v10.Plot_EONR(x_min=x_min, x_max=x_max, y_min=y_min, y_max=y_max)
-fname_out = r'F:\nigo0024\Dropbox\UMN\UMN_Publications\NCEISFC_2017\eonr_W15_v10.png'
-eonr_W15_v10.figure.savefig(fname_out, dpi=150)
 
 
 # In[Plot EONR and MRTN next to each other]

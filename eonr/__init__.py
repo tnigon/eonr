@@ -21,4 +21,4 @@ __license__ = (
         'conditions are subject to change at any time without prior notice.')
 __email__ = 'nigo0024@umn.edu'
 
-from eonr.EONR import EONR
+from eonr.eonr import EONR
