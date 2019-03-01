@@ -119,11 +119,13 @@ class EONR(object):
         self.df_results = pd.DataFrame(columns=['price_grain', 'cost_n_fert',
                                                 'cost_n_social', 'price_ratio',
                                                 'location', 'year', 'time_n',
-                                                'eonr', 'ci_level',
+                                                'base_zero', 'eonr',
+                                                'ci_level',
                                                 'ci_wald_l', 'ci_wald_u',
                                                 'ci_pl_l', 'ci_pl_u',
                                                 'ci_boot_l', 'ci_boot_u',
                                                 'mrtn', 'grtn_r2_adj',
+                                                'grtn_rmse',
                                                 'grtn_max_y', 'grtn_crit_x',
                                                 'grtn_y_int', 'scn_lin_r2',
                                                 'scn_lin_rmse', 'scn_exp_r2',
@@ -396,7 +398,8 @@ class EONR(object):
             self.coefs_social['exp_r2'] = 0
             self.coefs_social['exp_rmse'] = None
         else:
-            exp_r2, _, _, _, exp_rmse = self._get_rsq(self._f_exp, x, y, popt)
+            exp_r2, _, _, _, exp_rmse = self._get_rsq(self._f_exp, x, y,
+                                                         popt)
             a, b, c = popt
             if self.print_out is True:
                 print('y = {0:.5} * exp({1:.5}x) + {2:.5} '.format(a, b, c))
@@ -593,9 +596,10 @@ class EONR(object):
         <func> with <popt> parameters
         '''
         res = y - func(x, *popt)
-        ss_res = np.sum(res**2)
-        rmse = (ss_res)**0.5
+        ss_res_mean = np.mean(res**2)
+        rmse = (ss_res_mean)**0.5
         y_mean = np.mean(y)
+        ss_res = np.sum(res**2)
         ss_tot = np.sum((y-y_mean)**2)
         r2 = 1-ss_res/ss_tot
         p = len(popt)
@@ -621,22 +625,28 @@ class EONR(object):
             self.linspace_cost_n_social = (x1, y_social_n)
         else:
             rtn = y_grtn - y_fert_n
-        y_max = (self.coefs_grtn['coef_a'].n +
-                 (self.coefs_grtn['crit_x'] *
-                  self.coefs_grtn['coef_b'].n) +
-                 (self.coefs_grtn['crit_x'] *
-                  self.coefs_grtn['crit_x'] *
-                  self.coefs_grtn['coef_c'].n))
-        # Find index where all x = max
-        y_temp = (self.coefs_grtn['coef_a'].n +
-                  (x1*self.coefs_grtn['coef_b'].n) +
-                  (x1*x1*self.coefs_grtn['coef_c'].n))
-        y_max_idx = np.argmax(y_temp)
-        y2a = (self.coefs_grtn['coef_a'].n +
-               (x1a[:y_max_idx]*self.coefs_grtn['coef_b'].n) +
-               (x1a[:y_max_idx]*x1a[:y_max_idx]*self.coefs_grtn['coef_c'].n))
-        y2b = np.linspace(y_max, y_max, num=n_steps-y_max_idx)
-        y_grtn = np.concatenate((y2a, y2b))
+#        y_max = (self.coefs_grtn['coef_a'].n +
+#                 (self.coefs_grtn['crit_x'] *
+#                  self.coefs_grtn['coef_b'].n) +
+#                 (self.coefs_grtn['crit_x'] *
+#                  self.coefs_grtn['crit_x'] *
+#                  self.coefs_grtn['coef_c'].n))
+#        # Find index where all x = max
+#        y_temp = (self.coefs_grtn['coef_a'].n +
+#                  (x1*self.coefs_grtn['coef_b'].n) +
+#                  (x1*x1*self.coefs_grtn['coef_c'].n))
+#        y_max_idx = np.argmax(y_temp)
+#        y2a = (self.coefs_grtn['coef_a'].n +
+#               (x1a[:y_max_idx]*self.coefs_grtn['coef_b'].n) +
+#               (x1a[:y_max_idx]*x1a[:y_max_idx]*self.coefs_grtn['coef_c'].n))
+#        if self.eonr <= self.df_data[self.col_n_app].max():
+#            y2b = np.linspace(y_max, y_max, num=n_steps-y_max_idx)
+#        else:  # EONR is past the point of available data, plot last val again
+#            last_pt = (self.coefs_grtn['coef_a'].n +
+#                       (x1a[-1]*self.coefs_grtn['coef_b'].n) +
+#                       (x1a[-1]*x1a[-1]*self.coefs_grtn['coef_c'].n))
+#            y2b = np.linspace(last_pt, last_pt, num=n_steps-y_max_idx)
+#        y_grtn = np.concatenate((y2a, y2b))
 
         while len(y_grtn) != n_steps:
             if len(y_grtn) < n_steps:
@@ -842,8 +852,8 @@ class EONR(object):
 
         crit_x = -beta1.n/(2*beta2.n)
         max_y = self._f_quad_plateau(crit_x, beta0.n, beta1.n, beta2.n)
-        r2, r2_adj, ss_res, ss_tot, rmse = self._get_rsq(self._f_quad_plateau,
-                                                         x, y, popt)
+        r2, r2_adj, ss_res, ss_tot, rmse = self._get_rsq(
+                self._f_quad_plateau, x, y, popt)
         aic = self._calc_aic(x, y, dist='gamma')
 
         if rerun is False:
@@ -934,7 +944,13 @@ class EONR(object):
         y2a = (self.coefs_grtn['coef_a'].n +
                (x1a[:y_max_idx]*self.coefs_grtn['coef_b'].n) +
                (x1a[:y_max_idx]*x1a[:y_max_idx]*self.coefs_grtn['coef_c'].n))
-        y2b = np.linspace(y_max, y_max, num=n_steps-y_max_idx)
+        if self.eonr <= self.df_data[self.col_n_app].max():
+            y2b = np.linspace(y_max, y_max, num=n_steps-y_max_idx)
+        else:  # EONR is past the point of available data, plot last val again
+            last_pt = (self.coefs_grtn['coef_a'].n +
+                       (x1a[-1]*self.coefs_grtn['coef_b'].n) +
+                       (x1a[-1]*x1a[-1]*self.coefs_grtn['coef_c'].n))
+            y2b = np.linspace(last_pt, last_pt, num=n_steps-y_max_idx)
         y_grtn = np.concatenate((y2a, y2b))
 
         # if necessary, modify y_grtn so it has correct number of values
@@ -1389,6 +1405,7 @@ class EONR(object):
                                     self.price_grain,
                                     self.cost_n_fert,
                                     self.cost_n_social,
+                                    self.price_ratio,
                                     np.nan, t_stat, level,
                                     wald_l, wald_u, np.nan, np.nan]],
                                   columns=df_ci.columns)
@@ -1467,7 +1484,7 @@ class EONR(object):
         return df_ci
 
     #  Following are plotting functions
-    def _add_labels(self, g):
+    def _add_labels(self, g, x_max):
         '''
         Adds EONR and economic labels to the plot
         '''
@@ -1477,10 +1494,11 @@ class EONR(object):
 
         label_eonr = 'EONR: {0:.0f} {1}\nMRTN: ${2:.2f}'.format(
                 self.eonr, self.unit_nrate, self.mrtn)
-        g.ax.plot([self.eonr], [self.mrtn], marker='.', markersize=15,
-                  color=self.palette[2], markeredgecolor='white',
-                  label=label_eonr)
-        if self.eonr > 0:
+        if self.eonr <= x_max:
+            g.ax.plot([self.eonr], [self.mrtn], marker='.', markersize=15,
+                      color=self.palette[2], markeredgecolor='white',
+                      label=label_eonr)
+        if self.eonr > 0 and self.eonr < self.df_data[self.col_n_app].max():
             g.ax.annotate(
                 label_eonr,
                 xy=(self.eonr, self.mrtn), xytext=(-80, -30),
@@ -1578,15 +1596,31 @@ class EONR(object):
         if ci_level is None:
             ci_level = self.ci_level
         label_ci = ('Confidence ({0:.2f})'.format(ci_level))
-        g.ax.axvline(ci_l, linestyle='-', linewidth=0.5, color='#7b7b7b',
-                     label=label_ci)
-        g.ax.axvline(ci_u, linestyle='-', linewidth=0.5, color='#7b7b7b',
-                     label=None)
-        g.ax.axvline(self.eonr,
-                     linestyle='--',
-                     linewidth=1.5,
-                     color='k',
-                     label='EONR')
+
+        if self.eonr <= self.df_data[self.col_n_app].max():
+            alpha_axvline = 1
+            g.ax.axvline(ci_l, linestyle='-', linewidth=0.5, color='#7b7b7b',
+                         label=label_ci, alpha=alpha_axvline)
+            g.ax.axvline(ci_u, linestyle='-', linewidth=0.5, color='#7b7b7b',
+                         label=None, alpha=alpha_axvline)
+            g.ax.axvline(self.eonr,
+                         linestyle='--',
+                         linewidth=1.5,
+                         color='k',
+                         label='EONR',
+                         alpha=alpha_axvline)
+        else:
+            alpha_axvline = 0
+            g.ax.axvline(0, linestyle='-', linewidth=0.5, color='#7b7b7b',
+                         label=label_ci, alpha=alpha_axvline)
+            g.ax.axvline(0, linestyle='-', linewidth=0.5, color='#7b7b7b',
+                         label=None, alpha=alpha_axvline)
+            g.ax.axvline(0,
+                         linestyle='--',
+                         linewidth=1.5,
+                         color='k',
+                         label='EONR',
+                         alpha=alpha_axvline)
         return g
 
     def _cmap_to_palette(self, cmap):
@@ -1616,7 +1650,7 @@ class EONR(object):
             palette = self._cmap_to_palette(colors)
         return palette
 
-    def _draw_n_cost(self, g, palette):
+    def _draw_lines(self, g, palette):
         '''
         Draws N cost on plot
         '''
@@ -1838,14 +1872,15 @@ class EONR(object):
         self._print_results()
         results = [[self.price_grain, self.cost_n_fert, self.cost_n_social,
                     self.price_ratio, self.location, self.year, self.time_n,
-                    self.eonr, self.ci_level,
-                    self.df_ci_temp['wald_l'].item(),
+                    self.coefs_grtn_primary['coef_a'].n, self.eonr,
+                    self.ci_level, self.df_ci_temp['wald_l'].item(),
                     self.df_ci_temp['wald_u'].item(),
                     self.df_ci_temp['pl_l'].item(),
                     self.df_ci_temp['pl_u'].item(),
                     self.df_ci_temp['boot_l'].item(),
                     self.df_ci_temp['boot_u'].item(),
                     self.mrtn, self.coefs_grtn['r2_adj'],
+                    self.coefs_grtn['rmse'],
                     self.coefs_grtn['max_y'],
                     self.coefs_grtn['crit_x'],
                     self.results_temp['grtn_y_int'],
@@ -1867,7 +1902,8 @@ class EONR(object):
         self._print_results()
 
     def plot_eonr(self, x_min=None, x_max=None, y_min=None, y_max=None,
-                  style='ggplot', ci_type='profile-likelihood', ci_level=None):
+                  style='ggplot', ci_type='profile-likelihood', ci_level=None,
+                  idx=None):
         '''
         Plot EONR, MRTN, GRTN, and N cost
         <style> can be any of the options supported by matplotlib:
@@ -1898,13 +1934,13 @@ class EONR(object):
                       'not be plotted..'.format(err))
         self._modify_axes_labels(fontsize=14)
         g = self._add_ci(g, ci_type=ci_type, ci_level=ci_level)
-        g = self._draw_n_cost(g, self.palette)
+        g = self._draw_lines(g, self.palette)
         g = self._modify_minmax_axes(g, x_min, x_max, y_min, y_max)
         g = self._modify_axes_pos(g)
         g = self._place_legend(g)
         g = self._modify_plot_params(g, plotsize_x=7, plotsize_y=4,
                                      labelsize=11)
-        g = self._add_labels(g)
+        g = self._add_labels(g, x_max)
         g = self._add_title(g)
         plt.tight_layout()
 

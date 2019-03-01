@@ -47,7 +47,7 @@ df = df_willmar_plots.dropna(subset=['dem_mean', 'j_yld_grai'])
 df_0 = df.loc[df['nrate'] == 0]
 df_280 = df.loc[df['nrate'] == 280]
 
-def plot_scatter(df, x_plt='dem_mean', y_plt='j_yld_grai'):
+def plot_scatter(df, x_plt='dem_mean', y_plt='j_yld_grai', col_nrate='nrate'):
     ax = sns.scatterplot(x=x_plt, y=y_plt, hue='rep', data=df)
 
     x = df[x_plt]
@@ -65,11 +65,11 @@ def plot_scatter(df, x_plt='dem_mean', y_plt='j_yld_grai'):
     plt.tight_layout()
 
     print(str_eq)
-    g = sns.FacetGrid(df, col='nrate', hue='rep', height=3, aspect=0.8)
+    g = sns.FacetGrid(df, col=col_nrate, hue='rep', height=3, aspect=0.8)
     g = g.map(plt.scatter, x_plt, y_plt)
     axes = g.axes[0]
     for idx, ax in enumerate(axes):
-        df_temp = df.loc[df['nrate'] == g.col_names[idx]]
+        df_temp = df.loc[df[col_nrate] == g.col_names[idx]]
 #        sns.scatterplot(x_plt, y_plt, data=df_temp, ax=ax)
 
         x = df_temp[x_plt]
@@ -101,3 +101,96 @@ df_willmar_plots.loc[df_willmar_plots['rep'].isin(high), 'low_high'] = 1
 
 df_willmar_low = df_willmar_plots[df_willmar_plots['low_high'] == 0]
 df_willmar_high = df_willmar_plots[df_willmar_plots['low_high'] == 1]
+
+
+# In[Print unique N rates]
+sorted(df_nue12g_pre['rate_n_applied_kgha'].unique())
+sorted(df_nue12s_pre['rate_n_applied_kgha'].unique())
+sorted(df_nue13j_pre['rate_n_applied_kgha'].unique())
+sorted(df_nue13wil_pre['rate_n_applied_kgha'].unique())
+sorted(df_nue14nr_pre['rate_n_applied_kgha'].unique())
+sorted(df_nue14sc_pre['rate_n_applied_kgha'].unique())
+
+sorted(df_sns15s['rate_n_applied_kgha'].unique())
+sorted(df_sns15w['rate_n_applied_kgha'].unique())
+sorted(df_sns16w['rate_n_applied_kgha'].unique())
+sorted(df_sns17w['rate_n_applied_kgha'].unique())
+
+
+nue_sites = [df_nue12g_pre, df_nue12s_pre, df_nue13j_pre, df_nue13wil_pre, df_nue14nr_pre, df_nue14sc_pre]
+sns_sites = [df_sns15s, df_sns15w, df_sns16w, df_sns17w]
+for site in nue_sites:
+#    print(len(sorted(site['rate_n_applied_kgha'].unique())))
+    print(sorted(site['rate_n_applied_kgha'].unique()))
+for site in sns_sites:
+#    print(len(sorted(site['rate_n_applied_kgha'].unique())))
+    print(sorted(site['rate_n_applied_kgha'].unique()))
+
+# In[Print CVs for each rep]
+cv_list = []
+for rate in sorted(df_nue14sc_pre['rate_n_applied_kgha'].unique()):
+    sd = df_nue14sc_pre[df_nue14sc_pre['rate_n_applied_kgha'] == rate]['yld_grain_dry_kgha'].std()
+    avg = df_nue14sc_pre[df_nue14sc_pre['rate_n_applied_kgha'] == rate]['yld_grain_dry_kgha'].mean()
+    cv_list.append(sd / avg)
+    print(sd / avg)
+print(mean(cv_list))
+
+# In[Print mean yield for subsets]
+yield_list1 = []
+yield_list2 = []
+yield_list3 = []
+yield_list4 = []
+for rep in sorted(df_nue14sc_pre['rep'].unique()):
+    if rep <= 4:
+        yield_list1.append(df_nue14sc_pre[df_nue14sc_pre['rep'] == rep]['yld_grain_dry_kgha'].mean())
+    if rep > 4 and rep <=8:
+        yield_list2.append(df_nue14sc_pre[df_nue14sc_pre['rep'] == rep]['yld_grain_dry_kgha'].mean())
+    if rep > 9 and rep <=12:
+        yield_list3.append(df_nue14sc_pre[df_nue14sc_pre['rep'] == rep]['yld_grain_dry_kgha'].mean())
+    if rep > 13 and rep <=16:
+        yield_list4.append(df_nue14sc_pre[df_nue14sc_pre['rep'] == rep]['yld_grain_dry_kgha'].mean())
+print(mean(yield_list1))
+print(mean(yield_list2))
+print(mean(yield_list3))
+print(mean(yield_list4))
+
+# In[Plot]
+import seaborn as sns
+sns.scatterplot(x='rate_n_applied_kgha', y=y2, data=df_nue14sc_pre)
+
+sns.scatterplot(x='rate_n_applied_kgha', y='yld_grain_dry_kgha', data=df_sns15w_pre)
+
+# In[Add column for grain yield RMSE]
+df_results = my_eonr.df_results
+df_results = df_results.assign(yld_rmse = df_results['grtn_rmse'] / my_eonr.price_grain)
+df_results.to_clipboard()
+
+# In[Split Stewart site]
+def func(df, rep_u=4):
+    yield_list1 = []
+    yield_list2 = []
+    yield_list3 = []
+    yield_list4 = []
+    for rep in sorted(df['rep'].unique()):
+        if rep <= rep_u:
+            yield_list1.append(df[df['rep'] == rep]['yld_grain_dry_kgha'].mean())
+        if rep > rep_u and rep <=6:
+            yield_list2.append(df[df['rep'] == rep]['yld_grain_dry_kgha'].mean())
+#        if rep > 9 and rep <=12:
+#            yield_list3.append(df[df['rep'] == rep]['yld_grain_dry_kgha'].mean())
+        if rep > 6 and rep <=16:
+            yield_list4.append(df[df['rep'] == rep]['yld_grain_dry_kgha'].mean())
+    print('Mean: {0:.2f}   Std: {1:.2f}'.format(np.mean(yield_list1), np.std(yield_list1)))
+    print('Mean: {0:.2f}   Std: {1:.2f}'.format(np.mean(yield_list2), np.std(yield_list2)))
+#    print('Mean: {0:.2f}   Std: {1:.2f}'.format(np.mean(yield_list3), np.std(yield_list3)))
+    print('Mean: {0:.2f}   Std: {1:.2f}'.format(np.mean(yield_list4), np.std(yield_list4)))
+#    print(mean(yield_list2))
+##    print(mean(yield_list3))
+#    print(mean(yield_list4))
+    print('Overall mean: {0}'.format(df['yld_grain_dry_kgha'].mean()))
+
+func(df_nue12s_pre, rep_u=5)
+func(df_nue12s_pre, rep_u=4)
+func(df_nue12s_pre, rep_u=3)
+func(df_nue12s_pre, rep_u=2)
+func(df_nue12s_pre, rep_u=1)
