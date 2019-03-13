@@ -18,6 +18,7 @@ from scikits import bootstrap
 from scipy import stats
 from scipy.optimize import minimize_scalar
 from scipy.optimize import curve_fit
+from scipy.optimize import newton
 from scipy.optimize import OptimizeWarning
 import seaborn as sns
 import uncertainties as unc
@@ -236,7 +237,6 @@ class EONR(object):
         '''
         R = self.R
         beta1 = -(2*theta2*theta12 - R)
-
         if isinstance(x, int) or isinstance(x, float):
             y = 0
             y += (theta11 + beta1*x + theta12*(x**2)) * (x < theta2)
@@ -247,6 +247,76 @@ class EONR(object):
             array_temp += (theta11 + beta1*x + theta12*(x**2)) * (x < theta2)
             array_temp += (theta11 - (beta1**2) / (4*theta12)) * (x >= theta2)
             return array_temp
+
+    def _f_qp_gross_theta2(self, x, theta11, theta2, theta12):
+        '''
+        Quadratic plateau function using theta2 (EOR) as one of the parameters
+        and not considering any additonal economic constants (e.g.,
+        grain:fertilizer price ratio).
+
+        Note:
+            theta2 = -theta11/(2*theta12)
+        can be rearranged to get theta2 as one of the parameters of the model:
+            -(2*theta2*theta12)*x
+        and
+            -theta11**2 / (4*theta12)
+        becomes
+            -(theta2**2*theta12))
+
+        _f_qp_cook_theta2
+        '''
+        R = self.R
+#        beta1 = -(2*theta2*theta12 - R)
+        if isinstance(x, int) or isinstance(x, float):
+            y = 0
+            y += (theta11 + (2*theta12*theta2)*x + theta12*(x**2)) * (x < theta2)
+            y += (theta11 - (theta2**2*theta12)) * (x >= theta2)
+            return y
+        else:
+            array_temp = np.zeros(len(x))
+            array_temp += (theta11 - (2*theta12*theta2)*x + theta12*(x**2)) * (x < theta2)
+            array_temp += (theta11 - (theta2**2*theta12)) * (x >= theta2)
+            return array_temp
+
+    def _f_qp_net_theta2(self, x, theta11, theta2, theta12):
+        '''
+        Quadratic plateau function using theta2 (EOR) as one of the parameters
+        and not considering any additonal economic constants (e.g.,
+        grain:fertilizer price ratio).
+
+        _f_qp_net_theta2
+        '''
+#        R = self.R
+        R = self.R
+#        R = self.price_ratio
+#        R = 2
+        crit_x = self.coefs_grtn['crit_x']
+
+#        beta1 = -(2*theta2*theta12 - R)
+        if isinstance(x, int) or isinstance(x, float):
+            y = 0
+            y += (theta11 + (2*theta12*theta2 + R)*x + theta12*(x**2)) * (x < theta2)
+            y += (theta11 - (theta2**2*theta12) -R*x) * (x >= theta2)
+            return y
+        else:
+            array_temp = np.zeros(len(x))
+            array_temp += (theta11 - (2*theta12*theta2 - R)*x + theta12*(x**2)) * (x < theta2)
+            array_temp += (theta11 - (theta2**2*theta12) -R*x) * (x >= theta2)
+            return array_temp
+#sns.scatterplot(x, array_temp)
+#popt, pcov = my_eonr._curve_fit_opt(my_eonr._f_qp_gross_theta2, x, y,
+#                                         p0=guess, maxfev=1000, info=info)
+#theta11, theta2, theta12 = popt
+#
+#popt3, pcov = my_eonr._curve_fit_opt(my_eonr._f_qp_theta2, x, y,
+#                                         p0=guess, maxfev=1000, info=info)
+#theta11, theta2, theta12 = popt3
+#
+#popt2, pcov = self._curve_fit_opt(_f_qp_net_theta2, x, y,
+#                                         p0=guess, maxfev=1000, info=info)
+#theta11, theta2, theta12 = popt2
+
+
 
     def _f_qp_theta2_social(self, x, theta11, theta2, theta12):
         '''
@@ -266,33 +336,6 @@ class EONR(object):
             array_temp = np.zeros(len(x))
             array_temp += (theta11 + beta1*x + theta12*(x**2)) * (x < crit_x)
             array_temp += (theta11 - (beta1**2) / (4*theta12)) * (x >= crit_x)
-            return array_temp
-
-    def _f_combine_exp(self, x, theta11, theta12):
-        # Additions
-        theta2 = self.ci_theta2
-
-        exp_a = self.coefs_social['exp_a']
-        exp_b = self.coefs_social['exp_b']
-        exp_c = self.coefs_social['exp_c']
-        social_cost = self._f_exp(x, a=exp_a, b=exp_b, c=exp_c)
-        beta0 = theta11 - social_cost
-
-        price_ratio = self.price_ratio - (self.cost_n_social /
-                                          self.price_grain)
-        R = price_ratio * self.price_grain
-
-        beta1 = -(2*theta2*theta12 - R)
-
-        if isinstance(x, int) or isinstance(x, float):
-            y = 0
-            y += (beta0 + beta1*x + theta12*(x**2)) * (x < theta2)
-            y += (beta0 - (beta1**2) / (4*theta12)) * (x >= theta2)
-            return y
-        else:
-            array_temp = np.zeros(len(x))
-            array_temp += (beta0 + beta1*x + theta12*(x**2)) * (x < theta2)
-            array_temp += (beta0 - (beta1**2) / (4*theta12)) * (x >= theta2)
             return array_temp
 
     def _f_combine_rtn_cost(self, x):
@@ -585,6 +628,7 @@ class EONR(object):
 
         elif self.cost_n_social == 0:
             self.R = self.price_ratio * self.price_grain
+#            self.R = self.price_ratio  # not sure why the above line multiplied by price_grain initially (March 4, 2019)..?
         else:
             assert self.eonr is not None, 'Please compute EONR'
         R = self.R
@@ -720,13 +764,8 @@ class EONR(object):
 
         For example, if more N is taken up than applied, there is a net
         negative use (-net_use); in terms of dollars, net_use can be divided
-        by the price of grain to get into units of lbs N, which is a unit
-        that can be used with the price ratio R. When dividing by grain price,
-        this value can be thought of as the N rate required to increase yield
-        by 1 bushel (or the other way around??). Let's call it sn_ratio.
-
-        Should we then multiply the sn_ratio by the price ratio before shifting
-        theta2? Try both..
+        by the social cost/price of N to get into units of $, which is a unit
+        that can be used with the price ratio R.
         '''
         df_data = self.df_data.copy()
         x = df_data[col_x].values
@@ -752,7 +791,7 @@ class EONR(object):
         else:
             theta11, theta2, theta12 = unc.correlated_values(popt, pcov)
 
-        self.coefs_nrtn = {
+        my_eonr.coefs_nrtn = {
                 'theta11': theta11,
                 'theta2': theta2,
                 'theta12': theta12,
@@ -985,8 +1024,10 @@ class EONR(object):
                 result = minimize_scalar(-f_eonr1)
                 self.f_eonr = f_eonr1
             else:  # add together the cost of fertilizer and cost of social N
+                x_max = self.df_data[self.col_n_app].max()
                 result = minimize_scalar(self._f_combine_rtn_cost,
-                                         bounds=[-100, 365], method='bounded')
+                                         bounds=[-100, x_max+100],
+                                         method='bounded')
         else:
             first_order = self.coefs_grtn['coef_b'].n - self.cost_n_fert
             f_eonr2 = self._modify_poly1d(f_eonr2, 1, first_order)
@@ -1071,7 +1112,7 @@ class EONR(object):
         return sse_full_theta2
 
     def _check_progress_pl(self, step_size, tau_temp, tau, f_stat,
-                           step_size_start, tau_delta_f, count):
+                           step_size_start, tau_delta_flag, count):
         '''
         Checks progress of profile likelihood function and adjusts step
         size accordingly. Without this function, there is a chance some
@@ -1082,24 +1123,24 @@ class EONR(object):
         if progress < 0.9 and tau_delta < 1e-3:
             step_size = step_size_start
             step_size *= 1000
-            tau_delta_f = True
+            tau_delta_flag = True
         elif progress < 0.9 and tau_delta < 1e-2:
             step_size = step_size_start
             step_size *= 100
-            tau_delta_f = True
+            tau_delta_flag = True
         elif progress < 0.95 and count > 100:
             step_size = step_size_start
             step_size *= 1000
-            tau_delta_f = True
+            tau_delta_flag = True
         elif progress < 0.9:
             step_size = step_size_start
             step_size *= 10
-            tau_delta_f = True
+            tau_delta_flag = True
         else:
-            if tau_delta_f is True and count < 100:
+            if tau_delta_flag is True and count < 100:
                 step_size = step_size_start
             # else keep step size the same
-        return step_size, tau_delta_f
+        return step_size, tau_delta_flag
 
     def _compute_bootstrap(self, alpha=0.1, n_samples=9999):
         '''
@@ -1138,22 +1179,22 @@ class EONR(object):
         '''
         Computes Wald, Profile Likelihood, and Bootstrap confidence intervals.
         '''
-        df = self.df_data.copy()
-        x = df[col_x].values
-        y = df[col_y].values
-        theta2_start = self.eonr
+#        df = self.df_data.copy()
+#        x = df[col_x].values
+#        y = df[col_y].values
+#        theta2_start = self.eonr
         alpha_list = self.alpha_list
         df_ci = self._build_df_ci()
-
         cols = df_ci.columns
         for alpha in alpha_list:
-            pl_l, tau_l, wald_l, wald_u, df_l = self._get_likelihood(
-                    theta2_start, alpha, x, y, 'lower')
-            pl_u, tau_u, _, _, df_u = self._get_likelihood(
-                    theta2_start, alpha, x, y, side='upper')
+            pl_l, pl_u, wald_l, wald_u = self._get_likelihood(alpha, col_x, col_y, stat='t')
+#                    theta2_start, alpha, x, y)
+#            pl_u, tau_u, _, _ = self._get_likelihood(
+#                    theta2_start, alpha, x, y, side='upper')
             level = 1 - alpha
-            tau = np.mean((tau_l, tau_u))  # should be same (to epsilon precis)
-            t_stat = stats.t.ppf(level, len(self.df_data) - 3)
+#            tau = np.mean((tau_l, tau_u))  # should be same (to epsilon precis)
+            f_stat = stats.f.ppf(1-alpha, dfn=1, dfd=len(self.df_data)-3)
+            t_stat = stats.t.ppf(1-alpha/2, len(self.df_data)-3)
             df_row = pd.DataFrame([[self.df_data.iloc[0]['location'],
                                     self.df_data.iloc[0]['year'],
                                     self.df_data.iloc[0]['time_n'],
@@ -1161,7 +1202,7 @@ class EONR(object):
                                     self.cost_n_fert,
                                     self.cost_n_social,
                                     self.price_ratio,
-                                    tau, t_stat, level,
+                                    f_stat, t_stat, level,
                                     wald_l, wald_u, pl_l,
                                     pl_u]],
                                   columns=cols)
@@ -1253,7 +1294,174 @@ class EONR(object):
                              'True/False.')
         return guess
 
-    def _get_likelihood(self, theta2_start, alpha, x, y, side, tau_start=0,
+    class _get_likelihood_init(object):
+        def __init__(self, **kwargs):
+            self.__dict__.update(kwargs)
+            '''
+            Performs intialization steps for _get_likelihood(); these steps
+            take up space and can be a distraction, so _get_likelihood_init()
+            places all variables in its own class for easy access
+            '''
+            self.msg = ('Please choose either "upper" or "lower" for <side> '
+                        'of confidence interval to compute.')
+            assert self.side.lower() in ['upper', 'lower'], self.msg
+            self.q = 1  # number of params being checked (held constant)
+            self.n = len(self.x)
+            self.p = len(self.guess)
+            self.f_stat = stats.f.ppf(1-self.alpha, dfn=self.q,
+                                      dfd=self.n-self.p)  # ppf is inv of cdf
+            self.t_stat = stats.t.ppf(1-self.alpha/2, self.n-self.p)
+            self.s2 = self.sse_full / (self.n - self.p)  # variance
+            self.theta2 = self.theta2_start
+            self.tau = self.tau_start
+            self.step_size_start = self.step_size
+            self.tau_delta_flag = False
+            self.stop_flag = False
+            self.count = 0
+            if self.cost_n_social > 0:
+                self.str_func = '_get_likelihood() -> _f_qp_theta2_social'
+            else:
+                self.str_func = '_get_likelihood() -> _f_qp_theta2'
+            self.info = ('func = {0}\ncol_x = {1}\ncol_y = {2}\n'
+                         ''.format(self.str_func, self.col_x, self.col_y))
+
+    def _get_likelihood(self, alpha, col_x, col_y, stat='f'):
+        '''
+        Computes the profile liklihood confidence values using the sum of
+        squares (see Gallant (1987), p. 107)
+        <alpha>: the significance level to compute the likelihood for
+        <x> and <y>: the x and y data that likelihood should computed for
+
+        Uses <alpha> to calculate the inverse of the cdf (cumulative
+        distribution function) of the F statistic. The T statistic can be used
+        as well (they will give the same result).
+        '''
+        df = self.df_data.copy()
+        x = df[col_x].values
+        y = df[col_y].values
+        # First, get variables stored in the EONR class
+        guess = (self.coefs_grtn['coef_a'].n,
+                 self.coefs_grtn['crit_x'],
+                 self.coefs_grtn['coef_c'].n)
+#        if sse_full is None:
+        sse_full = self._calc_sse_full(x, y)
+#        if df is None:
+#            df = pd.DataFrame(columns=['theta', 'f_stat', 't_stat'])
+#        col_x = self.col_n_app
+#        col_y = 'grtn'
+        cost_n_social = self.cost_n_social
+        # Second, call like_init() class to itialize the get_likelihood() func
+#        li = self._get_likelihood_init(
+#                alpha=alpha, x=x, y=y,
+#                guess=guess, sse_full=sse_full, col_x=col_x,
+#                col_y=col_y, cost_n_social=cost_n_social)
+#        msg = ('Please choose either "upper" or "lower" for <side> '
+#                    'of confidence interval to compute.')
+#        assert self.side.lower() in ['upper', 'lower'], self.msg
+        q = 1  # number of params being checked (held constant)
+        n = len(x)
+        p = len(guess)
+        f_stat = stats.f.ppf(1-alpha, dfn=q, dfd=n-p)  # ppf is inv of cdf
+        t_stat = stats.t.ppf(1-alpha/2, n-p)
+        s2 = sse_full / (n - p)  # variance
+#        self.theta2 = self.theta2_start
+#        self.tau = self.tau_start
+#        self.step_size_start = self.step_size
+#        self.tau_delta_flag = False
+#        self.stop_flag = False
+#        self.count = 0
+        if self.cost_n_social > 0:
+            self.str_func = '_get_likelihood() -> _f_qp_theta2_social'
+        else:
+            self.str_func = '_get_likelihood() -> _f_qp_theta2'
+        info = ('func = {0}\ncol_x = {1}\ncol_y = {2}\n'
+                     ''.format(self.str_func, col_x, col_y))
+
+        # Third, minimize the difference between tau and the test statistic
+        # call, anything in _get_likelihood_init() using li.<variable>
+        # e.g., li.tau will get you the <tau> variable
+        # Rule of thumb: if saved in both EONR and _get_likelihood_init, use
+        # variable from EONR; if passed directly to _get_likelihood(), use the
+        # variable directly
+        def _f_like_opt(theta2):
+            '''
+            Function for scipy.optimize.newton() to optimize (find the minimum)
+            of the difference between tau and the test statistic. This function
+            returns <dif>, which will equal zero when the likelihood ratio is
+            exactly equal to the test statistic (e.g., t-test or f-test)
+            '''
+            if cost_n_social > 0:
+                popt, pcov = self._curve_fit_runtime(
+                        lambda x, theta11, theta12: self._f_qp_theta2_social(
+                                x, theta11, theta2, theta12), x, y,
+                        guess=(1, 1), maxfev=800, info=info)
+            else:
+                popt, pcov = self._curve_fit_runtime(
+                        lambda x, theta11, theta12: self._f_qp_theta2(
+                                x, theta11, theta2, theta12), x, y,
+                        guess=(1, 1), maxfev=800, info=info)
+            if popt is not None:
+                popt = np.insert(popt, 1, theta2)
+                res = y - self._f_qp_theta2(x, *popt)
+                sse_res = np.sum(res**2)
+                tau_temp_f = ((sse_res - sse_full) / q) / s2
+                tau_temp_t = tau_temp_f**0.5
+                if stat is 't':  # Be SURE tau is compared to correct stat!
+                    tau_temp = tau_temp_t
+                    crit_stat = t_stat
+                else:
+                    tau_temp = tau_temp_f
+                    crit_stat = f_stat
+#                df2 = pd.DataFrame([[theta2, tau_temp_f, tau_temp_t]],
+#                                   columns=['theta', 'f_stat', 't_stat'])
+#                df = df.append(df2, ignore_index=True)
+                dif = crit_stat - tau_temp
+        #    elif popt is None:
+        #        print('{0:.1f}% {1} profile likelihood failed to find optimal '
+        #              'parameters. Stopping calculation.'
+        #              ''.format((1-alpha)*100, side.capitalize()))
+        #        tau_temp_f = li.f_stat
+        #        tau_temp_t = li.t_stat
+        #        li.stop_flag = True
+        #        if df['theta'].iloc[-1] is not None:
+        #            theta_rec = df['theta'].iloc[-1]
+        #            if theta_rec < 1.0:
+        #                theta_rec = 0
+        #        else:
+        #            theta_rec = np.NaN
+        #        df2 = pd.DataFrame([[theta_rec,  li.f_stat, li.t_stat]],
+        #                           columns=['theta', 'f_stat', 't_stat'])
+        #        df = df.append(df2, ignore_index=True)
+            return dif
+        pl_l = newton(_f_like_opt, self.eonr-10)
+        pl_u = newton(_f_like_opt, self.eonr+10)
+#        if len(df) <= 1:
+#            # start over, reducing step size
+#            _, _, wald_l, wald_u, df = self._get_likelihood(
+#                    theta2_start, alpha, x, y, side, tau_start=tau_start,
+#                    step_size=(step_size/10), epsilon=epsilon, df=df,
+#                    sse_full=sse_full)
+#        elif li.stop_flag is True:  # If we had to stop calculation..
+#            wald_l, wald_u = self._compute_wald(li.n, li.p, alpha)
+#        elif abs(df['theta'].iloc[-1] - df['theta'].iloc[-2]) > epsilon:
+#            df = df[:-1]
+#            # At this point, we could get stuck in a loop if we never make any
+#            # headway on closing in on epsilon
+#            _, _, wald_l, wald_u, df = self._get_likelihood(
+#                    df['theta'].iloc[-1], alpha, x, y, side,
+#                    tau_start=df['t_stat'].iloc[-1],
+#                    step_size=(step_size/10),
+#                    epsilon=epsilon, df=df, sse_full=sse_full)
+#        else:
+        wald_l, wald_u = self._compute_wald(n, p, alpha)
+#            boot_l, boot_u = self._compute_bootstrap(alpha, n_samples=5000)
+#        theta2_out = df['theta'].iloc[-2:].mean()
+#        tau_out = df['f_stat'].iloc[-2:].mean()
+#        theta2_out = df['theta'].iloc[-1]
+#        tau_out = df['t_stat'].iloc[-1]
+        return pl_l, pl_u, wald_l, wald_u
+
+    def _get_likelihood_old(self, theta2_start, alpha, x, y, side, tau_start=0,
                         step_size=1, epsilon=1e-9, df=None, sse_full=None):
         '''
         Computes the profile liklihood confidence values using the sum of
@@ -1264,124 +1472,130 @@ class EONR(object):
         <x> and <y>: the x and y data that likelihood should computed for
         <side>: The side of the confidence interval to compute the likelihood
             for - should be either "upper" or "lower" (dtype = str)
+
+        Uses <alpha> to calculate the inverse of the cdf (cumulative
+        distribution function) of the F statistic. The T statistic can be used
+        as well (they will give the same result).
         '''
-        msg = ('Please choose either "upper" or "lower" for <side> of '
-               'confidence interval to compute.')
-        assert side.lower() in ['upper', 'lower'], msg
+        # First, get variables stored in the EONR class
         guess = (self.coefs_grtn['coef_a'].n,
-                 self.coefs_grtn['coef_b'].n,
+                 self.coefs_grtn['crit_x'],
                  self.coefs_grtn['coef_c'].n)
-        q = 1
-        n = len(x)
-        p = len(guess)
-        f_stat = stats.f.ppf(1-alpha, dfn=q, dfd=n-p)
-        if df is None:
-            df = pd.DataFrame(columns=['theta', 'f_stat'])
         if sse_full is None:
             sse_full = self._calc_sse_full(x, y)
-        s2 = sse_full / (n - p)
-        theta2 = theta2_start
-        tau = tau_start
-        step_size_start = step_size
-        tau_delta_f = False
-        stop_flag = False
-        count = 0
+        if df is None:
+            df = pd.DataFrame(columns=['theta', 'f_stat', 't_stat'])
         col_x = self.col_n_app
         col_y = 'grtn'
-        if self.cost_n_social > 0:
-            str_func = '_get_likelihood() -> _f_qp_theta2_social'
-        else:
-            str_func = '_get_likelihood() -> _f_qp_theta2'
-        info = ('func = {0}\ncol_x = {1}\ncol_y = {2}\n'
-                ''.format(str_func, col_x, col_y))
-        while tau < f_stat:
-            if self.cost_n_social > 0:
+        cost_n_social = self.cost_n_social
+        # Second, call like_init() class to itialize the get_likelihood() func
+        li = self._get_likelihood_init(
+                theta2_start=theta2_start, alpha=alpha, x=x, y=y, side=side,
+                tau_start=tau_start, step_size=step_size, epsilon=epsilon,
+                guess=guess, sse_full=sse_full, col_x=col_x,
+                col_y=col_y, cost_n_social=cost_n_social)
+        # Third, minimize the difference between tau and the test statistic
+        # call, anything in _get_likelihood_init() using li.<variable>
+        # e.g., li.tau will get you the <tau> variable
+        # Rule of thumb: if saved in both EONR and _get_likelihood_init, use
+        # variable from EONR; if passed directly to _get_likelihood(), use the
+        # variable directly
+        while li.tau < crit_stat:
+            if cost_n_social > 0:
                 popt, pcov = self._curve_fit_runtime(
                         lambda x, theta11, theta12: self._f_qp_theta2_social(
-                                x, theta11, theta2, theta12), x, y,
-                        guess=(1, 1), maxfev=800, info=info)
+                                x, theta11, li.theta2, theta12), x, y,
+                        guess=(1, 1), maxfev=800, info=li.info)
             else:
                 popt, pcov = self._curve_fit_runtime(
                         lambda x, theta11, theta12: self._f_qp_theta2(
-                                x, theta11, theta2, theta12), x, y,
-                        guess=(1, 1), maxfev=800, info=None)
-
+                                x, theta11, li.theta2, theta12), x, y,
+                        guess=(1, 1), maxfev=800, info=li.info)
             if popt is not None:
-                popt = np.insert(popt, 1, theta2)
-                if self.cost_n_social > 0:
+                popt = np.insert(popt, 1, li.theta2)
+                if cost_n_social > 0:
                     res = y - self._f_qp_theta2_social(x, *popt)
                 else:
                     res = y - self._f_qp_theta2(x, *popt)
                 sse_res = np.sum(res**2)
-                tau_temp = ((sse_res - sse_full) / q) / s2
+                tau_temp_f = ((sse_res - sse_full) / li.q) / li.s2
+                tau_temp_t = tau_temp_f**0.5
+                if stat is 't':  # Be SURE tau is compared to correct stat!
+                    tau_temp = tau_temp_t
+                else:
+                    tau_temp = tau_temp_f
+                # The following is used in Hernandez and Mulla (2008), but adds
+                # an unnecessary complexity/confusion to testing significance
+#                tau_temp = abs(li.theta2 - self.eonr)**0.5 * tau_temp_f**0.5
 
-            if count >= 1000:
+            if li.count >= 1000:
                 print('{0:.1f}% {1} profile likelihood failed to converge '
                       'after {2} iterations. Stopping calculation and using '
                       '{3:.1f} {4}'.format((1-alpha)*100, side.capitalize(),
-                                           count, theta2, self.unit_nrate))
-                tau = f_stat
-                stop_flag = True
+                                           li.count, li.theta2,
+                                           self.unit_nrate))
+                tau_temp_f = li.f_stat
+                tau_temp_t = li.t_stat
+                li.stop_flag = True
                 theta_same = df['theta'].iloc[-1]
-                df2 = pd.DataFrame([[theta_same, f_stat]],
-                                   columns=['theta', 'f_stat'])
+                df2 = pd.DataFrame([[theta_same, li.f_stat, li.t_stat]],
+                                   columns=['theta', 'f_stat', 't_stat'])
                 df = df.append(df2, ignore_index=True)
                 break  # break out of while loop
             elif popt is None:
                 print('{0:.1f}% {1} profile likelihood failed to find optimal '
                       'parameters. Stopping calculation.'
                       ''.format((1-alpha)*100, side.capitalize()))
-                tau = f_stat
-                stop_flag = True
+                tau_temp_f = li.f_stat
+                tau_temp_t = li.t_stat
+                li.stop_flag = True
                 if df['theta'].iloc[-1] is not None:
                     theta_rec = df['theta'].iloc[-1]
                     if theta_rec < 1.0:
                         theta_rec = 0
                 else:
                     theta_rec = np.NaN
-                df2 = pd.DataFrame([[theta_rec, f_stat]],
-                                   columns=['theta', 'f_stat'])
+                df2 = pd.DataFrame([[theta_rec,  li.f_stat, li.t_stat]],
+                                   columns=['theta', 'f_stat', 't_stat'])
                 df = df.append(df2, ignore_index=True)
                 break  # break out of while loop
             else:
-                df2 = pd.DataFrame([[theta2, tau_temp]],
-                                   columns=['theta', 'f_stat'])
+                df2 = pd.DataFrame([[li.theta2, tau_temp_f, tau_temp_t]],
+                                   columns=['theta', 'f_stat', 't_stat'])
                 df = df.append(df2, ignore_index=True)
-
-            count += 1
-            step_size, tau_delta_f = self._check_progress_pl(
-                    step_size, tau_temp, tau, f_stat, step_size_start,
-                    tau_delta_f, count)
+            li.count += 1
+            li.step_size, li.tau_delta_flag = self._check_progress_pl(
+                    li.step_size, tau_temp, li.tau, crit_stat,
+                    li.step_size_start, li.tau_delta_flag, li.count)
             if side.lower() == 'upper':
-                theta2 += step_size
+                li.theta2 += li.step_size
             elif side.lower() == 'lower':
-                theta2 -= step_size
-            tau = tau_temp
-
+                li.theta2 -= li.step_size
+            li.tau = tau_temp
         if len(df) <= 1:
             # start over, reducing step size
             _, _, wald_l, wald_u, df = self._get_likelihood(
                     theta2_start, alpha, x, y, side, tau_start=tau_start,
                     step_size=(step_size/10), epsilon=epsilon, df=df,
                     sse_full=sse_full)
-        elif stop_flag is True:  # If we had to stop calculation..
-            wald_l, wald_u = self._compute_wald(n, p, alpha)
+        elif li.stop_flag is True:  # If we had to stop calculation..
+            wald_l, wald_u = self._compute_wald(li.n, li.p, alpha)
         elif abs(df['theta'].iloc[-1] - df['theta'].iloc[-2]) > epsilon:
             df = df[:-1]
             # At this point, we could get stuck in a loop if we never make any
             # headway on closing in on epsilon
             _, _, wald_l, wald_u, df = self._get_likelihood(
                     df['theta'].iloc[-1], alpha, x, y, side,
-                    tau_start=df['f_stat'].iloc[-1],
+                    tau_start=df['t_stat'].iloc[-1],
                     step_size=(step_size/10),
                     epsilon=epsilon, df=df, sse_full=sse_full)
         else:
-            wald_l, wald_u = self._compute_wald(n, p, alpha)
+            wald_l, wald_u = self._compute_wald(li.n, li.p, alpha)
 #            boot_l, boot_u = self._compute_bootstrap(alpha, n_samples=5000)
 #        theta2_out = df['theta'].iloc[-2:].mean()
 #        tau_out = df['f_stat'].iloc[-2:].mean()
         theta2_out = df['theta'].iloc[-1]
-        tau_out = df['f_stat'].iloc[-1]
+        tau_out = df['t_stat'].iloc[-1]
         return theta2_out, tau_out, wald_l, wald_u, df
 
     def _handle_no_ci(self):
@@ -1406,7 +1620,7 @@ class EONR(object):
                                     self.cost_n_fert,
                                     self.cost_n_social,
                                     self.price_ratio,
-                                    np.nan, t_stat, level,
+                                    t_stat, level,
                                     wald_l, wald_u, np.nan, np.nan]],
                                   columns=df_ci.columns)
             df_ci = df_ci.append(df_row, ignore_index=True)

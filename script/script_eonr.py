@@ -274,14 +274,14 @@ def calc_all_siteyears(my_eonr, print_plot=False, y_min=-50,
     my_eonr.calculate_eonr(df_nue12g_pre)
     if print_plot is True:
         plot_and_save(my_eonr, fname='eonr_nue12g_pre.png', y_min=y_min, y_max=y_max)
-    # Stewart 2012
-    my_eonr.calculate_eonr(df_nue12s_pre)
-    if print_plot is True:
-        plot_and_save(my_eonr, fname='eonr_nue12s_pre.png', y_min=y_min, y_max=y_max)
-    # Stewart 2012 (Reps 1 - 2)
-    my_eonr.calculate_eonr(df_nue12s_pre_low)
-    if print_plot is True:
-        plot_and_save(my_eonr, fname='eonr_nue12s_pre_low.png', y_min=y_min, y_max=y_max)
+#    # Stewart 2012
+#    my_eonr.calculate_eonr(df_nue12s_pre)
+#    if print_plot is True:
+#        plot_and_save(my_eonr, fname='eonr_nue12s_pre.png', y_min=y_min, y_max=y_max)
+#    # Stewart 2012 (Reps 1 - 2)
+#    my_eonr.calculate_eonr(df_nue12s_pre_low)
+#    if print_plot is True:
+#        plot_and_save(my_eonr, fname='eonr_nue12s_pre_low.png', y_min=y_min, y_max=y_max)
     # Stewart 2012 (Reps 3 - 6)
     my_eonr.calculate_eonr(df_nue12s_pre_med)
     if print_plot is True:
@@ -294,10 +294,10 @@ def calc_all_siteyears(my_eonr, print_plot=False, y_min=-50,
     my_eonr.calculate_eonr(df_nue13j_pre)
     if print_plot is True:
         plot_and_save(my_eonr, fname='eonr_nue13j_pre.png', y_min=y_min, y_max=y_max)
-    # Willmar 2013 - There is a lot of yield variability, so plots were divided into low yielding and high yielding
-    my_eonr.calculate_eonr(df_nue13wil_pre)
-    if print_plot is True:
-        plot_and_save(my_eonr, fname='eonr_nue13wil_pre.png', y_min=y_min, y_max=y_max)
+#    # Willmar 2013 - There is a lot of yield variability, so plots were divided into low yielding and high yielding
+#    my_eonr.calculate_eonr(df_nue13wil_pre)
+#    if print_plot is True:
+#        plot_and_save(my_eonr, fname='eonr_nue13wil_pre.png', y_min=y_min, y_max=y_max)
     # Willmar 2013 (Reps 2, 4, 5, 9, & 13)
     my_eonr.calculate_eonr(df_nue13wil_pre_low)
     if print_plot is True:
@@ -306,10 +306,10 @@ def calc_all_siteyears(my_eonr, print_plot=False, y_min=-50,
     my_eonr.calculate_eonr(df_nue13wil_pre_high)
     if print_plot is True:
         plot_and_save(my_eonr, fname='eonr_nue13wil_pre_high.png', y_min=y_min, y_max=y_max)
-    # New Richland 2014
-    my_eonr.calculate_eonr(df_nue14nr_pre)
-    if print_plot is True:
-        plot_and_save(my_eonr, fname='eonr_nue14nr_pre.png', y_min=y_min, y_max=y_max)
+#    # New Richland 2014
+#    my_eonr.calculate_eonr(df_nue14nr_pre)
+#    if print_plot is True:
+#        plot_and_save(my_eonr, fname='eonr_nue14nr_pre.png', y_min=y_min, y_max=y_max)
     # New Richland 2014 (Reps 1-8)
     my_eonr.calculate_eonr(df_nue14nr_pre_low)
     if print_plot is True:
@@ -318,30 +318,33 @@ def calc_all_siteyears(my_eonr, print_plot=False, y_min=-50,
     my_eonr.calculate_eonr(df_nue14nr_pre_high)
     if print_plot is True:
         plot_and_save(my_eonr, fname='eonr_nue14nr_pre_high.png', y_min=y_min, y_max=y_max)
-    # Saint Charles 2014
-    my_eonr.calculate_eonr(df_nue14sc_pre)
-    if print_plot is True:
-        plot_and_save(my_eonr, fname='eonr_nue14sc_pre.png', y_min=y_min, y_max=y_max)
-    # Saint Charles 2014 (low1 (reps 5-8))
-    my_eonr.calculate_eonr(df_nue14sc_pre_low1)
-    if print_plot is True:
-        plot_and_save(my_eonr, fname='eonr_nue14sc_pre_low1.png', y_min=y_min, y_max=y_max)
-    # Saint Charles 2014 (low2 (reps 9-12))
-    my_eonr.calculate_eonr(df_nue14sc_pre_low2)
-    if print_plot is True:
-        plot_and_save(my_eonr, fname='eonr_nue14sc_pre_low2.png', y_min=y_min, y_max=y_max)
-    # Saint Charles 2014 (high1 (reps 13-16))
-    my_eonr.calculate_eonr(df_nue14sc_pre_high1)
-    if print_plot is True:
-        plot_and_save(my_eonr, fname='eonr_nue14sc_pre_high1.png', y_min=y_min, y_max=y_max)
+#    # Saint Charles 2014
+#    my_eonr.calculate_eonr(df_nue14sc_pre)
+#    if print_plot is True:
+#        plot_and_save(my_eonr, fname='eonr_nue14sc_pre.png', y_min=y_min, y_max=y_max)
+#    # Saint Charles 2014 (low1 (reps 5-8))
+#    my_eonr.calculate_eonr(df_nue14sc_pre_low1)
+#    if print_plot is True:
+#        plot_and_save(my_eonr, fname='eonr_nue14sc_pre_low1.png', y_min=y_min, y_max=y_max)
+#    # Saint Charles 2014 (low2 (reps 9-12))
+#    my_eonr.calculate_eonr(df_nue14sc_pre_low2)
+#    if print_plot is True:
+#        plot_and_save(my_eonr, fname='eonr_nue14sc_pre_low2.png', y_min=y_min, y_max=y_max)
+#    # Saint Charles 2014 (high1 (reps 13-16))
+#    my_eonr.calculate_eonr(df_nue14sc_pre_high1)
+#    if print_plot is True:
+#        plot_and_save(my_eonr, fname='eonr_nue14sc_pre_high1.png', y_min=y_min, y_max=y_max)
     # Saint Charles 2014 (high2 (reps 1-4))
     my_eonr.calculate_eonr(df_nue14sc_pre_high2)
     if print_plot is True:
         plot_and_save(my_eonr, fname='eonr_nue14sc_pre_high2.png', y_min=y_min, y_max=y_max)
     return my_eonr
 
+my_eonr.calculate_eonr(df_sns17w_pre)
+
+df = df_sns17w_pre.copy()
 # In[Run EONR function]
-base_dir = os.path.join(r'G:\SOIL\GIS\SNS\eonr\2019-02-28', units)
+base_dir = os.path.join(r'G:\SOIL\GIS\SNS\eonr\2019-03-12', units)
 #base_dir = r'C:\Users\Tyler\eonr\2019-02-10'
 my_eonr = EONR(cost_n_fert=cost_n_fert,
                cost_n_social=cost_n_social,
@@ -366,7 +369,7 @@ print_plot = True
 y_min = -50
 y_max = 550
 
-cost_n_fert_list = [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 1]
+cost_n_fert_list = [0, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 1]
 #cost_n_fert_list = [0.3]
 for cost_n_fert in cost_n_fert_list:
     cost_n_social = 0
