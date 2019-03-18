@@ -227,6 +227,7 @@ def plot_and_save(my_eonr, fname, x_min=-5,
     my_eonr.plot_eonr(x_min=x_min, x_max=x_max, y_min=y_min, y_max=y_max)
     if my_eonr.base_dir is not None:
         my_eonr.save_plot(fname=fname, dpi=dpi)
+    plt.close("all")
 
 def calc_all_siteyears(my_eonr, print_plot=False, y_min=-50,
                        y_max=1100):
@@ -270,6 +271,7 @@ def calc_all_siteyears(my_eonr, print_plot=False, y_min=-50,
     my_eonr.calculate_eonr(df_sns15s_v10)
     if print_plot is True:
         plot_and_save(my_eonr, fname='eonr_sns15s_v10.png', y_min=y_min, y_max=y_max)
+
     # Gaylord 2012
     my_eonr.calculate_eonr(df_nue12g_pre)
     if print_plot is True:
@@ -340,11 +342,19 @@ def calc_all_siteyears(my_eonr, print_plot=False, y_min=-50,
         plot_and_save(my_eonr, fname='eonr_nue14sc_pre_high2.png', y_min=y_min, y_max=y_max)
     return my_eonr
 
-my_eonr.calculate_eonr(df_sns17w_pre)
+#my_eonr.calculate_eonr(df_sns15s_pre)
+#
+#df = df_sns17w_pre.copy()
+#def calc_all_siteyears(my_eonr, print_plot=False, y_min=-50,
+#                       y_max=1100):
+#    # Gaylord 2012
+#    my_eonr.calculate_eonr(df_nue12g_pre)
+#    if print_plot is True:
+#        plot_and_save(my_eonr, fname='eonr_nue12g_pre.png', y_min=y_min, y_max=y_max)
+#    return my_eonr
 
-df = df_sns17w_pre.copy()
 # In[Run EONR function]
-base_dir = os.path.join(r'G:\SOIL\GIS\SNS\eonr\2019-03-12', units)
+base_dir = os.path.join(r'G:\SOIL\GIS\SNS\eonr\2019-03-18', units)
 #base_dir = r'C:\Users\Tyler\eonr\2019-02-10'
 my_eonr = EONR(cost_n_fert=cost_n_fert,
                cost_n_social=cost_n_social,
@@ -374,7 +384,7 @@ cost_n_fert_list = [0, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 1]
 for cost_n_fert in cost_n_fert_list:
     cost_n_social = 0
     price_grain = 4.00
-    cost_n_fert = 0.4
+#    cost_n_fert = 0.50
     if units == 'metric':
         y_min = -100
         y_max = 1400
@@ -386,7 +396,6 @@ for cost_n_fert in cost_n_fert_list:
                       price_grain=price_grain)
     my_eonr = calc_all_siteyears(my_eonr, print_plot=print_plot, y_min=y_min,
                                  y_max=y_max)
-    plt.close("all")
 
 my_eonr.df_results.to_csv(os.path.join(os.path.split(my_eonr.base_dir)[0], 'trad_results.csv'), index=False)
 my_eonr.df_ci.to_csv(os.path.join(os.path.split(my_eonr.base_dir)[0], 'trad_ci.csv'), index=False)
@@ -402,6 +411,7 @@ cost_n_social_list = [0.01, 0.1, 0.25, 0.5, 1, 2, 3, 5]
 for cost_n_social in cost_n_social_list:
     cost_n_fert = 0.4
     price_grain = 4.00
+#    cost_n_social = 3
     if units == 'metric':
         y_min = -600
         y_max = 1700
@@ -413,7 +423,6 @@ for cost_n_social in cost_n_social_list:
                       price_grain=price_grain)
     my_eonr = calc_all_siteyears(my_eonr, print_plot=print_plot, y_min=y_min,
                                  y_max=y_max)
-    plt.close("all")
 
 my_eonr.df_results.to_csv(os.path.join(os.path.split(my_eonr.base_dir)[0], 'social_results.csv'), index=False)
 my_eonr.df_ci.to_csv(os.path.join(os.path.split(my_eonr.base_dir)[0], 'social_ci.csv'), index=False)

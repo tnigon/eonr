@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-© 2018 Regents of the University of Minnesota. All rights reserved.
+© 2019 Regents of the University of Minnesota. All rights reserved.
 """
 __copyright__ = 'Regents of the University of Minnesota. All rights reserved.'
 __author__ = 'Tyler Nigon'
@@ -22,3 +22,7 @@ __license__ = (
 __email__ = 'nigo0024@umn.edu'
 
 from eonr.eonr import EONR
+from eonr.hide_print import Hide_print
+
+__all__ = ['EONR',
+           'Hide_print']
