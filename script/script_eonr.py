@@ -4,7 +4,7 @@ Created on Tue Oct  9 16:50:16 2018
 
 @author: nigo0024
 """
-# In[Packages and functions]
+# In[1 Packages and functions]
 import pandas as pd
 import numpy as np
 import pint
@@ -14,7 +14,7 @@ import seaborn as sns
 from matplotlib.offsetbox import AnchoredText
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
-from eonr import EONR
+#from eonr import EONR
 
 def replace_missing_vals(df, missing_val=['.', '#VALUE!'], cols_numeric=None):
     '''
@@ -30,7 +30,7 @@ def replace_missing_vals(df, missing_val=['.', '#VALUE!'], cols_numeric=None):
         df[cols_numeric] = df[cols_numeric].apply(pd.to_numeric)
     return df
 
-# In[Load data]
+# In[2 Load data]
 pc = 'agrobot'  # 'agrobot' or 'yoga'
 units = 'metric'  # 'metric' or 'imperial'
 
@@ -66,7 +66,7 @@ cols_numeric = [col_n_app, col_yld, col_crop_nup, col_nup_soil_fert]
 df_eonr_sns = replace_missing_vals(df_full_sns[col_names], cols_numeric=cols_numeric)
 df_eonr_nue = replace_missing_vals(df_full_nue[col_names], cols_numeric=cols_numeric)
 
-# In[Build dataframes for loc, year, and N timing]
+# In[3 Build dataframes for loc, year, and N timing]
 
 loc = 'Gaylord'
 year = 2012
@@ -194,7 +194,7 @@ df_sns17w_v5 = pd.concat([df_temp_n0, df_temp[(df_temp['time_n']=='V5')]], ignor
 df_temp_n0.loc[:,'time_n'] = 'V10'
 df_sns17w_v10 = pd.concat([df_temp_n0, df_temp[(df_temp['time_n']=='V10')]], ignore_index=True).reindex()
 
-# In[Set units]
+# In[4 Set units]
 cost_n_fert = 0.40  # in USD per lb
 cost_n_social = 0  # in USD per lb lost
 price_grain = 4.00  # in USD
@@ -342,7 +342,7 @@ def calc_all_siteyears(my_eonr, print_plot=False, y_min=-50,
         plot_and_save(my_eonr, fname='eonr_nue14sc_pre_high2.png', y_min=y_min, y_max=y_max)
     return my_eonr
 
-#my_eonr.calculate_eonr(df_sns15s_pre)
+#my_eonr.calculate_eonr(df_nue12g_pre)
 #
 #df = df_sns17w_pre.copy()
 #def calc_all_siteyears(my_eonr, print_plot=False, y_min=-50,
@@ -354,7 +354,7 @@ def calc_all_siteyears(my_eonr, print_plot=False, y_min=-50,
 #    return my_eonr
 
 # In[Run EONR function]
-base_dir = os.path.join(r'G:\SOIL\GIS\SNS\eonr\2019-03-18', units)
+base_dir = os.path.join(r'G:\SOIL\GIS\SNS\eonr\2019-03-20', units)
 #base_dir = r'C:\Users\Tyler\eonr\2019-02-10'
 my_eonr = EONR(cost_n_fert=cost_n_fert,
                cost_n_social=cost_n_social,
@@ -384,7 +384,7 @@ cost_n_fert_list = [0, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 1]
 for cost_n_fert in cost_n_fert_list:
     cost_n_social = 0
     price_grain = 4.00
-#    cost_n_fert = 0.50
+    cost_n_fert = 1
     if units == 'metric':
         y_min = -100
         y_max = 1400
@@ -411,7 +411,7 @@ cost_n_social_list = [0.01, 0.1, 0.25, 0.5, 1, 2, 3, 5]
 for cost_n_social in cost_n_social_list:
     cost_n_fert = 0.4
     price_grain = 4.00
-#    cost_n_social = 3
+    cost_n_social = 0.5
     if units == 'metric':
         y_min = -600
         y_max = 1700
@@ -427,11 +427,20 @@ for cost_n_social in cost_n_social_list:
 my_eonr.df_results.to_csv(os.path.join(os.path.split(my_eonr.base_dir)[0], 'social_results.csv'), index=False)
 my_eonr.df_ci.to_csv(os.path.join(os.path.split(my_eonr.base_dir)[0], 'social_ci.csv'), index=False)
 
-# In[Plot profile likelihood]
-fname = r'G:\SOIL\GIS\SNS\eonr\2019-02-19\imperial\social_ci.csv'
-df_ci_imper_soc = pd.read_csv(fname)
+# In[Load data]
+#fname_imperial = r'G:\SOIL\GIS\SNS\eonr\2019-02-19\imperial\social_ci.csv'
+#df_ci_imper_soc = pd.read_csv(fname_imperial)
+fname_ci_metric_trad = r'G:\SOIL\GIS\SNS\eonr\2019-03-18\metric\trad_ci.csv'
+df_ci_metric_trad = pd.read_csv(fname_ci_metric_trad)
+fname_results_metric_trad = r'G:\SOIL\GIS\SNS\eonr\2019-03-18\metric\trad_results.csv'
+df_results_metric_trad = pd.read_csv(fname_results_metric_trad)
 
-my_eonr.plot_profile_likelihood(df_ci_imper_soc)
+# In[Plot profile likelihood]
+my_eonr.plot_profile_likelihood(df_ci_metric_trad)
+
+df_filt = df_ci_metric_trad[df_ci_metric_trad['year'] == 2012]
+df_filt = df_filt[df_filt['location'] == 'Gaylord']
+df_filt = df_filt[df_filt['time_n'] == 'Pre']
 
 # In[Plot all]
 import pandas as pd
@@ -444,12 +453,114 @@ fname2 = r'G:\SOIL\GIS\SNS\eonr\trad_v3_final\eonr_trad3.csv'
 df_results_dif2 = pd.read_csv(fname2) # traditional
 
 fig1, ax1 = plt.subplots()
-ax1 = sns.scatterplot(x='eonr', y='mrtn', hue='time_n', size='grtn_r2_adj', data=df_results_imper_trad)
-
-# In[Add column to df showing EONR relative to cheapest economic scenartio]
+ax1 = sns.scatterplot(x='eonr', y='mrtn', hue='time_n', size='grtn_r2_adj', data=df_results_metric_trad)
+# In[Add column to df showing EONR relative to cheapest economic scenario]
 fname = r'G:\SOIL\GIS\SNS\eonr\2019-02-19\imperial\social_results.csv'
 df_results_imper_soc = pd.read_csv(fname)
 df_results_imper_soc = my_eonr.eonr_delta(df_results_imper_soc)
+
+# In[Plot the difference in T-stat and tau as a function of N Rate]
+from scipy.optimize import minimize
+from scipy import stats
+import warnings
+
+my_eonr.calculate_eonr(df_nue12g_pre)
+
+alpha = 0.2
+stat = 't'
+col_x = my_eonr.col_n_app
+col_y = 'grtn'
+df = my_eonr.df_data.copy()
+x = df[col_x].values
+y = df[col_y].values
+
+guess = (my_eonr.coefs_grtn['coef_a'].n,
+         my_eonr.eonr,
+         my_eonr.coefs_grtn['coef_c'].n)
+sse_full = my_eonr._calc_sse_full(x, y)
+cost_n_social = my_eonr.cost_n_social
+q = 1  # number of params being checked (held constant)
+n = len(x)
+p = len(guess)
+f_stat = stats.f.ppf(1-alpha, dfn=q, dfd=n-p)  # ppf is inv of cdf
+t_stat = stats.t.ppf(1-alpha/2, n-p)
+s2 = sse_full / (n - p)  # variance
+if my_eonr.cost_n_social > 0:
+    my_eonr.str_func = '_get_likelihood() -> _f_qp_theta2_social'
+else:
+    my_eonr.str_func = '_get_likelihood() -> _f_qp_theta2'
+info = ('func = {0}\ncol_x = {1}\ncol_y = {2}\n'
+        ''.format(my_eonr.str_func, col_x, col_y))
+
+def _f_like_opt(theta2):
+    '''
+    Function for scipy.optimize.newton() to optimize (find the minimum)
+    of the difference between tau and the test statistic. This function
+    returns <dif>, which will equal zero when the likelihood ratio is
+    exactly equal to the test statistic (e.g., t-test or f-test)
+    '''
+    if cost_n_social > 0:
+        popt, pcov = my_eonr._curve_fit_runtime(
+                lambda x, theta11, theta12: my_eonr._f_qp_theta2_social(
+                        x, theta11, theta2, theta12), x, y,
+                guess=(1, 1), maxfev=800, info=info)
+    else:
+        popt, pcov = my_eonr._curve_fit_runtime(
+                lambda x, theta11, theta12: my_eonr._f_qp_theta2(
+                        x, theta11, theta2, theta12), x, y,
+                guess=(1, 1), maxfev=800, info=info)
+    if popt is not None:
+        popt = np.insert(popt, 1, theta2)
+        if cost_n_social > 0:
+            res = y - my_eonr._f_qp_theta2_social(x, *popt)
+        else:
+            res = y - my_eonr._f_qp_theta2(x, *popt)
+        sse_res = np.sum(res**2)
+        tau_temp_f = ((sse_res - sse_full) / q) / s2
+        with warnings.catch_warnings():
+            warnings.simplefilter('error', RuntimeWarning)
+            try:
+                tau_temp_t = tau_temp_f**0.5
+            except RuntimeWarning as err:
+                tau_temp_t = 1e-6  # when zero, we get a Runtime/overflow error
+            warnings.simplefilter('ignore', RuntimeWarning)
+        if stat is 't':  # Be SURE tau is compared to correct stat!
+            tau_temp = tau_temp_t
+            crit_stat = t_stat
+        else:
+            tau_temp = tau_temp_f
+            crit_stat = f_stat
+        dif = abs(crit_stat - tau_temp)
+    elif popt is None:
+        dif = None
+    return dif
+
+popt, pcov = my_eonr._curve_fit_opt(my_eonr._f_qp_theta2, x, y, p0=guess, maxfev=800, info=info)
+wald_l, wald_u = my_eonr._compute_wald(n, p, alpha)
+pl_guess = (wald_u - my_eonr.eonr) + 3  # Adjust +/- initial guess based on Wald
+theta2_bias = my_eonr.coefs_nrtn['theta2_error']
+theta2_opt = my_eonr.eonr + theta2_bias  # check if this should add the 2
+pl_l = None
+pl_u = None
+
+#        result = minimize_scalar(_f_like_opt, bounds=[88, 90])
+
+# Lower CI: uses the Nelder-Mead algorithm
+result = minimize(_f_like_opt, [theta2_opt-pl_guess], method="Nelder-Mead")
+
+theta2_list = np.linspace(0.1, theta2_opt, 1000)
+results = []
+alpha = 0.1
+f_stat = stats.f.ppf(1-alpha, dfn=q, dfd=n-p)  # ppf is inv of cdf
+t_stat = stats.t.ppf(1-alpha/2, n-p)
+for theta2 in theta2_list:
+    results.append(_f_like_opt(theta2))
+fig, ax = plt.subplots()
+sns.scatterplot(theta2_list, results, s=10, edgecolor='none')
+ax.set_title('{0} {1} {2} - {3}'.format(my_eonr.year, my_eonr.location,
+             my_eonr.time_n, my_eonr.price_ratio), fontsize=14)
+ax.set_xlabel('Nitrogen Rate ({0})'.format(my_eonr.unit_nrate))
+ax.set_ylabel('Difference from T-statistic')
 
 # In[Plot functions]
 def _add_title(title_text, ax):
@@ -753,4 +864,3 @@ plot_N_uptake(df_repeat_2016W, timing='V5', loc_str='Waseca 2016',
 means_sep_W16_V10NUP = letters = ['A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A']
 plot_N_uptake(df_repeat_2016W, timing='V10', loc_str='Waseca 2016',
               y_col='V10_NUP_lbac', means_sep=means_sep_W16_V10NUP)
-

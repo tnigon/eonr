@@ -28,10 +28,9 @@ import pandas as pd
 import re
 from scikits import bootstrap
 from scipy import stats
-from scipy.optimize import minimize_scalar
 from scipy.optimize import curve_fit
-from scipy.optimize import newton
-from scipy.optimize import brentq
+from scipy.optimize import minimize
+from scipy.optimize import minimize_scalar
 from scipy.optimize import OptimizeWarning
 import seaborn as sns
 import uncertainties as unc
@@ -222,227 +221,58 @@ class EONR(object):
             a = 0
         return a*x**2 + b*x + c
 
-    def _f_quad_plateau(self, x, a, b, c):
+    def _f_quad_plateau(self, x, b0, b1, b2):
         '''
         Quadratic plateau function
 
-        Y =
-        beta0 + beta1*x +beta2*(x^2) + error
-            --> if x < <crit_x>
-        beta0 - (beta1^2)/(4*beta2) + error
-            --> if x >= <crit_x>
-        where crit_x = -beta1/(2*beta2)
+        Y =     b0 + b1*x +b2*(x^2) + error
+                                            --> if x < <crit_x>
+                b0 - (b1^2)/(4*b2) + error
+                                            --> if x >= <crit_x>
+        where crit_x = -b1/(2*b2)
         '''
-        crit_x = -b/(2*c)
+        crit_x = -b1/(2*b2)
         if isinstance(x, int) or isinstance(x, float):
             y = 0
-            y += (a + b*x + c*(x**2)) * (x < crit_x)
-            y += (a - (b**2) / (4*c)) * (x >= crit_x)
+            y += (b0 + b1*x + b2*(x**2)) * (x < crit_x)
+            y += (b0 - (b1**2) / (4*b2)) * (x >= crit_x)
             return y
         else:
             array_temp = np.zeros(len(x))
-            array_temp += (a + b*x + c*(x**2)) * (x < crit_x)
-            array_temp += (a - (b**2) / (4*c)) * (x >= crit_x)
+            array_temp += (b0 + b1*x + b2*(x**2)) * (x < crit_x)
+            array_temp += (b0 - (b1**2) / (4*b2)) * (x >= crit_x)
             return array_temp
 
-#def _f_qp(x, b0, b1, b2):
-#    crit_x = -b1/(2*b2)
-#    array_temp = np.zeros(len(x))
-#    array_temp += (b0 + b1*x + b2*(x**2)) * (x < crit_x)
-#    array_temp += (b0 - ((b1**2) / (4*b2)) ) * (x >= crit_x)
-#    return array_temp
-#
-#popt, pcov = my_eonr._curve_fit_opt(_f_qp, x, y_grtn_b0, p0=(0, 3, -0.008), maxfev=800)
-#b0, b1, b2 = popt
-#y11 = _f_qp(x, b0, b1, b2)
-#sns.scatterplot(x, y1)
-#
-#def _f_qp_T2(x, b0, theta2, b2):
-#    R = 0.4
-#    b1 = -(2*theta2*b2 - R)
-#    crit_x = -b1/(2*b2)
-#    array_temp = np.zeros(len(x))
-#    array_temp += (b0 + b1*x + b2*(x**2)) * (x < theta2)
-#    array_temp += (b0 - (b1**2) / (4*b2)) * (x >= theta2)
-#    return array_temp
-#
-#popt, pcov = my_eonr._curve_fit_opt(_f_qp_T2, x, y_grtn_b0, p0=(0, 100, -0.008), maxfev=800)
-#b0, b1, b2 = popt
-#y12 = _f_qp_T2(x, b0, b1, b2)
-#sns.scatterplot(x, y12)
-#
-#sns.scatterplot(x, y11-y12)
-#
-#
-#
-#def _f_qp_theta2_gross(x, b0, theta2, b2):
-#    '''QP model fitting GRTN but using theta2'''
-#    R = 0.4
-#    b1 = -(2*theta2*b2 - R)
-#    crit_x = (-b1/(2*(b2)))
-#    array_temp = np.zeros(len(x))
-##    array_temp += (b0 + (-2*theta2*b2)*x + b2*(x**2)) * (x < theta2)
-##    array_temp += (b0 - (theta2**2*b2)) * (x >= theta2)
-#    array_temp += (b0 + b1*x + b2*(x**2)) * (x < theta2)
-#    array_temp += (b0 - (theta2**2*b2) - R*x) * (x >= theta2)
-#    return array_temp
-#
-#popt, pcov = my_eonr._curve_fit_opt(my_eonr._f_qp_gross_theta2, x, y_grtn_b0, p0=guess, maxfev=800)
-#b0, b1, b2 = popt
-#y1 = _f_qp_theta2_gross(x, b0, b1, b2)
-#sns.scatterplot(x, y1)
-
-    def _f_qp_theta2(self, x, theta11, theta2, theta12):
+    def _f_qp_theta2(self, x, b0, theta2, b2):
         '''
         Quadratic plateau function using theta2 (EOR) as one of the parameters
 
-        theta2 = (R-beta1)/(2*theta12) = EOR
-            where R is the price ratio and theta12 = beta2
+        theta2 = (R-b1)/(2*b2) = EOR
+            where R is the price ratio and b2 = beta2
         rearrange to get:
 
-        beta1_hat = -(2*theta2*theta12-R)
+        b1_hat = -(2*theta2*b2-R)
 
-        beta1_hat can replace beta1 in the original quadratic plateau model to
+        b1_hat can replace b1 in the original quadratic plateau model to
         incorporate theta2 (EOR) as one of the parameters. This is desireable
         because we can use scipy.optimize.curve_fit() to compute the covariance
         matrix and estimate confidence intervals for theta2 directly.
         '''
         R = self.R
-        beta1 = -(2*theta2*theta12 - R)
-#        crit_x = (-beta1/(2*(theta12)))
-
+        # We coult calculate crit_x and we should get the best fit..
+#        b1 = -(2*theta2*b2 - R)
+#        crit_x = (-b1/(2*(b2)))
+        # But we will always know crit_x from fitting the gross return model
+        crit_x = self.coefs_grtn['crit_x']  # and we know it's accurate
         if isinstance(x, int) or isinstance(x, float):
             y = 0
-            y += (theta11 + beta1*x + theta12*(x**2)) * (x < theta2)
-            y += (theta11 - (beta1**2) / (4*theta12)) * (x >= theta2)
+            y += (b0 - ((2*theta2*b2) - R)*x + b2*(x**2)) * (x < crit_x)
+            y += (b0 - ((2*theta2*b2 - R)**2) / (4*b2)) * (x >= crit_x)
             return y
         else:
             array_temp = np.zeros(len(x))
-            array_temp += (theta11 + beta1*x + theta12*(x**2)) * (x < theta2)
-            array_temp += (theta11 - (beta1**2) / (4*theta12)) * (x >= theta2)
-            return array_temp
-
-#    R = 0.4
-#    b1 = -(2*theta2*b2 - R)
-#    crit_x = (-b1/(2*(b2)))
-#    array_temp = np.zeros(len(x))
-#    array_temp += (b0 + (-2*theta2*b2)*x + b2*(x**2)) * (x < crit_x)
-#    array_temp += (b0 - ((crit_x**2)*b2) - (R*x)) * (x >= crit_x)
-#    sns.scatterplot(x, array_temp)
-#
-#df = my_eonr.df_data.copy()
-#x = df[my_eonr.col_n_app].values
-#y_grtn_b0 = df['grtn'].values
-#
-#popt, pcov = my_eonr._curve_fit_opt(_f_qp_theta2, x, y_grtn_b0, p0=guess, maxfev=800)
-#
-#theta11, theta2, theta12 = popt
-#y1 = _f_qp_theta2(x, theta11, theta2, theta12)
-#sns.scatterplot(x, y1)
-#
-#df = my_eonr.df_data.copy()
-#x = df[my_eonr.col_n_app].values
-#y = df['grtn'].values
-#guess = (my_eonr.coefs_grtn['coef_a'].n,
-#         my_eonr.eonr,
-#         my_eonr.coefs_grtn['coef_c'].n)
-#popt, pcov = my_eonr._curve_fit_opt(my_eonr._f_qp_theta2, x, y, p0=guess, maxfev=800)
-    def _f_qp_gross_theta2(self, x, theta11, theta2, theta12):
-        '''
-        Quadratic plateau function using theta2 (EOR) as one of the parameters
-        and not considering any additonal economic constants (e.g.,
-        grain:fertilizer price ratio).
-
-        Note:
-            theta2 = -theta11/(2*theta12)
-        can be rearranged to get theta2 as one of the parameters of the model:
-            -(2*theta2*theta12)*x
-        and
-            -theta11**2 / (4*theta12)
-        becomes
-            -(theta2**2*theta12))
-
-        _f_qp_cook_theta2
-        '''
-        R = self.R
-#        beta1 = -(2*theta2*theta12 - R)
-        if isinstance(x, int) or isinstance(x, float):
-            y = 0
-            y += (theta11 + (2*theta12*theta2)*x + theta12*(x**2)) * (x < theta2)
-            y += (theta11 - (theta2**2*theta12)) * (x >= theta2)
-            return y
-        else:
-            array_temp = np.zeros(len(x))
-            array_temp += (theta11 - (2*theta12*theta2)*x + theta12*(x**2)) * (x < theta2)
-            array_temp += (theta11 - (theta2**2*theta12)) * (x >= theta2)
-            return array_temp
-
-#popt, pcov = my_eonr._curve_fit_opt(_f_qp_net_theta2, x, y, p0=guess, maxfev=800)
-#
-#sns.scatterplot(x, array_temp)
-#
-#df = my_eonr.df_data.copy()
-#x = df[my_eonr.col_n_app].values
-#y = df['grtn'].values
-#yy = df_data['yld_grain_dry_buac'].values * my_eonr.price_grain
-#guess = (my_eonr.coefs_grtn['coef_a'].n,
-#         my_eonr.eonr,
-#         my_eonr.coefs_grtn['coef_c'].n)
-#popt, pcov = my_eonr._curve_fit_opt(my_eonr._f_qp_theta2, x, y, p0=guess, maxfev=800)
-#
-#sns.scatterplot(x, array_temp)
-#popt1, pcov2 = my_eonr._curve_fit_opt(my_eonr._f_qp_gross_theta2, x, y, p0=guess, maxfev=1000, info=info)
-#theta11, theta2, theta12 = popt1
-#y1 = my_eonr._f_qp_gross_theta2(x, theta11, theta2, theta12)
-#sns.scatterplot(x, y1)
-#
-#popt3, pcov = my_eonr._curve_fit_opt(my_eonr._f_qp_theta2, x, y, p0=guess, maxfev=1000, info=info)
-#theta11, theta2, theta12 = popt3
-#
-#popt2, pcov = self._curve_fit_opt(_f_qp_net_theta2, x, y, p0=guess, maxfev=1000, info=info)
-#theta11, theta2, theta12 = popt2
-
-    def _f_qp_net(self, x, b0, theta2, b2):
-        '''
-        Quadratic plateau function to compute Net response to N
-
-        This works for generating a curve for x values given all parameters, but
-        will not work for curve-fitting unless the <R> component is subtracted from
-        all gross return ('grtn') data for its respective x/N rate
-
-        Use:
-            b0 = my_eonr.coefs_grtn['coef_a'].n
-            theta2 = my_eonr.eonr
-            b2 = my_eonr.coefs_grtn['coef_c'].n
-            y1 = _f_qp_net(x, b0, theta2, b2)
-            sns.scatterplot(x, y1)
-        '''
-        R = self.R
-        b1 = -(2*theta2*b2 - R)
-        crit_x = (-b1/(2*(b2)))
-        array_temp = np.zeros(len(x))
-        array_temp += (b0 + -(2*theta2*b2)*x + b2*(x**2)) * (x < crit_x)
-        array_temp += (b0 - ((crit_x**2)*b2) - (R*x)) * (x >= crit_x)
-        return array_temp
-
-    def _f_qp_theta2_social(self, x, theta11, theta2, theta12):
-        '''
-        Same as _f_qp_theta2(), except sets R because best fit was
-        already computed assuming R to be equal to self.R
-        '''
-        R = self.R
-        crit_x = self.coefs_grtn['crit_x']
-        beta1 = -(2*theta2*theta12 - R)
-
-        if isinstance(x, int) or isinstance(x, float):
-            y = 0
-            y += (theta11 + beta1*x + theta12*(x**2)) * (x < crit_x)
-            y += (theta11 - (beta1**2) / (4*theta12)) * (x >= crit_x)
-            return y
-        else:
-            array_temp = np.zeros(len(x))
-            array_temp += (theta11 + beta1*x + theta12*(x**2)) * (x < crit_x)
-            array_temp += (theta11 - (beta1**2) / (4*theta12)) * (x >= crit_x)
+            array_temp += (b0 - ((2*theta2*b2) - R)*x + b2*(x**2)) * (x < crit_x)
+            array_temp += (b0 - ((2*theta2*b2 - R)**2) / (4*b2)) * (x >= crit_x)
             return array_temp
 
     def _f_combine_rtn_cost(self, x):
@@ -461,10 +291,10 @@ class EONR(object):
         Returns x, the result of combining the two
         '''
         # Additions
-        qp_a = self.coefs_grtn['coef_a'].n
-        qp_b = self.coefs_grtn['coef_b'].n
-        qp_c = self.coefs_grtn['coef_c'].n
-        gross_rtn = self._f_quad_plateau(x, a=qp_a, b=qp_b, c=qp_c)
+        b0 = self.coefs_grtn['b0'].n
+        b1 = self.coefs_grtn['b1'].n
+        b2 = self.coefs_grtn['b2'].n
+        gross_rtn = self._f_quad_plateau(x, b0=b0, b1=b1, b2=b2)
         # Subtractions
         fert_cost = x * self.cost_n_fert
 
@@ -475,6 +305,57 @@ class EONR(object):
 
         result = gross_rtn - fert_cost - social_cost
         return -result
+
+    def _f_qp_gross_theta2(self, x, b0, theta2, b2):
+        '''
+        Quadratic plateau function using theta2 (EOR) as one of the parameters
+        and not considering any additonal economic constants (e.g.,
+        grain:fertilizer price ratio).
+
+        Note:
+            theta2 = -b1/(2*b2)
+        can be rearranged to get theta2 as one of the parameters of the model:
+            b1 = -(2*theta2*b2)*x
+        and
+            -b1**2 / (4*b2)
+        becomes
+            -(theta2**2*b2))
+        '''
+#        R = self.R
+#        b1 = -(2*theta2*b2 - R)
+        if isinstance(x, int) or isinstance(x, float):
+            y = 0
+            y += (b0 + (2*b2*theta2)*x + b2*(x**2)) * (x < theta2)
+            y += (b0 - (theta2**2*b2)) * (x >= theta2)
+            return y
+        else:
+            array_temp = np.zeros(len(x))
+            array_temp += (b0 - (2*b2*theta2)*x + b2*(x**2)) * (x < theta2)
+            array_temp += (b0 - (theta2**2*b2)) * (x >= theta2)
+            return array_temp
+
+    def _f_qp_net(self, x, b0, theta2, b2):
+        '''
+        Quadratic plateau function to compute Net response to N
+
+        This works for generating a curve for x values given all parameters, but
+        will not work for curve-fitting unless the <R> component is subtracted from
+        all gross return ('grtn') data for its respective x/N rate
+
+        Use:
+            b0 = my_eonr.coefs_grtn['b0'].n
+            theta2 = my_eonr.eonr
+            b2 = my_eonr.coefs_grtn['b2'].n
+            y1 = _f_qp_net(x, b0, theta2, b2)
+            sns.scatterplot(x, y1)
+        '''
+        R = self.R
+        b1 = -(2*theta2*b2 - R)
+        crit_x = (-b1/(2*(b2)))
+        array_temp = np.zeros(len(x))
+        array_temp += (b0 + -(2*theta2*b2)*x + b2*(x**2)) * (x < crit_x)
+        array_temp += (b0 - ((crit_x**2)*b2) - (R*x)) * (x >= crit_x)
+        return array_temp
 
     #  Following are curve_fit helpers and statistical calculations
     def _best_fit_lin(self, col_x, col_y):
@@ -594,7 +475,7 @@ class EONR(object):
                 popt, pcov = curve_fit(f, xdata, ydata, p0=p0,
                                        maxfev=maxfev)
                 return popt, pcov
-            except OptimizeWarning as err:
+            except OptimizeWarning:
                 pass
             warnings.simplefilter('ignore', OptimizeWarning)  # hides warning
             popt, pcov = curve_fit(f, xdata, ydata, p0=p0, maxfev=maxfev)
@@ -620,7 +501,7 @@ class EONR(object):
                     popt, pcov = curve_fit(f, xdata, ydata, p0=p0,
                                            maxfev=maxfev)
 #                    return popt, pcov
-                except OptimizeWarning as err:
+                except OptimizeWarning:
                     if self.print_out is True:
                         print('Information for which the OptimizeWarning was '
                               'thrown:\n{0}'.format(info))
@@ -671,15 +552,15 @@ class EONR(object):
 
         self.R = 0
         if self.cost_n_social > 0 and self.eonr is not None:
-            theta12 = self.coefs_grtn['coef_c'].n
-            b = self.coefs_grtn['coef_b'].n
-            self.R = b + (2 * theta12 * self.eonr)  # as a starting point
+            b2 = self.coefs_grtn['b2'].n
+            b = self.coefs_grtn['b1'].n
+            self.R = b + (2 * b2 * self.eonr)  # as a starting point
 
-            guess = (self.coefs_grtn['coef_a'].n,
+            guess = (self.coefs_grtn['b0'].n,
                      self.coefs_grtn['crit_x'],
-                     self.coefs_grtn['coef_c'].n)
+                     self.coefs_grtn['b2'].n)
 
-            popt, pcov = self._curve_fit_runtime(self._f_qp_theta2_social, x,
+            popt, pcov = self._curve_fit_runtime(self._f_qp_theta2, x,
                                                  y, guess, maxfev=800)
             dif = abs(popt[1] - self.eonr)
             count = 0
@@ -702,31 +583,31 @@ class EONR(object):
                     self.R -= step_size
                     step_size *= 0.1  # change step_size
                     self.R += step_size
-                popt, pcov = self._curve_fit_runtime(self._f_qp_theta2_social,
+                popt, pcov = self._curve_fit_runtime(self._f_qp_theta2,
                                                      x, y, guess, maxfev=800)
                 dif = abs(popt[1] - self.eonr)
             res = y - self._f_qp_theta2(x, *popt)
             ss_res = np.sum(res**2)
             if (popt is None or np.any(popt == np.inf) or
                     np.any(pcov == np.inf)):
-                theta11 = unc.ufloat(popt[0], 0)
+                b0 = unc.ufloat(popt[0], 0)
                 theta2 = unc.ufloat(popt[1], 0)
-                theta12 = unc.ufloat(popt[2], 0)
+                b2 = unc.ufloat(popt[2], 0)
             else:
-                theta11, theta2, theta12 = unc.correlated_values(popt, pcov)
+                b0, theta2, b2 = unc.correlated_values(popt, pcov)
             info = ('func = {0}\ncol_x = {1}\ncol_y = {2}\n'
                     ''.format('_compute_R() -> _f_quad_plateau', col_x,
                               col_y + ' (residuals)'))
-            popt, pcov = self._curve_fit_opt(lambda x, b: self._f_quad_plateau(
-                    x, theta11.n, b, theta12.n), x, y, info=info)
-            popt = np.insert(popt, 0, theta12.n)
-            popt = np.insert(popt, 2, theta11.n)
+            popt, pcov = self._curve_fit_opt(lambda x, b1: self._f_quad_plateau(
+                    x, b0.n, b1, b2.n), x, y, info=info)
+            popt = np.insert(popt, 0, b2.n)
+            popt = np.insert(popt, 2, b0.n)
             f = np.poly1d(popt)
             result = minimize_scalar(-f)
 
-            self.coefs_nrtn['theta11'] = theta11
+            self.coefs_nrtn['b0'] = b0
             self.coefs_nrtn['theta2'] = theta2
-            self.coefs_nrtn['theta12'] = theta12
+            self.coefs_nrtn['b2'] = b2
             self.coefs_nrtn['theta2_social'] = result['x']
             self.coefs_nrtn['popt_social'] = [popt[2],
 #                                              minimize_scalar(-f)['x'],
@@ -847,11 +728,11 @@ class EONR(object):
         else:
             raise NotImplementedError('{0} model not implemented'
                                       ''.format(model))
-        self.results_temp['grtn_y_int'] = self.coefs_grtn['coef_a'].n
+        self.results_temp['grtn_y_int'] = self.coefs_grtn['b0'].n
 
         if self.base_zero is True:
             self.df_data['grtn'] = (self.df_data['grtn'] -
-                                    self.coefs_grtn['coef_a'].n)
+                                    self.coefs_grtn['b0'].n)
             if model == 'quad_plateau':
                 self._quad_plateau(col_x=self.col_n_app, col_y='grtn',
                                    rerun=True)
@@ -880,9 +761,9 @@ class EONR(object):
         x = df_data[col_x].values
         y = df_data[col_y].values
 
-        guess = (self.coefs_grtn['coef_a'].n,
+        guess = (self.coefs_grtn['b0'].n,
                  self.coefs_grtn['crit_x'],
-                 self.coefs_grtn['coef_c'].n)
+                 self.coefs_grtn['b2'].n)
         info = ('func = {0}\ncol_x = {1}\ncol_y = {2}\n'
                 ''.format('_calc_nrtn() -> _f_qp_theta2',
                           col_x, col_y))
@@ -894,16 +775,16 @@ class EONR(object):
         ss_res = np.sum(res**2)
 
         if popt is None or np.any(popt == np.inf) or np.any(pcov == np.inf):
-            theta11 = unc.ufloat(popt[0], 0)
+            b0 = unc.ufloat(popt[0], 0)
             theta2 = unc.ufloat(popt[1], 0)
-            theta12 = unc.ufloat(popt[2], 0)
+            b2 = unc.ufloat(popt[2], 0)
         else:
-            theta11, theta2, theta12 = unc.correlated_values(popt, pcov)
+            b0, theta2, b2 = unc.correlated_values(popt, pcov)
 
         self.coefs_nrtn = {
-                'theta11': theta11,
+                'b0': b0,
                 'theta2': theta2,
-                'theta12': theta12,
+                'b2': b2,
                 'popt': popt,
                 'pcov': pcov,
                 'ss_res': ss_res
@@ -935,9 +816,9 @@ class EONR(object):
         print('\nN Rate vs. Gross Return to N ({0} at ${1:.2f} per {2})'
               ''.format(self.unit_rtn, self.price_grain, self.unit_grain))
         print('y = {0:.5} + {1:.5}x + {2:.5}x^2'.format(
-                self.coefs_grtn['coef_a'].n,
-                self.coefs_grtn['coef_b'].n,
-                self.coefs_grtn['coef_c'].n))
+                self.coefs_grtn['b0'].n,
+                self.coefs_grtn['b1'].n,
+                self.coefs_grtn['b2'].n))
         print('Critical N Rate: {0:.4}'.format(self.coefs_grtn['crit_x']))
         print('Maximum Y (approximate): {0:.4}'.format(
                 self.coefs_grtn['max_y']))
@@ -959,7 +840,6 @@ class EONR(object):
                 boot_u = self.df_ci_temp['boot_u'].item()
         except TypeError as err:
             print(err)
-
         print('{0} optimum N rate ({1}): {2:.1f} {3} [{4:.1f}, '
               '{5:.1f}] ({6:.1f}% confidence)'
               ''.format(self.onr_name, self.onr_acr, self.eonr, self.unit_nrate, pl_l,
@@ -993,23 +873,23 @@ class EONR(object):
         popt, pcov = self._curve_fit_opt(self._f_quad_plateau, x, y,
                                          p0=guess, info=info)
         if popt is None or np.any(popt == np.inf) or np.any(pcov == np.inf):
-            beta0 = unc.ufloat(popt[0], 0)
-            beta1 = unc.ufloat(popt[1], 0)
-            beta2 = unc.ufloat(popt[2], 0)
+            b0 = unc.ufloat(popt[0], 0)
+            b1 = unc.ufloat(popt[1], 0)
+            b2 = unc.ufloat(popt[2], 0)
         else:
-            beta0, beta1, beta2 = unc.correlated_values(popt, pcov)
+            b0, b1, b2 = unc.correlated_values(popt, pcov)
 
-        crit_x = -beta1.n/(2*beta2.n)
-        max_y = self._f_quad_plateau(crit_x, beta0.n, beta1.n, beta2.n)
+        crit_x = -b1.n/(2*b2.n)
+        max_y = self._f_quad_plateau(crit_x, b0.n, b1.n, b2.n)
         r2, r2_adj, ss_res, ss_tot, rmse = self._get_rsq(
                 self._f_quad_plateau, x, y, popt)
         aic = self._calc_aic(x, y, dist='gamma')
 
         if rerun is False:
             self.coefs_grtn = {
-                    'coef_a': beta0,
-                    'coef_b': beta1,
-                    'coef_c': beta2,
+                    'b0': b0,
+                    'b1': b1,
+                    'b2': b2,
                     'pcov': pcov,
                     'pval_a': None,
                     'pval_b': None,
@@ -1025,9 +905,9 @@ class EONR(object):
                     'rmse': rmse
                     }
             self.coefs_nrtn = {
-                    'theta11': beta0,
+                    'b0': b0,
                     'theta2': None,
-                    'theta12': beta2,
+                    'b2': b2,
                     'popt': None,
                     'pcov': None,
                     'ss_res': None,
@@ -1040,9 +920,9 @@ class EONR(object):
             self.coefs_grtn_primary = self.coefs_grtn.copy()
             self.coefs_grtn = {}
             self.coefs_grtn = {
-                    'coef_a': beta0,
-                    'coef_b': beta1,
-                    'coef_c': beta2,
+                    'b0': b0,
+                    'b1': b1,
+                    'b2': b2,
                     'pcov': pcov,
                     'pval_a': None,
                     'pval_b': None,
@@ -1082,24 +962,24 @@ class EONR(object):
         '''
         Generates an array for GRTN curve
         '''
-        y_max = (self.coefs_grtn['coef_a'].n +
-                 (self.coefs_grtn['crit_x'] * self.coefs_grtn['coef_b'].n) +
+        y_max = (self.coefs_grtn['b0'].n +
+                 (self.coefs_grtn['crit_x'] * self.coefs_grtn['b1'].n) +
                  (self.coefs_grtn['crit_x'] * self.coefs_grtn['crit_x'] *
-                  self.coefs_grtn['coef_c'].n))
+                  self.coefs_grtn['b2'].n))
         # Find index where all x = max
-        y_temp = (self.coefs_grtn['coef_a'].n +
-                  (x1*self.coefs_grtn['coef_b'].n) +
-                  (x1*x1*self.coefs_grtn['coef_c'].n))
+        y_temp = (self.coefs_grtn['b0'].n +
+                  (x1*self.coefs_grtn['b1'].n) +
+                  (x1*x1*self.coefs_grtn['b2'].n))
         y_max_idx = np.argmax(y_temp)
-        y2a = (self.coefs_grtn['coef_a'].n +
-               (x1a[:y_max_idx]*self.coefs_grtn['coef_b'].n) +
-               (x1a[:y_max_idx]*x1a[:y_max_idx]*self.coefs_grtn['coef_c'].n))
+        y2a = (self.coefs_grtn['b0'].n +
+               (x1a[:y_max_idx]*self.coefs_grtn['b1'].n) +
+               (x1a[:y_max_idx]*x1a[:y_max_idx]*self.coefs_grtn['b2'].n))
         if self.eonr <= self.df_data[self.col_n_app].max():
             y2b = np.linspace(y_max, y_max, num=n_steps-y_max_idx)
         else:  # EONR is past the point of available data, plot last val again
-            last_pt = (self.coefs_grtn['coef_a'].n +
-                       (x1a[-1]*self.coefs_grtn['coef_b'].n) +
-                       (x1a[-1]*x1a[-1]*self.coefs_grtn['coef_c'].n))
+            last_pt = (self.coefs_grtn['b0'].n +
+                       (x1a[-1]*self.coefs_grtn['b1'].n) +
+                       (x1a[-1]*x1a[-1]*self.coefs_grtn['b2'].n))
             y2b = np.linspace(last_pt, last_pt, num=n_steps-y_max_idx)
         y_grtn = np.concatenate((y2a, y2b))
 
@@ -1118,12 +998,12 @@ class EONR(object):
         '''
         Uses scipy.optimize to find the maximum value of the return curve
         '''
-        f_eonr1 = np.poly1d([self.coefs_nrtn['theta12'].n,
+        f_eonr1 = np.poly1d([self.coefs_nrtn['b2'].n,
                             self.coefs_nrtn['theta2'].n,
-                            self.coefs_nrtn['theta11'].n])
-        f_eonr2 = np.poly1d([self.coefs_grtn['coef_c'].n,
-                            self.coefs_grtn['coef_b'].n,
-                            self.coefs_grtn['coef_a'].n])
+                            self.coefs_nrtn['b0'].n])
+        f_eonr2 = np.poly1d([self.coefs_grtn['b2'].n,
+                            self.coefs_grtn['b1'].n,
+                            self.coefs_grtn['b0'].n])
         if self.cost_n_social > 0:
             if self.coefs_social['lin_r2'] > self.coefs_social['exp_r2']:
                 # subtract only cost of fertilizer
@@ -1140,7 +1020,7 @@ class EONR(object):
                                          bounds=[-100, x_max+100],
                                          method='bounded')
         else:
-            first_order = self.coefs_grtn['coef_b'].n - self.cost_n_fert
+            first_order = self.coefs_grtn['b1'].n - self.cost_n_fert
             f_eonr2 = self._modify_poly1d(f_eonr2, 1, first_order)
             result = minimize_scalar(-f_eonr2)
         # theta2 is EOR (minimum) only if total cost of N increases linearly
@@ -1155,15 +1035,11 @@ class EONR(object):
         df = self.df_data.copy()
         x = df[self.col_n_app].values
         y = df['grtn'].values
-        guess = (self.coefs_grtn['coef_a'].n,
+        guess = (self.coefs_grtn['b0'].n,
                  self.eonr,
-                 self.coefs_grtn['coef_c'].n)
-        if self.cost_n_social > 0:
-            popt, pcov = self._curve_fit_opt(self._f_qp_theta2_social, x, y,
-                                             p0=guess, maxfev=800)
-        else:
-            popt, pcov = self._curve_fit_opt(self._f_qp_theta2, x, y, p0=guess,
-                                             maxfev=800)
+                 self.coefs_grtn['b2'].n)
+        popt, pcov = self._curve_fit_opt(self._f_qp_theta2, x, y, p0=guess,
+                                         maxfev=800)
         self.coefs_nrtn['theta2_error'] = popt[1] - self.eonr
 
 #df = my_eonr.df_data.copy()
@@ -1191,18 +1067,14 @@ class EONR(object):
         '''
         '''
         maxfev = 1000
-        a = self.coefs_grtn['coef_a'].n
-        c = self.coefs_grtn['coef_c'].n
-        guess = (a, self.eonr, c)
+        b0 = self.coefs_grtn['b0'].n
+        b2 = self.coefs_grtn['b2'].n
+        guess = (b0, self.eonr, b2)
 #        y = self._f_quad_plateau(x, a, b, c) + res
 #        try_n = 0
         popt = [None, None, None]
-        if self.cost_n_social > 0:
-            func = self._f_qp_theta2_social
-        else:
-            func = self._f_qp_theta2
         try:
-            popt, _ = self._curve_fit_bs(func, x, y,
+            popt, _ = self._curve_fit_bs(self._f_qp_theta2, x, y,
                                          p0=guess, maxfev=maxfev)
         except RuntimeError as err:
             print(err)
@@ -1211,7 +1083,7 @@ class EONR(object):
                   '{0} before giving up.\n'.format(maxfev))
         if popt[1] is None:
             try:
-                popt, _ = self._curve_fit_bs(func, x,
+                popt, _ = self._curve_fit_bs(self._f_qp_theta2, x,
                                              y, p0=guess, maxfev=maxfev)
             except RuntimeError as err:
                 print(err)
@@ -1245,25 +1117,18 @@ class EONR(object):
         Calculates the sum of squares across the full set of parameters,
         solving for theta2
         '''
-        guess = (self.coefs_grtn['coef_a'].n,
-                 self.coefs_grtn['crit_x'],
-                 self.coefs_grtn['coef_c'].n)
+        guess = (self.coefs_grtn['b0'].n,
+                 self.eonr,
+                 self.coefs_grtn['b2'].n)
         col_x = None  # Perhaps we should keep in col_x/ytil curve_fit runs..?
         col_y = None
         info = ('func = {0}\ncol_x = {1}\ncol_y = {2}\n'
-                ''.format('_calc_sse_full() -> _f_qp_theta2_social',
+                ''.format('_calc_sse_full() -> _f_qp_theta2',
                           col_x, col_y))
-        if self.cost_n_social > 0:
-            popt, pcov = self._curve_fit_opt(self._f_qp_theta2_social, x, y,
-                                             p0=guess, info=info)
-            res = y - self._f_qp_theta2_social(x, *popt)
-            sse_full_theta2 = np.sum(res**2)
-            self.coefs_nrtn['ss_res_social'] = sse_full_theta2
-        else:
-            popt, pcov = self._curve_fit_opt(self._f_qp_theta2, x, y,
-                                             p0=guess, info=info)
-            res = y - self._f_qp_theta2(x, *popt)
-            sse_full_theta2 = np.sum(res**2)
+        popt, pcov = self._curve_fit_opt(self._f_qp_theta2, x, y, p0=guess,
+                                         info=info)
+        res = y - self._f_qp_theta2(x, *popt)
+        sse_full_theta2 = np.sum(res**2)
         return sse_full_theta2
 
     def _check_progress_pl(self, step_size, tau_temp, tau, f_stat,
@@ -1313,32 +1178,15 @@ class EONR(object):
         '''
         boot_ci = [np.nan, np.nan]
         x = self.df_data[self.col_n_app].values
-#        res = self.df_data['grtn_res'].values
-#        boot_ci = bootstrap.ci((x, res), statfunction=self._bs_statfunction,
-#                               alpha=alpha, n_samples=n_samples, method='bca')
         y = self.df_data['grtn'].values
-        a = self.coefs_grtn['coef_a'].n
-        c = self.coefs_grtn['coef_c'].n
-        guess = (a, self.eonr, c)
-        col_x = self.col_n_app
-        col_y = 'grtn'
-        info = ('func = {0}\ncol_x = {1}\ncol_y = {2}\n'
-                ''.format('_compute_bootstrap() -> _f_qp_theta2',
-                          col_x, col_y))
-#        try:
-#            popt, _ = self._curve_fit_opt(self._f_qp_theta2, x, y,
-#                                          p0=guess, maxfev=1000, info=info)
-#        except TypeError as err:
-#            print(err)
-#            print('Was not able to fit data to bootstrapped data. Quitting '
-#                  'without calculating bootstrap confidence intervals.')
         try:
             boot_ci = bootstrap.ci((x, y), statfunction=self._bs_statfunction,
-                                   alpha=alpha, n_samples=9999, method='bca')
+                                   alpha=alpha, n_samples=n_samples,
+                                   method='bca')
         except TypeError:
-            pass
-            print('Unable to compute bootstrap confidence intervals at alpha '
-                  '= {0}'.format(alpha))
+            if not isinstance(alpha, list):
+                print('Unable to compute bootstrap confidence intervals at '
+                      'alpha = {0}'.format(alpha))
         return boot_ci
 
     def _compute_cis(self, col_x, col_y, bootstrap_ci=True):
@@ -1490,10 +1338,7 @@ class EONR(object):
             self.step_size_start = step_size
             self.tau_delta_flag = False
             self.stop_flag = False
-            if self.cost_n_social > 0:
-                str_func = '_get_likelihood() -> _f_qp_theta2_social'
-            else:
-                str_func = '_get_likelihood() -> _f_qp_theta2'
+            str_func = '_get_likelihood() -> _f_qp_theta2'
             self.info = ('func = {0}\ncol_x = {1}\ncol_y = {2}\n'
                          ''.format(str_func, col_x, col_y))
 
@@ -1515,9 +1360,9 @@ class EONR(object):
         as well (they will give the same result).
         '''
         # First, get variables stored in the EONR class
-        guess = (self.coefs_grtn['coef_a'].n,
+        guess = (self.coefs_grtn['b0'].n,
                  self.coefs_grtn['crit_x'],
-                 self.coefs_grtn['coef_c'].n)
+                 self.coefs_grtn['b2'].n)
         if sse_full is None:
             sse_full = self._calc_sse_full(x, y)
         if df is None:
@@ -1531,7 +1376,7 @@ class EONR(object):
                 tau_start=tau_start, step_size=step_size, epsilon=epsilon,
                 guess=guess, sse_full=sse_full, col_x=col_x,
                 col_y=col_y, cost_n_social=cost_n_social)
-        if stat is 't':
+        if stat == 't':
             crit_stat = li.t_stat
         else:
             crit_stat = li.f_stat
@@ -1542,35 +1387,26 @@ class EONR(object):
         # variable from EONR; if passed directly to _get_pl_steps(), use the
         # variable directly
         while li.tau < crit_stat:
-            if cost_n_social > 0:
-                popt, pcov = self._curve_fit_runtime(
-                        lambda x, theta11, theta12: self._f_qp_theta2_social(
-                                x, theta11, li.theta2, theta12), x, y,
-                        guess=(1, 1), maxfev=800, info=li.info)
-            else:
-                popt, pcov = self._curve_fit_runtime(
-                        lambda x, theta11, theta12: self._f_qp_theta2(
-                                x, theta11, li.theta2, theta12), x, y,
-                        guess=(1, 1), maxfev=800, info=li.info)
+            popt, pcov = self._curve_fit_runtime(
+                    lambda x, b0, b2: self._f_qp_theta2(
+                            x, b0, li.theta2, b2), x, y,
+                    guess=(1, 1), maxfev=800, info=li.info)
             if popt is not None:
                 popt = np.insert(popt, 1, li.theta2)
-                if cost_n_social > 0:
-                    res = y - self._f_qp_theta2_social(x, *popt)
-                else:
-                    res = y - self._f_qp_theta2(x, *popt)
+                res = y - self._f_qp_theta2(x, *popt)
                 sse_res = np.sum(res**2)
                 tau_temp_f = ((sse_res - sse_full) / li.q) / li.s2
                 with warnings.catch_warnings():
                     warnings.simplefilter('error', RuntimeWarning)
                     try:
                         tau_temp_t = tau_temp_f**0.5
-                    except RuntimeWarning as err:
+                    except RuntimeWarning:
                         tau_temp_t = 1e-6  # when zero, we get a Runtime/overflow error
                     warnings.simplefilter('ignore', RuntimeWarning)
 
 #                    print(err)
 #                tau_temp_t = tau_temp_f**0.5
-                if stat is 't':  # Be SURE tau is compared to correct stat!
+                if stat == 't':  # Be SURE tau is compared to correct stat!
                     tau_temp = tau_temp_t
                 else:
                     tau_temp = tau_temp_f
@@ -1639,7 +1475,7 @@ class EONR(object):
             df = df[:-1]
             # At this point, we could get stuck in a loop if we never make any
             # headway on closing in on epsilon
-            if stat is 't':
+            if stat == 't':
                 tau_start = df['t_stat'].iloc[-1]
             else:
                 tau_start = df['f_stat'].iloc[-1]
@@ -1657,7 +1493,52 @@ class EONR(object):
         tau_out = df['t_stat'].iloc[-1]
         return theta2_out, tau_out, df
 
-    def _get_likelihood(self, alpha, col_x, col_y, stat='t'):
+    def _run_minimize_pl(self, f, theta2_opt, pl_guess, method='Nelder-Mead',
+                         side='lower', pl_guess_init=None):
+        '''
+        Runs the minimize function making sure the result is suitable/as
+        expected for the profile likelihood
+        '''
+        if pl_guess_init is None:
+            pl_guess_init = pl_guess
+        if side == 'lower':
+            initial_guess = theta2_opt - pl_guess
+        elif side == 'upper':
+            initial_guess = theta2_opt + pl_guess
+        result = minimize(f, initial_guess, method=method)
+#            print(result)
+        if pl_guess > 800:
+            pl_out = None
+        elif result.success is not True:
+                return self._run_minimize_pl(f, theta2_opt,
+                                             pl_guess*1.05,
+                                             method=method,
+                                             side=side,
+                                             pl_guess_init=pl_guess_init)
+        elif result.success is True and side == 'lower':
+            if result.x[0] > theta2_opt:
+                return self._run_minimize_pl(f, theta2_opt,
+                                             pl_guess*1.05,
+                                             method=method,
+                                             side=side,
+                                             pl_guess_init=pl_guess_init)
+            else:
+                pl_out = result.x[0]
+        elif result.success is True and side == 'upper':
+            if result.x[0] < theta2_opt:
+                return self._run_minimize_pl(f, theta2_opt,
+                                             pl_guess*1.05,
+                                             method=method,
+                                             side=side,
+                                             pl_guess_init=pl_guess_init)
+            else:
+                pl_out = result.x[0]
+        else:  # finally, return result
+            pl_out = result.x[0]
+        return pl_out
+
+    def _get_likelihood(self, alpha, col_x, col_y, stat='t',
+                        last_ci=[None,None]):
         '''
         Computes the profile liklihood confidence values using the sum of
         squares (see Gallant (1987), p. 107)
@@ -1672,21 +1553,17 @@ class EONR(object):
         df = self.df_data.copy()
         x = df[col_x].values
         y = df[col_y].values
-        guess = (self.coefs_grtn['coef_a'].n,
+        guess = (self.coefs_grtn['b0'].n,
                  self.eonr,
-                 self.coefs_grtn['coef_c'].n)
+                 self.coefs_grtn['b2'].n)
         sse_full = self._calc_sse_full(x, y)
-        cost_n_social = self.cost_n_social
         q = 1  # number of params being checked (held constant)
         n = len(x)
         p = len(guess)
         f_stat = stats.f.ppf(1-alpha, dfn=q, dfd=n-p)  # ppf is inv of cdf
         t_stat = stats.t.ppf(1-alpha/2, n-p)
         s2 = sse_full / (n - p)  # variance
-        if self.cost_n_social > 0:
-            self.str_func = '_get_likelihood() -> _f_qp_theta2_social'
-        else:
-            self.str_func = '_get_likelihood() -> _f_qp_theta2'
+        self.str_func = '_get_likelihood() -> _f_qp_theta2'
         info = ('func = {0}\ncol_x = {1}\ncol_y = {2}\n'
                 ''.format(self.str_func, col_x, col_y))
         # Second, minimize the difference between tau and the test statistic
@@ -1703,16 +1580,10 @@ class EONR(object):
             returns <dif>, which will equal zero when the likelihood ratio is
             exactly equal to the test statistic (e.g., t-test or f-test)
             '''
-            if cost_n_social > 0:
-                popt, pcov = self._curve_fit_runtime(
-                        lambda x, theta11, theta12: self._f_qp_theta2_social(
-                                x, theta11, theta2, theta12), x, y,
-                        guess=(1, 1), maxfev=800, info=info)
-            else:
-                popt, pcov = self._curve_fit_runtime(
-                        lambda x, theta11, theta12: self._f_qp_theta2(
-                                x, theta11, theta2, theta12), x, y,
-                        guess=(1, 1), maxfev=800, info=info)
+            popt, pcov = self._curve_fit_runtime(
+                    lambda x, b0, b2: self._f_qp_theta2(
+                            x, b0, theta2, b2), x, y,
+                    guess=(1, 1), maxfev=800, info=info)
             if popt is not None:
                 popt = np.insert(popt, 1, theta2)
                 res = y - self._f_qp_theta2(x, *popt)
@@ -1722,98 +1593,133 @@ class EONR(object):
                     warnings.simplefilter('error', RuntimeWarning)
                     try:
                         tau_temp_t = tau_temp_f**0.5
-                    except RuntimeWarning as err:
+                    except RuntimeWarning:
                         tau_temp_t = 1e-6  # when zero, we get a Runtime/overflow error
                     warnings.simplefilter('ignore', RuntimeWarning)
-                if stat is 't':  # Be SURE tau is compared to correct stat!
+                if stat == 't':  # Be SURE tau is compared to correct stat!
                     tau_temp = tau_temp_t
                     crit_stat = t_stat
                 else:
                     tau_temp = tau_temp_f
                     crit_stat = f_stat
-                dif = crit_stat - tau_temp
+                dif = abs(crit_stat - tau_temp)
             elif popt is None:
                 dif = None
             return dif
 
-        popt, pcov = self._curve_fit_opt(self._f_qp_theta2, x, y, p0=guess, maxfev=800, info=info)
+#        popt, pcov = self._curve_fit_opt(self._f_qp_theta2, x, y, p0=guess, maxfev=800, info=info)
         wald_l, wald_u = self._compute_wald(n, p, alpha)
-        dev = (wald_u - self.eonr) + 3  # Adjust +/- initial guess based on Wald
+        pl_guess = (wald_u - self.eonr)  # Adjust +/- initial guess based on Wald
         theta2_bias = self.coefs_nrtn['theta2_error']
-        theta2_opt = self.eonr - theta2_bias
-        pl_l = None
-        pl_u = None
-        # Lower CI; Try brentq optimization, then try newton, then use stepwise
-        with warnings.catch_warnings():
-            warnings.simplefilter('error', category=RuntimeWarning)
-            try:
-                pl_l = brentq(_f_like_opt, a=-100, b=np.floor(theta2_opt))
-                opt_method_l = 'brentq'
-            except RuntimeWarning:
-                pass
-            except ValueError as err:  # f(a) and f(b) must have dif signs
-#                print(err)
-                pass
-            except SystemError as err:  # Stewart2015Pre $1.10/$0.16
-                print(err)
-            warnings.simplefilter('ignore', RuntimeWarning)
-        if pl_l is None:
-            try:
-                pl_l = newton(_f_like_opt, theta2_opt-dev, maxiter=100)
-                opt_method_l = 'newton'
-                if pl_l > theta2_opt or pl_l < -100:  # sometimes Newton has large num or on wrong side
-                    pl_l = None
-            except RuntimeError as err:
-#                print(err)
-                pass
-            except TypeError as err:
-                print(err)
-        if pl_l is None:
-            theta2_start = theta2_opt
-            side = 'lower'
-            pl_l, tau_l, _ = self._get_pl_steps(
-                    theta2_start, alpha, x, y, side, stat=stat)
-            opt_method_l = 'stepwise'
+        theta2_opt = self.eonr + theta2_bias  # check if this should add the 2
+#        pl_l = None
+#        pl_u = None
 
-        # Upper CI; Try brentq optimization, then try newton, then use stepwise
-        with warnings.catch_warnings():
-            warnings.simplefilter('error', RuntimeWarning)
-            try:
-                pl_u = brentq(_f_like_opt, a=np.ceil(theta2_opt), b=1500)
-                opt_method_u = 'brentq'
-            except RuntimeWarning:
-                pass
-            except ValueError as err:    # f(a) and f(b) must have dif signs
-#                print(err)
-                pass
-            except SystemError as err:  # Stewart2015Pre $1.10/$0.16
-                print(err)
-            warnings.simplefilter('ignore', RuntimeWarning)
-        if pl_u is None:
-            try:
-                pl_u = newton(_f_like_opt, theta2_opt+dev, maxiter=100)
-                opt_method_u = 'newton'
-                if pl_u < theta2_opt or pl_u > 1500:  # sometimes Newton has large num or on wrong side
-                    pl_u = None
-            except RuntimeError as err:
-#                print(err)
-                pass
-            except TypeError as err:
-                print(err)
-        if pl_u is None:
-            theta2_start = theta2_opt
-            side = 'upper'
-            pl_u, tau_l, _ = self._get_pl_steps(
-                    theta2_start, alpha, x, y, side, stat=stat)
-            opt_method_u = 'stepwise'
-#                print('Using upper CI of 1500')
-#                pl_u = 1500
+#        result = minimize_scalar(_f_like_opt, bounds=[88, 90])
 
-        # Remove the theta2 bias
-#        print(theta2_bias)
-        pl_l += theta2_bias
-        pl_u += theta2_bias
-        return pl_l, pl_u, wald_l, wald_u, opt_method_l, opt_method_u
+
+
+
+        # Lower CI: uses the Nelder-Mead algorithm
+        method='Nelder-Mead'
+        pl_l = self._run_minimize_pl(_f_like_opt, theta2_opt, pl_guess,
+                                     method=method, side='lower')
+        pl_u = self._run_minimize_pl(_f_like_opt, theta2_opt, pl_guess,
+                                     method=method, side='upper')
+
+#        result = minimize(_f_like_opt, theta2_opt-pl_guess, method="Nelder-Mead")
+#        if result.success is True:
+#            pl_l = result.x[0]
+#            opt_method_l = 'nelder-mead'
+#        else:
+#            pl_l = np.nan
+#
+#        # Upper CI: uses the Nelder-Mead algorithm
+#        result = minimize(_f_like_opt, [theta2_opt+pl_guess], method="Nelder-Mead")
+#        if result.success is True:
+#            pl_u = result.x[0]
+#            opt_method_u = 'nelder-mead'
+#        else:
+#            pl_u = np.nan
+        if pl_l is not None:
+            pl_l += theta2_bias
+        if pl_u is not None:
+            pl_u += theta2_bias
+        return pl_l, pl_u, wald_l, wald_u, method, method
+
+
+#        # Lower CI; Try brentq optimization, then try newton, then use stepwise
+#        with warnings.catch_warnings():
+#            warnings.simplefilter('error', category=RuntimeWarning)
+#            try:
+#                pl_l = brentq(_f_like_opt, a=-100, b=np.floor(theta2_opt))
+#                opt_method_l = 'brentq'
+##                if pl_l >
+#            except RuntimeWarning:
+#                pass
+#            except ValueError as err:  # f(a) and f(b) must have dif signs
+##                print(err)
+#                pass
+#            except SystemError as err:  # Stewart2015Pre $1.10/$0.16
+#                print(err)
+#            warnings.simplefilter('ignore', RuntimeWarning)
+#        if pl_l is None:
+#            try:
+#                pl_l = newton(_f_like_opt, theta2_opt-pl_guess, maxiter=100)
+#                opt_method_l = 'newton'
+#                if pl_l > theta2_opt or pl_l < -100:  # sometimes Newton has large num or on wrong side
+#                    pl_l = None
+#            except RuntimeError as err:
+##                print(err)
+#                pass
+#            except TypeError as err:
+#                print(err)
+#        if pl_l is None:
+#            theta2_start = theta2_opt
+#            side = 'lower'
+#            pl_l, tau_l, _ = self._get_pl_steps(
+#                    theta2_start, alpha, x, y, side, stat=stat)
+#            opt_method_l = 'stepwise'
+#
+#        # Upper CI; Try brentq optimization, then try newton, then use stepwise
+#        with warnings.catch_warnings():
+#            warnings.simplefilter('error', RuntimeWarning)
+#            try:
+#                pl_u = brentq(_f_like_opt, a=np.ceil(theta2_opt), b=1500)
+#                opt_method_u = 'brentq'
+#            except RuntimeWarning:
+#                pass
+#            except ValueError as err:    # f(a) and f(b) must have dif signs
+##                print(err)
+#                pass
+#            except SystemError as err:  # Stewart2015Pre $1.10/$0.16
+#                print(err)
+#            warnings.simplefilter('ignore', RuntimeWarning)
+#        if pl_u is None:
+#            try:
+#                pl_u = newton(_f_like_opt, theta2_opt+pl_guess, maxiter=100)
+#                opt_method_u = 'newton'
+#                if pl_u < theta2_opt or pl_u > 1500:  # sometimes Newton has large num or on wrong side
+#                    pl_u = None
+#            except RuntimeError as err:
+##                print(err)
+#                pass
+#            except TypeError as err:
+#                print(err)
+#        if pl_u is None:
+#            theta2_start = theta2_opt
+#            side = 'upper'
+#            pl_u, tau_l, _ = self._get_pl_steps(
+#                    theta2_start, alpha, x, y, side, stat=stat)
+#            opt_method_u = 'stepwise'
+##                print('Using upper CI of 1500')
+##                pl_u = 1500
+#
+#        # Remove the theta2 bias
+##        print(theta2_bias)
+#        pl_l += theta2_bias
+#        pl_u += theta2_bias
+#        return pl_l, pl_u, wald_l, wald_u, opt_method_l, opt_method_u
 
     def _handle_no_ci(self):
         '''
@@ -1821,9 +1727,9 @@ class EONR(object):
         confidence intervals, but fill out df_ci with Wald CIs only
         '''
         df_ci = self._build_df_ci()
-        guess = (self.coefs_grtn['coef_a'].n,
-                 self.coefs_grtn['coef_b'].n,
-                 self.coefs_grtn['coef_c'].n)
+        guess = (self.coefs_grtn['b0'].n,
+                 self.coefs_grtn['b1'].n,
+                 self.coefs_grtn['b2'].n)
         for alpha in self.alpha_list:
             level = 1 - alpha
             n = len(self.df_data[self.col_n_app])
@@ -1910,6 +1816,12 @@ class EONR(object):
         boot_ci = self._compute_bootstrap(alpha=pctle_list,
                                           n_samples=n_samples)
         if boot_ci is None:
+            boot_ci = []
+            for pctle in pctle_list:
+                boot_ci_temp = self._compute_bootstrap(alpha=pctle,
+                                                       n_samples=n_samples)
+                boot_ci.append(boot_ci_temp)
+        if boot_ci is None:
             boot_ci = [None] * ((len(self.ci_list) * 2) + 2)
         boot_ci = [self.eonr, self.eonr] + list(boot_ci)
         df_boot = self._parse_boot_ci(boot_ci)
@@ -1971,7 +1883,7 @@ class EONR(object):
         if self.base_zero is True:
             label_econ = ('{0}\nBase zero: {1}{2:.2f}'.format(
                     label_econ, self.unit_currency,
-                    self.coefs_grtn_primary['coef_a'].n))
+                    self.coefs_grtn_primary['b0'].n))
         g.ax.annotate(
             label_econ,
             xy=(0, 1), xycoords='axes fraction', xytext=(0.98, 0.95),
@@ -2316,7 +2228,7 @@ class EONR(object):
         self._print_results()
         results = [[self.price_grain, self.cost_n_fert, self.cost_n_social,
                     self.price_ratio, self.location, self.year, self.time_n,
-                    self.coefs_grtn_primary['coef_a'].n, self.eonr,
+                    self.coefs_grtn_primary['b0'].n, self.eonr,
                     self.coefs_nrtn['theta2_error'],
                     self.ci_level, self.df_ci_temp['wald_l'].item(),
                     self.df_ci_temp['wald_u'].item(),
@@ -2433,7 +2345,7 @@ class EONR(object):
                     df_out = df_out.append(df_yloct)
         return df_out
 
-    def plot_profile_likelihood(self, df_ci=None):
+    def plot_profile_likelihood(self, df_ci=None, n_rows=3):
         '''
         Plots the profile likelihood confidence curve for a range of alpha
         values (see Cook and Weisberg, 1990)
@@ -2444,6 +2356,8 @@ class EONR(object):
 #            ax2.set_ylim(df_ci['level'].iloc[0], df_ci['level'].iloc[-1])
 #            ax2.figure.canvas.draw()
 #            ax2.grid(False)
+        n_datasets = len(df_ci.drop_duplicates(subset=['year', 'location', 'time_n']))
+        n_ratios = len(df_ci['price_ratio'].unique())
 
         years = df_ci['year'].unique()
         years.sort()
@@ -2456,23 +2370,32 @@ class EONR(object):
                 times = df_loc['time_n'].unique()
                 for time in times:
                     df_yloct = df_loc[df_loc['time_n'] == time]
-                    ratios = df_yloct['time_n'].unique()
+                    ratios = df_yloct['price_ratio'].unique()
+                    count = 0
+                    fig, ax = plt.subplots(1, len(ratios), sharey=True, figsize=(20,3))
                     for ratio in ratios:
                         df_filt = df_yloct[df_yloct['price_ratio'] == ratio]
-                        fig, ax = plt.subplots()
                 #        ax2 = plt.twinx()
                 #        ax.callbacks.connect("ylim_changed", convert_axis(df_ci, ax, ax2))
-                        sns.lineplot(df_filt['wald_l'], df_filt['t_stat'], ax=ax, color='#7b7b7b')
-                        sns.lineplot(df_filt['wald_u'], df_filt['t_stat'], ax=ax, color='#7b7b7b')
-                        sns.scatterplot(df_filt['pl_l'], df_filt['t_stat'], ax=ax)
-                        sns.scatterplot(df_filt['pl_u'], df_filt['t_stat'], ax=ax)
-                        sns.scatterplot(df_filt['boot_l'], df_filt['t_stat'], ax=ax)
-                        sns.scatterplot(df_filt['boot_u'], df_filt['t_stat'], ax=ax)
-                        ax.set_xlabel('EONR')
-                        ax.set_ylabel('T Statistic')
-                        plt.tight_layout()
-                        break
+                        sns.lineplot(df_filt['wald_l'], df_filt['t_stat'], ax=ax[count], color='#7b7b7b')
+                        sns.lineplot(df_filt['wald_u'], df_filt['t_stat'], ax=ax[count], color='#7b7b7b')
+                        sns.scatterplot(df_filt['pl_l'], df_filt['t_stat'], ax=ax[count], color='red')
+                        sns.scatterplot(df_filt['pl_u'], df_filt['t_stat'], ax=ax[count], color='red')
+                        sns.scatterplot(df_filt['boot_l'], df_filt['t_stat'], ax=ax[count], color='blue')
+                        sns.scatterplot(df_filt['boot_u'], df_filt['t_stat'], ax=ax[count], color='blue')
+                        ax[count].set_xlabel('EONR')
+#                        ax[count].set_ylabel('T-statistic')
+                        ax[count].set_title('{0} {1} {2} - {3}'.format(year, loc, time, ratio), fontsize=8)
+                        count += 1
+#                        col += 1
+#                        print((((row*n_cols)+n_cols) % count + 1))
+#                        if (((row*n_cols)+n_cols) % count + 1) == 0:
+#                            row += 1
+#                            col = 0
+#                        break
+#                    input("Press Enter to continue...")
+                    ax[0].set_ylabel('T-statistic')
+                    plt.tight_layout()
                     break
                 break
             break
-
