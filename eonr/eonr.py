@@ -121,8 +121,9 @@ class EONR(object):
         self.eonr = None
         self.df_ci = None
 
-        self.figure = None
-        self.palette = None
+        self.fig_eonr = None
+        self.fig_tau = None
+        self.palette = self._seaborn_palette(color='muted', cmap_len=10)
         self.linspace_cost_n_fert = None
         self.linspace_qp = None
         self.linspace_rtn = None
@@ -297,12 +298,15 @@ class EONR(object):
         gross_rtn = self._f_quad_plateau(x, b0=b0, b1=b1, b2=b2)
         # Subtractions
         fert_cost = x * self.cost_n_fert
-
-        exp_a = self.coefs_social['exp_a']
-        exp_b = self.coefs_social['exp_b']
-        exp_c = self.coefs_social['exp_c']
-        social_cost = self._f_exp(x, a=exp_a, b=exp_b, c=exp_c)
-
+        if self.coefs_social['lin_r2'] > self.coefs_social['exp_r2']:
+            lin_b = self.coefs_social['lin_b']
+            lin_mx = self.coefs_social['lin_mx']
+            social_cost = self._f_poly(x, c=lin_b, b=lin_mx)
+        else:
+            exp_a = self.coefs_social['exp_a']
+            exp_b = self.coefs_social['exp_b']
+            exp_c = self.coefs_social['exp_c']
+            social_cost = self._f_exp(x, a=exp_a, b=exp_b, c=exp_c)
         result = gross_rtn - fert_cost - social_cost
         return -result
 
@@ -338,9 +342,10 @@ class EONR(object):
         '''
         Quadratic plateau function to compute Net response to N
 
-        This works for generating a curve for x values given all parameters, but
-        will not work for curve-fitting unless the <R> component is subtracted from
-        all gross return ('grtn') data for its respective x/N rate
+        This works for generating a curve for x values given all parameters,
+        but will not work for curve-fitting unless the <R> component is
+        subtracted from all gross return ('grtn') data for its respective
+        x/N rate
 
         Use:
             b0 = my_eonr.coefs_grtn['b0'].n
@@ -430,7 +435,7 @@ class EONR(object):
             self.coefs_social['exp_rmse'] = None
         else:
             exp_r2, _, _, _, exp_rmse = self._get_rsq(self._f_exp, x, y,
-                                                         popt)
+                                                      popt)
             a, b, c = popt
             if self.print_out is True:
                 print('y = {0:.5} * exp({1:.5}x) + {2:.5} '.format(a, b, c))
@@ -493,19 +498,17 @@ class EONR(object):
         '''
         if info is None:
             popt, pcov = curve_fit(f, xdata, ydata, p0=p0, maxfev=maxfev)
-#            return popt, pcov
         else:
             with warnings.catch_warnings():
                 warnings.simplefilter('error', OptimizeWarning)
                 try:
                     popt, pcov = curve_fit(f, xdata, ydata, p0=p0,
                                            maxfev=maxfev)
-#                    return popt, pcov
                 except OptimizeWarning:
                     if self.print_out is True:
                         print('Information for which the OptimizeWarning was '
                               'thrown:\n{0}'.format(info))
-                warnings.simplefilter('ignore', OptimizeWarning)  # hides warning
+                warnings.simplefilter('ignore', OptimizeWarning)  # hides warn
                 # essentially ignore warning and run anyway
                 popt, pcov = curve_fit(f, xdata, ydata, p0=p0,
                                        maxfev=maxfev)
@@ -598,7 +601,8 @@ class EONR(object):
             info = ('func = {0}\ncol_x = {1}\ncol_y = {2}\n'
                     ''.format('_compute_R() -> _f_quad_plateau', col_x,
                               col_y + ' (residuals)'))
-            popt, pcov = self._curve_fit_opt(lambda x, b1: self._f_quad_plateau(
+            func = self._f_quad_plateau
+            popt, pcov = self._curve_fit_opt(lambda x, b1: func(
                     x, b0.n, b1, b2.n), x, y, info=info)
             popt = np.insert(popt, 0, b2.n)
             popt = np.insert(popt, 2, b0.n)
@@ -606,19 +610,17 @@ class EONR(object):
             result = minimize_scalar(-f)
 
             self.coefs_nrtn['b0'] = b0
-            self.coefs_nrtn['theta2'] = theta2
+            self.coefs_nrtn['theta2'] = result['x']
             self.coefs_nrtn['b2'] = b2
-            self.coefs_nrtn['theta2_social'] = result['x']
+            self.coefs_nrtn['theta2_social'] = theta2
             self.coefs_nrtn['popt_social'] = [popt[2],
-#                                              minimize_scalar(-f)['x'],
-                                              result['x'],
+                                              theta2,
                                               popt[0]]
             self.coefs_nrtn['ss_res_social'] = ss_res
             self.coefs_nrtn['theta2_error'] = theta2 - self.eonr
 
         elif self.cost_n_social == 0:
             self.R = self.price_ratio * self.price_grain
-#            self.R = self.price_ratio  # not sure why the above line multiplied by price_grain initially (March 4, 2019)..?
         else:
             assert self.eonr is not None, 'Please compute EONR'
         R = self.R
@@ -659,28 +661,6 @@ class EONR(object):
             self.linspace_cost_n_social = (x1, y_social_n)
         else:
             rtn = y_grtn - y_fert_n
-#        y_max = (self.coefs_grtn['coef_a'].n +
-#                 (self.coefs_grtn['crit_x'] *
-#                  self.coefs_grtn['coef_b'].n) +
-#                 (self.coefs_grtn['crit_x'] *
-#                  self.coefs_grtn['crit_x'] *
-#                  self.coefs_grtn['coef_c'].n))
-#        # Find index where all x = max
-#        y_temp = (self.coefs_grtn['coef_a'].n +
-#                  (x1*self.coefs_grtn['coef_b'].n) +
-#                  (x1*x1*self.coefs_grtn['coef_c'].n))
-#        y_max_idx = np.argmax(y_temp)
-#        y2a = (self.coefs_grtn['coef_a'].n +
-#               (x1a[:y_max_idx]*self.coefs_grtn['coef_b'].n) +
-#               (x1a[:y_max_idx]*x1a[:y_max_idx]*self.coefs_grtn['coef_c'].n))
-#        if self.eonr <= self.df_data[self.col_n_app].max():
-#            y2b = np.linspace(y_max, y_max, num=n_steps-y_max_idx)
-#        else:  # EONR is past the point of available data, plot last val again
-#            last_pt = (self.coefs_grtn['coef_a'].n +
-#                       (x1a[-1]*self.coefs_grtn['coef_b'].n) +
-#                       (x1a[-1]*x1a[-1]*self.coefs_grtn['coef_c'].n))
-#            y2b = np.linspace(last_pt, last_pt, num=n_steps-y_max_idx)
-#        y_grtn = np.concatenate((y2a, y2b))
 
         while len(y_grtn) != n_steps:
             if len(y_grtn) < n_steps:
@@ -1042,26 +1022,6 @@ class EONR(object):
                                          maxfev=800)
         self.coefs_nrtn['theta2_error'] = popt[1] - self.eonr
 
-#df = my_eonr.df_data.copy()
-#x = df[my_eonr.col_n_app].values
-#y = df['grtn'].values
-#guess = (my_eonr.coefs_grtn['coef_a'].n,
-#         my_eonr.eonr,
-#         my_eonr.coefs_grtn['coef_c'].n)
-#popt, pcov = my_eonr._curve_fit_opt(my_eonr._f_qp_theta2, x, y, p0=guess, maxfev=800)
-#sns.scatterplot(x, y)
-#c, b, a = f_eonr2
-#a, b, c = popt
-#y1 = my_eonr._f_quad_plateau(x, a, b, c)
-#sns.scatterplot(x, y1)
-#
-#x2 = np.linspace(0,350,10000)
-#y2 = my_eonr._f_quad_plateau(x2, a, b, c)
-#sns.scatterplot(x2, y2)
-#
-#y3 = y2 - my_eonr._f_poly(x2, 0, my_eonr.cost_n_fert)
-#sns.scatterplot(x2, y3)
-#popt, pcov = curve_fit(my_eonr._f_qp_theta2, x, y)
     #  Following are functions used in calculating confidence intervals
     def _bs_statfunction(self, x, y):
         '''
@@ -1272,7 +1232,10 @@ class EONR(object):
         tau * (s2 * c)**(0.5)
         '''
         if s2c is None:
-            s2c = self.coefs_nrtn['theta2'].s**2
+            if self.cost_n_social > 0:
+                s2c = self.coefs_nrtn['theta2_social'].s**2
+            else:
+                s2c = self.coefs_nrtn['theta2'].s**2
         tau = stats.t.ppf(1-alpha/2, n-p)  # Wald should use t_stat
         ci_l = self.eonr - (tau * s2c**(0.5))
         ci_u = self.eonr + (tau * s2c**(0.5))
@@ -1401,7 +1364,7 @@ class EONR(object):
                     try:
                         tau_temp_t = tau_temp_f**0.5
                     except RuntimeWarning:
-                        tau_temp_t = 1e-6  # when zero, we get a Runtime/overflow error
+                        tau_temp_t = 1e-6  # when 0, we get an overflow error
                     warnings.simplefilter('ignore', RuntimeWarning)
 
 #                    print(err)
@@ -1510,11 +1473,11 @@ class EONR(object):
         if pl_guess > 800:
             pl_out = None
         elif result.success is not True:
-                return self._run_minimize_pl(f, theta2_opt,
-                                             pl_guess*1.05,
-                                             method=method,
-                                             side=side,
-                                             pl_guess_init=pl_guess_init)
+            return self._run_minimize_pl(f, theta2_opt,
+                                         pl_guess*1.05,
+                                         method=method,
+                                         side=side,
+                                         pl_guess_init=pl_guess_init)
         elif result.success is True and side == 'lower':
             if result.x[0] > theta2_opt:
                 return self._run_minimize_pl(f, theta2_opt,
@@ -1538,7 +1501,7 @@ class EONR(object):
         return pl_out
 
     def _get_likelihood(self, alpha, col_x, col_y, stat='t',
-                        last_ci=[None,None]):
+                        last_ci=[None, None]):
         '''
         Computes the profile liklihood confidence values using the sum of
         squares (see Gallant (1987), p. 107)
@@ -1594,7 +1557,7 @@ class EONR(object):
                     try:
                         tau_temp_t = tau_temp_f**0.5
                     except RuntimeWarning:
-                        tau_temp_t = 1e-6  # when zero, we get a Runtime/overflow error
+                        tau_temp_t = 1e-6  # when 0, we get an overflow error
                     warnings.simplefilter('ignore', RuntimeWarning)
                 if stat == 't':  # Be SURE tau is compared to correct stat!
                     tau_temp = tau_temp_t
@@ -1609,16 +1572,9 @@ class EONR(object):
 
 #        popt, pcov = self._curve_fit_opt(self._f_qp_theta2, x, y, p0=guess, maxfev=800, info=info)
         wald_l, wald_u = self._compute_wald(n, p, alpha)
-        pl_guess = (wald_u - self.eonr)  # Adjust +/- initial guess based on Wald
+        pl_guess = (wald_u - self.eonr)  # Adjust +/- init guess based on Wald
         theta2_bias = self.coefs_nrtn['theta2_error']
         theta2_opt = self.eonr + theta2_bias  # check if this should add the 2
-#        pl_l = None
-#        pl_u = None
-
-#        result = minimize_scalar(_f_like_opt, bounds=[88, 90])
-
-
-
 
         # Lower CI: uses the Nelder-Mead algorithm
         method='Nelder-Mead'
@@ -1627,99 +1583,11 @@ class EONR(object):
         pl_u = self._run_minimize_pl(_f_like_opt, theta2_opt, pl_guess,
                                      method=method, side='upper')
 
-#        result = minimize(_f_like_opt, theta2_opt-pl_guess, method="Nelder-Mead")
-#        if result.success is True:
-#            pl_l = result.x[0]
-#            opt_method_l = 'nelder-mead'
-#        else:
-#            pl_l = np.nan
-#
-#        # Upper CI: uses the Nelder-Mead algorithm
-#        result = minimize(_f_like_opt, [theta2_opt+pl_guess], method="Nelder-Mead")
-#        if result.success is True:
-#            pl_u = result.x[0]
-#            opt_method_u = 'nelder-mead'
-#        else:
-#            pl_u = np.nan
         if pl_l is not None:
             pl_l += theta2_bias
         if pl_u is not None:
             pl_u += theta2_bias
         return pl_l, pl_u, wald_l, wald_u, method, method
-
-
-#        # Lower CI; Try brentq optimization, then try newton, then use stepwise
-#        with warnings.catch_warnings():
-#            warnings.simplefilter('error', category=RuntimeWarning)
-#            try:
-#                pl_l = brentq(_f_like_opt, a=-100, b=np.floor(theta2_opt))
-#                opt_method_l = 'brentq'
-##                if pl_l >
-#            except RuntimeWarning:
-#                pass
-#            except ValueError as err:  # f(a) and f(b) must have dif signs
-##                print(err)
-#                pass
-#            except SystemError as err:  # Stewart2015Pre $1.10/$0.16
-#                print(err)
-#            warnings.simplefilter('ignore', RuntimeWarning)
-#        if pl_l is None:
-#            try:
-#                pl_l = newton(_f_like_opt, theta2_opt-pl_guess, maxiter=100)
-#                opt_method_l = 'newton'
-#                if pl_l > theta2_opt or pl_l < -100:  # sometimes Newton has large num or on wrong side
-#                    pl_l = None
-#            except RuntimeError as err:
-##                print(err)
-#                pass
-#            except TypeError as err:
-#                print(err)
-#        if pl_l is None:
-#            theta2_start = theta2_opt
-#            side = 'lower'
-#            pl_l, tau_l, _ = self._get_pl_steps(
-#                    theta2_start, alpha, x, y, side, stat=stat)
-#            opt_method_l = 'stepwise'
-#
-#        # Upper CI; Try brentq optimization, then try newton, then use stepwise
-#        with warnings.catch_warnings():
-#            warnings.simplefilter('error', RuntimeWarning)
-#            try:
-#                pl_u = brentq(_f_like_opt, a=np.ceil(theta2_opt), b=1500)
-#                opt_method_u = 'brentq'
-#            except RuntimeWarning:
-#                pass
-#            except ValueError as err:    # f(a) and f(b) must have dif signs
-##                print(err)
-#                pass
-#            except SystemError as err:  # Stewart2015Pre $1.10/$0.16
-#                print(err)
-#            warnings.simplefilter('ignore', RuntimeWarning)
-#        if pl_u is None:
-#            try:
-#                pl_u = newton(_f_like_opt, theta2_opt+pl_guess, maxiter=100)
-#                opt_method_u = 'newton'
-#                if pl_u < theta2_opt or pl_u > 1500:  # sometimes Newton has large num or on wrong side
-#                    pl_u = None
-#            except RuntimeError as err:
-##                print(err)
-#                pass
-#            except TypeError as err:
-#                print(err)
-#        if pl_u is None:
-#            theta2_start = theta2_opt
-#            side = 'upper'
-#            pl_u, tau_l, _ = self._get_pl_steps(
-#                    theta2_start, alpha, x, y, side, stat=stat)
-#            opt_method_u = 'stepwise'
-##                print('Using upper CI of 1500')
-##                pl_u = 1500
-#
-#        # Remove the theta2 bias
-##        print(theta2_bias)
-#        pl_l += theta2_bias
-#        pl_u += theta2_bias
-#        return pl_l, pl_u, wald_l, wald_u, opt_method_l, opt_method_u
 
     def _handle_no_ci(self):
         '''
@@ -1749,7 +1617,7 @@ class EONR(object):
                                     'N/A', 'N/A']],
                                   columns=df_ci.columns)
             df_ci = df_ci.append(df_row, ignore_index=True)
-        boot_ci = [None] * ((len(self.ci_list) * 2) + 2)
+        boot_ci = [None] * ((len(self.ci_list) * 2))
         boot_ci = [self.eonr, self.eonr] + list(boot_ci)
         df_boot = self._parse_boot_ci(boot_ci)
         df_ci = pd.concat([df_ci, df_boot], axis=1)
@@ -1829,10 +1697,12 @@ class EONR(object):
         return df_ci
 
     #  Following are plotting functions
-    def _add_labels(self, g, x_max):
+    def _add_labels(self, g, x_max=None):
         '''
         Adds EONR and economic labels to the plot
         '''
+        if x_max is None:
+            _, x_max = g.fig.axes[0].get_xlim()
         boxstyle_str = 'round, pad=0.5, rounding_size=0.15'
         el = mpatches.Ellipse((0, 0), 0.3, 0.3, angle=50, alpha=0.5)
         g.ax.add_artist(el)
@@ -1847,8 +1717,9 @@ class EONR(object):
                 label_eonr,
                 xy=(self.eonr, self.mrtn), xytext=(-80, -30),
                 textcoords='offset points', ha='left', va='top', fontsize=8,
+                color='#333333',
                 bbox=dict(boxstyle=boxstyle_str, pad=0.5, fc=(1, 1, 1),
-                          ec=(0.5, 0.5, 0.5), alpha=0.9),
+                          ec=(0.5, 0.5, 0.5)),
                 arrowprops=dict(arrowstyle='-|>',
                                 color="grey",
                                 patchB=el,
@@ -1858,9 +1729,9 @@ class EONR(object):
             g.ax.annotate(
                 label_eonr,
                 xy=(0, 0), xycoords='axes fraction', xytext=(0.98, 0.05),
-                ha='right', va='bottom', fontsize=8,
+                ha='right', va='bottom', fontsize=8, color='#333333',
                 bbox=dict(boxstyle=boxstyle_str, pad=0.5, fc=(1, 1, 1),
-                          ec=(0.5, 0.5, 0.5), alpha=0.9))
+                          ec=(0.5, 0.5, 0.5)))
 
         label_econ = ('Grain price: ${0:.2f}\nN fertilizer cost: ${1:.2f}'
                       ''.format(self.price_grain, self.cost_n_fert))
@@ -1888,12 +1759,12 @@ class EONR(object):
             label_econ,
             xy=(0, 1), xycoords='axes fraction', xytext=(0.98, 0.95),
             horizontalalignment='right', verticalalignment='top',
-            fontsize=7,
+            fontsize=7, color='#333333',
             bbox=dict(boxstyle=boxstyle_str,
                       fc=(1, 1, 1), ec=(0.5, 0.5, 0.5), alpha=0.75))
         return g
 
-    def _add_title(self, g):
+    def _add_title(self, g, size_font=12):
         '''
         Adds the title to the plot
         '''
@@ -1904,11 +1775,13 @@ class EONR(object):
         cax.get_xaxis().set_visible(False)
         cax.get_yaxis().set_visible(False)
         cax.set_facecolor('#7b7b7b')
-        at = AnchoredText(title_text, loc=10, frameon=False,
-                          prop=dict(backgroundcolor='#7b7b7b',
-                                    size=12, color='white',
-                                    fontweight='bold'))
-        cax.add_artist(at)
+        text_obj = AnchoredText(title_text, loc=10, frameon=False,
+                                prop=dict(backgroundcolor='#7b7b7b',
+                                          size=size_font, color='white',
+                                          fontweight='bold'))
+        size_font = self._set_title_size(g, title_text, size_font, coef=1.15)
+        text_obj.prop.set_size(size_font)
+        cax.add_artist(text_obj)
         return g
 
     def _add_ci(self, g, ci_type='profile-likelihood', ci_level=None):
@@ -1950,7 +1823,7 @@ class EONR(object):
             g.ax.axvline(self.eonr,
                          linestyle='--',
                          linewidth=1.5,
-                         color='k',
+                         color='#555555',
                          label='EONR',
                          alpha=alpha_axvline)
         else:
@@ -1962,7 +1835,7 @@ class EONR(object):
             g.ax.axvline(0,
                          linestyle='--',
                          linewidth=1.5,
-                         color='k',
+                         color='#555555',
                          label='EONR',
                          alpha=alpha_axvline)
         return g
@@ -2049,7 +1922,8 @@ class EONR(object):
         g.ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
         return g
 
-    def _modify_minmax_axes(self, g, x_min, x_max, y_min, y_max):
+    def _modify_minmax_axes(self, g, x_min=None, x_max=None, y_min=None,
+                            y_max=None):
         '''
         Attempts to modify the min and max axis values
         <x_min> and <x_max> OR <y_min> and <y_max> must be provided, otherwise
@@ -2085,7 +1959,7 @@ class EONR(object):
         g.fig.subplots_adjust(top=0.9, bottom=0.135, left=0.11, right=0.99)
         return g
 
-    def _place_legend(self, g, loc='lower right', facecolor='white'):
+    def _place_legend(self, g, loc='upper left', facecolor='white'):
         h, leg = g.ax.get_legend_handles_labels()
         if self.cost_n_social == 0:
             order = [2, 3, 4, 0]
@@ -2099,22 +1973,25 @@ class EONR(object):
                                   alpha=0.3, fill=True, linewidth=0.5)
 
         handles[-1] = patch_ci
-        g.ax.legend(handles=handles,
-                    labels=labels,
-                    loc='upper left',
-                    frameon=True,
-                    framealpha=0.75,
-                    facecolor='white',
-                    fancybox=True,
-                    borderpad=0.5,
-                    edgecolor=(0.5, 0.5, 0.5),
-                    prop={
-                        'weight': 'bold',
-                        'size': 7
-                        })
+        leg = g.ax.legend(handles=handles,
+                          labels=labels,
+                          loc=loc,
+                          frameon=True,
+                          framealpha=0.75,
+                          facecolor='white',
+                          fancybox=True,
+                          borderpad=0.5,
+                          edgecolor=(0.5, 0.5, 0.5),
+                          prop={
+                                  'weight': 'bold',
+                                  'size': 7
+                                  })
+        for text in leg.get_texts():
+            plt.setp(text, color='#333333')
         return g
 
-    def _plot_points(self, col_x, col_y, palette, ax=None, s=20):
+    def _plot_points(self, col_x, col_y, data, palette, ax=None, s=20,
+                     zorder=None):
         '''
         Plots points on figure
         '''
@@ -2123,16 +2000,18 @@ class EONR(object):
                                 y=col_y,
                                 color=palette,
                                 legend=False,
-                                data=self.df_data,
-                                s=s)
+                                data=data,
+                                s=s,
+                                zorder=zorder)
         else:
             g = sns.scatterplot(x=col_x,
                                 y=col_y,
                                 color=palette,
                                 legend=False,
-                                data=self.df_data,
+                                data=data,
                                 ax=ax,
-                                s=s)
+                                s=s,
+                                zorder=zorder)
         return g
 
     def _seaborn_palette(self, color='hls', cmap_len=8):
@@ -2151,6 +2030,268 @@ class EONR(object):
             print(err)
             print('Using "ggplot" style instead..'.format(style))
             plt.style.use('ggplot')
+
+    def _pci_modify_axes_labels(self, y_axis, fontsize=11):
+        if y_axis == 't_stat':
+            y_label = r'$|\tau|$ (T statistic)'
+        elif y_axis == 'f_stat':
+            y_label = r'$|\tau|$ (F statistic)'
+        else:
+            y_label = 'Confidence (%)'
+        plt.ylabel(y_label,
+                   fontweight='bold',
+                   fontsize=fontsize)
+        xlab_obj = plt.xlabel('True {0} ({1})'.format(self.onr_acr,
+                                                      self.unit_nrate),
+                              fontweight='bold',
+                              fontsize=fontsize)
+        plt.getp(xlab_obj, 'color')
+
+    def _pci_place_legend_tau(self, g, loc='lower left', facecolor='white'):
+        h, leg = g.ax.get_legend_handles_labels()
+        order = [0, 2, 4]
+        handles = [h[idx] for idx in order]
+        labels = [leg[idx] for idx in order]
+        leg = g.ax.legend(handles=handles,
+                          labels=labels,
+                          loc=loc,
+                          frameon=True,
+                          framealpha=0.75,
+                          facecolor='white',
+                          fancybox=True,
+                          borderpad=0.5,
+                          edgecolor=(0.5, 0.5, 0.5),
+                          prop={
+                                  'weight': 'bold',
+                                  'size': 7
+                            })
+        for text in leg.get_texts():
+            plt.setp(text, color='#555555')
+        return g
+
+    def _pci_add_ci_level(self, g, df_ci, tau_list=None, alpha_lines=0.5,
+                          y_axis='t_stat', emphasis='profile-likelihood'):
+        '''
+        Overlays confidence levels over the t-statistic (more intuitive)
+        '''
+        msg = ('Please set <y_axis> to either "t_stat", "f_stat", or "level" '
+               'for plotting confidence interval curves.')
+        assert y_axis in ['t_stat', 'f_stat', 'level'], msg
+        if tau_list is None:
+            if y_axis == 't_stat':
+                tau_list = list(zip(df_ci[y_axis], df_ci['level']))
+            elif y_axis == 'f_stat':
+                tau_list = list(zip(df_ci[y_axis], df_ci['level']))
+            else:
+                tau_list = list(zip(df_ci[y_axis], df_ci['t_stat']))
+        x_min, x_max = g.fig.axes[0].get_xlim()
+        y_min, y_max = g.fig.axes[0].get_ylim()
+        # to conform with _add_labels()
+        x_max_new = ((x_max - x_min) * 1.1) + x_min  # adds 10% to right
+        zorder = 0
+        for idx, tau_pair in enumerate(tau_list):
+            if emphasis == 'none':
+                xmin_data = min(df_ci[df_ci[y_axis] ==
+                                      tau_pair[0]]['wald_l'].item(),
+                                df_ci[df_ci[y_axis] ==
+                                      tau_pair[0]]['pl_l'].item(),
+                                df_ci[df_ci[y_axis] ==
+                                      tau_pair[0]]['boot_l'].item())
+                x_val_l = df_ci[df_ci[y_axis] == tau_pair[0]]['pl_l'].item()
+                x_val_u = df_ci[df_ci[y_axis] == tau_pair[0]]['pl_u'].item()
+            elif emphasis == 'wald':
+                xmin_data = df_ci[df_ci[y_axis] ==
+                                  tau_pair[0]]['wald_l'].item()
+                x_val_l = df_ci[df_ci[y_axis] == tau_pair[0]]['wald_l'].item()
+                x_val_u = df_ci[df_ci[y_axis] == tau_pair[0]]['wald_u'].item()
+            elif emphasis == 'profile-likelihood':
+                xmin_data = df_ci[df_ci[y_axis] == tau_pair[0]]['pl_l'].item()
+                x_val_l = df_ci[df_ci[y_axis] == tau_pair[0]]['pl_l'].item()
+                x_val_u = df_ci[df_ci[y_axis] == tau_pair[0]]['pl_u'].item()
+            elif emphasis == 'bootstrap':
+                xmin_data = df_ci[df_ci[y_axis] ==
+                                  tau_pair[0]]['boot_l'].item()
+                x_val_l = df_ci[df_ci[y_axis] == tau_pair[0]]['boot_l'].item()
+                x_val_u = df_ci[df_ci[y_axis] == tau_pair[0]]['boot_u'].item()
+            xmin = (xmin_data - x_min) / (x_max_new - x_min)
+
+            if idx == 0:
+                xmax = (x_max - x_min) / ((x_max_new*1.05) - x_min)
+            else:
+                xmax = (x_max - x_min) / (x_max_new - x_min)
+
+            if y_axis == 'level':
+                y_val = tau_pair[0] * 100
+                ymax = (tau_pair[0]*100 - y_min) / (y_max - y_min)
+            else:
+                y_val = tau_pair[0]
+                ymax = (tau_pair[0] - y_min) / (y_max - y_min)
+
+            if len(tau_list) - idx <= 5:
+                g.ax.axhline(y_val, xmin=xmin, xmax=xmax, linestyle='--',
+                             linewidth=0.5, color='#7b7b7b',
+                             label='{0:.2f}'.format(tau_pair[1]),
+                             alpha=alpha_lines, zorder=zorder)
+                zorder += 1
+                g.ax.axvline(x_val_l, ymax=ymax, linestyle='--', linewidth=0.5,
+                             color='#7b7b7b', alpha=alpha_lines, zorder=zorder)
+                zorder += 1
+                g.ax.axvline(x_val_u, ymax=ymax, linestyle='--', linewidth=0.5,
+                             color='#7b7b7b', alpha=alpha_lines, zorder=zorder)
+                zorder += 1
+        return g
+
+    def _pci_plot_emphasis(self, g, emphasis, df_ci, y_ci, lw_thick=1.5,
+                           lw_thin=0.8):
+        '''
+        Draws confidence interval curves considering emphasis
+        <emphasis> --> what curve to draw with empahsis
+        <df_ci> --> the dataframe containing confidence interval data
+        <y_ci> --> the y data to plot
+        '''
+        if emphasis.lower() == 'wald':
+            g.ax.plot(df_ci['wald_l'], y_ci,
+                      color=self.palette[3], linestyle='-', linewidth=lw_thick,
+                      label='Wald', zorder=1)
+            g.ax.plot(df_ci['wald_u'], y_ci,
+                      color=self.palette[3], linestyle='-', linewidth=lw_thick,
+                      label='wald_u', zorder=1)
+        else:
+            g.ax.plot(df_ci['wald_l'], y_ci,
+                      color=self.palette[3], linestyle='-', linewidth=lw_thin,
+                      label='Wald', zorder=1)
+            g.ax.plot(df_ci['wald_u'], y_ci,
+                      color=self.palette[3], linestyle='-', linewidth=lw_thin,
+                      label='wald_u', zorder=1)
+        if emphasis.lower() == 'profile-likelihood':
+            g.ax.plot(df_ci['pl_l'], y_ci,
+                      color=self.palette[2], linestyle='--',
+                      linewidth=lw_thick,
+                      label='Profile Likelihood', zorder=2)
+            g.ax.plot(df_ci['pl_u'], y_ci,
+                      color=self.palette[2], linestyle='--',
+                      linewidth=lw_thick,
+                      label='profile-likelihood_u', zorder=2)
+        else:
+            g.ax.plot(df_ci['pl_l'], y_ci,
+                      color=self.palette[2], linestyle='--', linewidth=lw_thin,
+                      label='Profile Likelihood', zorder=2)
+            g.ax.plot(df_ci['pl_u'], y_ci,
+                      color=self.palette[2], linestyle='--', linewidth=lw_thin,
+                      label='profile-likelihood_u', zorder=2)
+        if emphasis.lower() == 'bootstrap':
+            g.ax.plot(df_ci['boot_l'], y_ci,
+                      color=self.palette[0], linestyle='-.',
+                      linewidth=lw_thick,
+                      label='Bootstrap', zorder=3)
+            g.ax.plot(df_ci['boot_u'], y_ci,
+                      color=self.palette[0], linestyle='-.',
+                      linewidth=lw_thick,
+                      label='bootstrap_u', zorder=3)
+        else:
+            g.ax.plot(df_ci['boot_l'], y_ci,
+                      color=self.palette[0], linestyle='-.',
+                      linewidth=lw_thin,
+                      label='Bootstrap', zorder=3)
+            g.ax.plot(df_ci['boot_u'], y_ci,
+                      color=self.palette[0], linestyle='-.', linewidth=lw_thin,
+                      label='bootstrap_u', zorder=3)
+        return g
+
+    def _pci_add_labels(self, g, df_ci, tau_list=None, y_axis='t_stat'):
+        '''
+        Adds confidence interval or test statistic labels to the plot
+        '''
+        msg = ('Please set <y_axis> to either "t_stat", "f_stat", or "level" '
+               'for plotting confidence interval curves.')
+        assert y_axis in ['t_stat', 'f_stat', 'level'], msg
+        if tau_list is None:
+            if y_axis == 't_stat':
+                tau_list = list(zip(df_ci[y_axis], df_ci['level']))
+            elif y_axis == 'f_stat':
+                tau_list = list(zip(df_ci[y_axis], df_ci['level']))
+            elif y_axis == 'level':
+                tau_list = list(zip(df_ci[y_axis]*100, df_ci['t_stat']))
+        x_min, x_max = g.fig.axes[0].get_xlim()
+        y_min, y_max = g.fig.axes[0].get_ylim()
+    #    x_pos = self.eonr + (x_max - self.eonr)/2
+#        x_max_new = ((x_max - x_min) * 1.1) - abs(x_min)  # adds 10% to right
+        x_max_new = ((x_max - x_min) * 1.1) + x_min  # adds 10% to right
+        x_pos = ((x_max - x_min) * 1.07) + x_min  # adds 10% to right
+        g.fig.axes[0].set_xlim(right=x_max_new)
+    #    boxstyle_str = 'round, pad=0.5, rounding_size=0.15'
+    #    el = mpatches.Ellipse((0, 0), 0.3, 0.3, angle=50, alpha=0.5)
+    #    g.ax.add_artist(el)
+        for idx, tau_pair in enumerate(tau_list):
+            if y_axis == 'level':
+                if idx == 0:
+                    label = r'$|\tau|$ (T) = {0:.2f}'.format(tau_pair[1])
+                    y_pos = tau_pair[0] + (y_max - y_min)*0.02
+                else:
+                    label = '{0:.2f}'.format(tau_pair[1])
+            else:
+                if idx == 0:
+                    label = 'CI = {0:.0f}%'.format(tau_pair[1]*100)
+                    y_pos = tau_pair[0] + (y_max - y_min)*0.02
+                else:
+                    label = '{0:.0f}%'.format(tau_pair[1]*100)
+            if idx == 0:
+                g.ax.annotate(label,
+                              xy=(x_pos, y_pos),
+                              xycoords='data',
+                              fontsize=7, fontweight='light',
+                              horizontalalignment='right',
+                              verticalalignment='center',
+                              color='#7b7b7b')
+            elif len(tau_list) - idx <= 5:
+                g.ax.annotate(label,
+                              xy=(x_pos, tau_pair[0]),
+                              xycoords='data',
+                              fontsize=7, fontweight='light',
+                              horizontalalignment='right',
+                              verticalalignment='center',
+                              color='#7b7b7b')
+        return g
+
+    def _set_title_size(self, g, title_text, size_font, coef=1.3):
+        '''
+        Sets the font size of a text object so it fits in the figure
+        1.3 works pretty well for tau plots
+
+        '''
+        text_obj_dummy = plt.text(0, 0, title_text, size=size_font)
+        x_min, x_max = g.fig.axes[0].get_xlim()
+        dpi = g.fig.get_dpi()
+        width_in, _ = g.fig.get_size_inches()
+        pix_width = dpi * width_in
+        r = g.fig.canvas.get_renderer()
+        pix_width = r.width
+        text_size = text_obj_dummy.get_window_extent(renderer=r)
+        while (text_size.width * coef) > pix_width:
+            size_font -= 1
+            text_obj_dummy.set_size(size_font)
+            text_size = text_obj_dummy.get_window_extent(renderer=r)
+        text_obj_dummy.remove()
+        return size_font
+
+    def _pci_add_title(self, g, size_font=10):
+        '''
+        Adds the title to profile-liikelihood plot
+        '''
+        title_text = ('{0} {1} - {2} N Fertilizer Timing'
+                      ''.format(self.year, self.location, self.time_n))
+        divider = make_axes_locatable(g.ax)
+        cax = divider.append_axes("top", size="15%", pad=0)
+        cax.get_xaxis().set_visible(False)
+        cax.get_yaxis().set_visible(False)
+        cax.set_facecolor('#7b7b7b')
+        text_obj = AnchoredText(title_text, loc=10, frameon=False,
+                                prop=dict(backgroundcolor='#7b7b7b',
+                                          size=size_font, color='white',
+                                          fontweight='bold'))
+        size_font = self._set_title_size(g, title_text, size_font, coef=1.3)
+        text_obj.prop.set_size(size_font)
+        cax.add_artist(text_obj)
 
     def set_ratio(self, cost_n_fert=None, cost_n_social=None,
                   price_grain=None):
@@ -2215,8 +2356,8 @@ class EONR(object):
         self._compute_R(col_x=self.col_n_app, col_y='grtn')
         self._theta2_error()
         if self.eonr > self.df_data[self.col_n_app].max():
-            print('\nEONR is past the point of available data, so confidence '
-                  'bounds are not being computed')
+            print('\n{0} is past the point of available data, so confidence '
+                  'bounds are not being computed'.format(self.onr_acr))
             self._handle_no_ci()
         else:
             self._compute_residuals()
@@ -2276,43 +2417,116 @@ class EONR(object):
             display on the plot (defaults to eonr.ci_level)
         '''
         self._set_style(style)
-#        palette_blue = self._color_to_palette(color='b')
-        self.palette = self._seaborn_palette(color='muted', cmap_len=10)
+##        palette_blue = self._color_to_palette(color='b')
+#        self.palette = self._seaborn_palette(color='muted', cmap_len=10)
 
         g = sns.FacetGrid(self.df_data)
-        self._plot_points(self.col_n_app, 'grtn', [self.palette[0]],
-                          ax=g.ax)
+        self._plot_points(self.col_n_app, 'grtn', self.df_data,
+                          [self.palette[0]], ax=g.ax)
         if self.cost_n_social > 0:
             try:
                 self._plot_points(self.col_nup_soil_fert, 'social_cost_n',
-                                  [self.palette[8]], ax=g.ax)
+                                  self.df_data, [self.palette[8]], ax=g.ax)
             except KeyError as err:
                 print('{0}\nFixed social cost of N was used, so points will '
                       'not be plotted..'.format(err))
         self._modify_axes_labels(fontsize=14)
         g = self._add_ci(g, ci_type=ci_type, ci_level=ci_level)
         g = self._draw_lines(g, self.palette)
-        g = self._modify_minmax_axes(g, x_min, x_max, y_min, y_max)
+        g = self._modify_minmax_axes(g, x_min=x_min, x_max=x_max,
+                                     y_min=y_min, y_max=y_max)
         g = self._modify_axes_pos(g)
-        g = self._place_legend(g)
+        g = self._place_legend(g, loc='upper left')
         g = self._modify_plot_params(g, plotsize_x=7, plotsize_y=4,
                                      labelsize=11)
         g = self._add_labels(g, x_max)
         g = self._add_title(g)
         plt.tight_layout()
 
-        self.figure = g
+        self.fig_eonr = g
 
-    def save_plot(self, base_dir=None, fname='eonr_sns17w_pre.png', dpi=300):
+    def plot_tau(self, y_axis='t_stat', emphasis='profile-likelihood',
+                 run_n=None):
+        '''
+        Plots the t-statistic as a function of optimum nitrogen rate
+        <y_axis> --> value to plot on the y-axis; change to 'level' to plot the
+            confidence level as a function of EOR instead of tau
+        '''
+        if run_n is None:
+            df_ci = self.df_ci[self.df_ci['run_n'] ==
+                               self.df_ci['run_n'].max()]
+        else:
+            df_ci = self.df_ci[self.df_ci['run_n'] == run_n]
+        y_axis = str(y_axis).lower()
+        emphasis = str(emphasis).lower()
+        msg1 = ('Please set <y_axis> to either "t_stat", "f_stat", or "level" '
+                'for plotting confidence interval curves.')
+        assert y_axis in ['t_stat', 'f_stat', 'level'], msg1
+        msg2 = ('Please set <emphasis> to either "wald", '
+                '"profile-likelihood", "bootstrap", or "None" to indicate '
+                'which curve (if any) should be emphasized.')
+        assert emphasis in ['wald', 'profile-likelihood', 'bootstrap', 'None',
+                            None], msg2
+        g = sns.FacetGrid(df_ci)
+        if y_axis == 'level':
+            y_ci = df_ci[y_axis] * 100
+        else:
+            y_ci = df_ci[y_axis]
+        g = self._pci_plot_emphasis(g, emphasis, df_ci, y_ci)
+
+        if emphasis == 'wald':
+            self._plot_points(col_x='wald_l', col_y=y_ci, data=df_ci,
+                              palette=self.palette[3], ax=g.ax, s=20,
+                              zorder=4)
+            self._plot_points(col_x='wald_u', col_y=y_ci, data=df_ci,
+                              palette=self.palette[3], ax=g.ax, s=20,
+                              zorder=4)
+        elif emphasis == 'profile-likelihood':
+            self._plot_points(col_x='pl_l', col_y=y_ci, data=df_ci,
+                              palette=self.palette[2], ax=g.ax, s=20,
+                              zorder=4)
+            self._plot_points(col_x='pl_u', col_y=y_ci, data=df_ci,
+                              palette=self.palette[2], ax=g.ax, s=20,
+                              zorder=4)
+        elif emphasis == 'bootstrap':
+            self._plot_points(col_x='boot_l', col_y=y_ci, data=df_ci,
+                              palette=self.palette[0], ax=g.ax, s=20,
+                              zorder=4)
+            self._plot_points(col_x='boot_u', col_y=y_ci, data=df_ci,
+                              palette=self.palette[0], ax=g.ax, s=20,
+                              zorder=4)
+
+        self._pci_modify_axes_labels(y_axis)
+        g = self._pci_place_legend_tau(g)
+        g = self._modify_plot_params(g, plotsize_x=4.5, plotsize_y=4,
+                                     labelsize=11)
+        g.ax.tick_params(axis='both', labelsize=9)
+        g = self._pci_add_ci_level(g, df_ci, y_axis=y_axis, emphasis=emphasis)
+        g = self._pci_add_labels(g, df_ci, y_axis=y_axis)
+        self._pci_add_title(g)
+        g.ax.grid(False, axis='x')
+        y_grids = g.ax.get_ygridlines()
+        for idx, grid in enumerate(y_grids):
+            if idx == 1:
+                grid.set_linewidth(1.0)
+            else:
+                grid.set_alpha(0.4)
+        plt.tight_layout()
+        self.fig_tau = g
+
+    def save_plot(self, base_dir=None, fname='eonr_sns17w_pre.png', fig=None,
+                  dpi=300):
+        if fig is None:
+            fig = self.fig_eonr
         msg = ('A figure must be generated first. Please execute '
                'EONR.plot_eonr() first..\n')
-        assert self.figure is not None, msg
+        assert fig is not None, msg
         if base_dir is None:
             base_dir = self.base_dir
         if not os.path.isdir(base_dir):
             os.mkdir(base_dir)
         fname = os.path.join(base_dir, fname)
-        self.figure.savefig(fname, dpi=dpi)
+        fig.savefig(fname, dpi=dpi)
 
     def eonr_delta(self, df_results=None):
         '''
@@ -2356,7 +2570,8 @@ class EONR(object):
 #            ax2.set_ylim(df_ci['level'].iloc[0], df_ci['level'].iloc[-1])
 #            ax2.figure.canvas.draw()
 #            ax2.grid(False)
-        n_datasets = len(df_ci.drop_duplicates(subset=['year', 'location', 'time_n']))
+        n_datasets = len(df_ci.drop_duplicates(subset=['year', 'location',
+                                                       'time_n']))
         n_ratios = len(df_ci['price_ratio'].unique())
 
         years = df_ci['year'].unique()
