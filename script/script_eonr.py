@@ -14,7 +14,7 @@ import seaborn as sns
 from matplotlib.offsetbox import AnchoredText
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
-#from eonr import EONR
+from eonr import EONR
 
 def replace_missing_vals(df, missing_val=['.', '#VALUE!'], cols_numeric=None):
     '''
@@ -221,15 +221,15 @@ else:
     unit_grain = 'bu'
     unit_area = 'ac'
 
-# In[Calculate EONR for all years]
+# In[5 Calculate EONR for all years]
 def plot_and_save(my_eonr, fname, x_min=-5,
                   x_max=365, y_min=-50, y_max=1100, dpi=300):
     my_eonr.plot_eonr(x_min=x_min, x_max=x_max, y_min=y_min, y_max=y_max)
     my_eonr.plot_tau(y_axis='t_stat', emphasis='profile-likelihood')
     if my_eonr.base_dir is not None:
-        my_eonr.save_plot(fname=fname, fig=my_eonr.fig_eonr, dpi=dpi)
+        my_eonr.plot_save(fname=fname, fig=my_eonr.fig_eonr, dpi=dpi)
         fname_tau = 'tau' + fname[4:]
-        my_eonr.save_plot(fname=fname_tau, fig=my_eonr.fig_tau, dpi=dpi)
+        my_eonr.plot_save(fname=fname_tau, fig=my_eonr.fig_tau, dpi=dpi)
 
     plt.close("all")
 
@@ -356,9 +356,9 @@ def calc_all_siteyears(my_eonr, print_plot=False, y_min=-50,
 #    if print_plot is True:
 #        plot_and_save(my_eonr, fname='eonr_nue12g_pre.png', y_min=y_min, y_max=y_max)
 #    return my_eonr
-my_eonr.plot_tau(y_axis='t_stat', emphasis='profile-likelihood')
-# In[Run EONR function]
-base_dir = os.path.join(r'G:\SOIL\GIS\SNS\eonr\2019-03-22', units)
+
+# In[6 Run EONR function]
+base_dir = os.path.join(r'G:\SOIL\GIS\SNS\eonr\2019-03-23', units)
 #base_dir = r'C:\Users\Tyler\eonr\2019-02-10'
 my_eonr = EONR(cost_n_fert=cost_n_fert,
                cost_n_social=cost_n_social,
@@ -377,6 +377,9 @@ my_eonr = EONR(cost_n_fert=cost_n_fert,
                base_zero=True,
                print_out=False)
 
+# In[]
+my_eonr.plot_eonr()
+my_eonr.plot_tau()
 # In[Run traditional]
 social = False
 print_plot = True
@@ -388,7 +391,7 @@ cost_n_fert_list = [0, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 1]
 for cost_n_fert in cost_n_fert_list:
     cost_n_social = 0
     price_grain = 4.00
-    cost_n_fert = 0.0
+#    cost_n_fert = 0.0
     if units == 'metric':
         y_min = -100
         y_max = 1400

@@ -21,14 +21,51 @@ __license__ = (
         'conditions are subject to change at any time without prior notice.')
 __email__ = 'nigo0024@umn.edu'
 
-from setuptools import setup
 
-setup(name='EONR',
-      version='0.1',
-      description='A tool for calculating economic optimum nitrogen rates',
-      url='https://github.com/tnigon/eonr',
-      author='Tyler J. Nigon',
-      author_email='nigo0024@umn.edu',
-#      license='MIT',
-      packages=['eonr'],
-      zip_safe=False)
+import setuptools
+
+def readme():
+    with open('README.md') as readme_file:
+        return readme_file.read()
+
+def history():
+    with open('HISTORY.md') as history_file:
+        return history_file.read()
+
+requirements = [
+    'matplotlib',
+    'numpy',
+    'pandas',
+    'scikits.bootstrap',
+    'scipy',
+    'seaborn',
+    'uncertainties'
+]
+
+test_requirements = [
+    # TODO: put package test requirements here
+]
+
+setuptools.setup(name='EONR',
+                 version='1.0',
+                 description='A tool for calculating economic optimum nitrogen rates',
+                 long_description=readme(),
+                 long_description_content_type="text/markdown",
+                 url='https://github.com/tnigon/eonr',
+                 author='Tyler J. Nigon',
+                 author_email='nigo0024@umn.edu',
+                 license='MIT',
+                 packages=setuptools.find_packages(),
+                 classifiers=[
+                         'Development Status :: 2 - Pre-Alpha',
+                         'Intended Audience :: Science/Research',
+                         #        'License :: OSI Approved :: ISC License (ISCL)',
+                         'Natural Language :: English',
+                         'Operating System :: Microsoft :: Windows',
+                         'Programming Language :: Python :: 3',
+                         ],
+                include_package_data=True,
+                install_requires=requirements,
+                test_suite='tests',
+                tests_require=test_requirements,
+                zip_safe=False)

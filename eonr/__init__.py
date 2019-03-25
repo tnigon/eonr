@@ -21,8 +21,15 @@ __license__ = (
         'conditions are subject to change at any time without prior notice.')
 __email__ = 'nigo0024@umn.edu'
 
-from eonr.eonr import EONR
-from eonr.hide_print import Hide_print
 
-__all__ = ['EONR',
-           'Hide_print']
+from eonr.models import Models
+from eonr.plotting_tools import Plotting_tools
+from eonr.eonr import EONR
+#from eonr.hide_print import Hide_print
+
+name = 'eonr'
+__version__ = '1.0'
+
+#__all__ = ['EONR',
+#           'Models',
+#           'Hide_print']
