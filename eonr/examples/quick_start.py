@@ -4,7 +4,7 @@ import pandas as pd
 from eonr import EONR
 
 # In[2: Load the data]
-df_data = pd.read_csv(r'examples\minnesota_2018.csv')
+df_data = pd.read_csv(r'data\minnesota_2018.csv')
 
 # In[3: Declare the names of the nitrogen rate and grain yield columns]
 col_n_app = 'rate_n_applied_kgha'
@@ -22,6 +22,9 @@ price_grain = 0.157  # in USD per kg grain
 
 
 # In[6: Initialize an instance of EONR]
+import os
+base_dir = os.path.join(os.getcwd(), 'eonr_temp_out')
+
 my_eonr = EONR(cost_n_fert=cost_n_fert,
                price_grain=price_grain,
                col_n_app=col_n_app,
@@ -29,7 +32,8 @@ my_eonr = EONR(cost_n_fert=cost_n_fert,
                unit_currency=unit_currency,
                unit_grain=unit_grain,
                unit_fert=unit_fert,
-               unit_area=unit_area)
+               unit_area=unit_area,
+               base_dir=base_dir)
 
 # In[7: Calculate the EONR]
 my_eonr.calculate_eonr(df_data)

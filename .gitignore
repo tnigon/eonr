@@ -12,11 +12,15 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-#other files
+#data files
 *.out
 *.in
-*.png
 *.csv
+
+#design files
+*.ppt
+*.png
+*.jpg
 
 # Distribution / packaging
 .Python

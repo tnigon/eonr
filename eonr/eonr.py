@@ -73,10 +73,12 @@ class EONR(object):
                  col_n_app='rate_n_applied_lbac',
                  col_yld='yld_grain_dry_buac',
                  col_crop_nup='nup_total_lbac',
-                 col_nup_soil_fert='soil_plus_fert_n_lbac', unit_currency='$',
+                 col_nup_soil_fert='soil_plus_fert_n_lbac',
+                 col_year='year', col_location='location', col_time_n='time_n',
+                 unit_currency='$',
                  unit_fert='lbs', unit_grain='bu', unit_area='ac',
                  model='quad_plateau', ci_level=0.9, base_dir=None,
-                 base_zero=False, print_out=False):
+                 base_zero=True, print_out=False):
         self.df_data = None
         self.cost_n_fert = cost_n_fert
         self.cost_n_social = cost_n_social
@@ -86,6 +88,9 @@ class EONR(object):
         self.col_yld = col_yld
         self.col_crop_nup = col_crop_nup
         self.col_nup_soil_fert = col_nup_soil_fert
+        self.col_year = col_year
+        self.col_location = col_location
+        self.col_time_n = col_time_n
         self.unit_currency = unit_currency
         self.unit_fert = unit_fert
         self.unit_grain = unit_grain
@@ -151,6 +156,10 @@ class EONR(object):
                 os.makedirs(self.base_dir)
         else:
             self.base_dir = os.getcwd()
+            folder_name = 'eonr_temp_output'
+            self.base_dir = os.path.join(self.base_dir, folder_name)
+            if not os.path.isdir(self.base_dir):
+                os.makedirs(self.base_dir)
         self.base_dir = os.path.join(self.base_dir, 'trad_000')
 
         if self.cost_n_social > 0:
@@ -182,14 +191,67 @@ class EONR(object):
                              'scn_exp_r2': None,
                              'scn_exp_rmse': None}
 
+    def _find_trial_details(self):
+        '''
+        Uses EONR.col_XXXXXXX to get year, location, and time_n from
+        EONR.df_data
+        '''
+        df = self.df_data.copy()
+        try:
+            self.location = df.iloc[0][self.col_location]
+        except KeyError:
+            if self.location is not None:
+                print('Was not able to infer "{0}" from EONR.df_data; '
+                      '"{0}" is currently set to {1}. If this is not '
+                      'correct, adjust prior to plotting using '
+                      'EONR.set_column_names(col_location="your_loc_col_name")'
+                      ' or EONR.set_trial_details({0}="your_location")'
+                      ''.format('location', self.location))
+            else:
+                print('{0} is not currently set. You may want to set prior to '
+                      'plotting using '
+                      'EONR.set_column_names(col_location="your_loc_col_name")'
+                      ' or EONR.set_trial_details({0}="your_location")'
+                      ''.format('location'))
+        try:
+            self.year = df.iloc[0][self.col_year]
+        except KeyError:
+            if self.year is not None:
+                print('Was not able to infer "{0}" from EONR.df_data; '
+                      '"{0}" is currently set to {1}. If this is not '
+                      'correct, adjust prior to plotting using '
+                      'EONR.set_column_names(col_year="your_year_col_name")'
+                      ' or EONR.set_trial_details({0}="your_year")'
+                      ''.format('year', self.year))
+            else:
+                print('{0} is not currently set. You may want to set prior to '
+                      'plotting using '
+                      'EONR.set_column_names(col_year="your_year_col_name")'
+                      ' or EONR.set_trial_details({0}="your_year")'
+                      ''.format('year'))
+        try:
+            self.time_n = df.iloc[0][self.col_time_n]
+        except KeyError:
+            if self.time_n is not None:
+                print('Was not able to infer "{0}" from EONR.df_data; '
+                      '"{0}" is currently set to {1}. If this is not '
+                      'correct, adjust prior to plotting using '
+                      'EONR.set_column_names(col_time_n="your_time_n_col_name")'
+                      ' or EONR.set_trial_details({0}="your_time_n")'
+                      ''.format('time_n', self.time_n))
+            else:
+                print('{0} is not currently set. You may want to set prior to '
+                      'plotting using '
+                      'EONR.set_column_names(col_time_n="your_time_n_col_name")'
+                      ' or EONR.set_trial_details({0}="your_time_n")'
+                      ''.format('time_n'))
+
     def _set_df(self, df):
         '''
         Basic setup for dataframe
         '''
         self.df_data = df.copy()
-        self.location = df.iloc[0].location
-        self.year = df.iloc[0].year
-        self.time_n = df.iloc[0].time_n
+        self._find_trial_details()
         print('\nComputing {0} for {1} {2} {3}\nCost of N fertilizer: '
               '{4}{5:.2f} per {6}\nPrice grain: {7}{8:.2f} per {9}'
               ''.format(self.onr_acr, self.location, self.year, self.time_n,
@@ -1136,8 +1198,8 @@ class EONR(object):
             self.step_size = step_size
             self.guess = guess
             self.sse_full = sse_full
-            self.col_x = col_x
-            self.col_y = col_y
+#            self.col_x = col_x
+#            self.col_y = col_y
             self.cost_n_social = cost_n_social
             self.__dict__.update(kwargs)
 
@@ -1553,6 +1615,51 @@ class EONR(object):
         df_ci = pd.concat([df_ci, df_boot], axis=1)
         return df_ci
 
+    def set_column_names(self, col_n_app=None, col_yld=None, col_crop_nup=None,
+                         col_nup_soil_fert=None, col_year=None,
+                         col_location=None, col_time_n=None):
+        '''
+        Sets the column name(s) to use when accessing EONR.df_data. Any of the
+        following can be set:
+
+        <col_n_app> --> Nitrogen application rate
+        <col_yield> --> Grain yield
+        <col_crop_nup> --> Crop nitrogen uptake
+        <col_nup_soil_fert> --> Nitrogen in soil plus fertilizer (at planting)
+        <col_year> --> Year
+        <col_location> --> Experimental location
+        <col_time_n> --> Nitrogen fertilizer timing
+        year, location, or nitrogen timing (used for titles and axes
+        labels for plotting).
+        '''
+        if col_n_app is not None:
+            self.col_n_app = str(col_n_app)
+        if col_yld is not None:
+            self.col_yld = str(col_yld)
+        if col_crop_nup is not None:
+            self.col_crop_nup = str(col_crop_nup)
+        if col_nup_soil_fert is not None:
+            self.col_nup_soil_fert = str(col_nup_soil_fert)
+        if col_year is not None:
+            self.col_year = str(col_year)
+        if col_location is not None:
+            self.col_location = str(col_location)
+        if col_time_n is not None:
+            self.col_time_n = str(col_time_n)
+        self._find_trial_details()  # Use new col_name(s) to update details
+
+    def set_trial_details(self, year=None, location=None, n_timing=None):
+        '''
+        Sets the year, location, or nitrogen timing (used for titles and axes
+        labels for plotting).
+        '''
+        if year is not None:
+            self.year = int(year)
+        if location is not None:
+            self.location = location
+        if n_timing is not None:
+            self.n_timing = n_timing
+
     def plot_eonr(self, x_min=None, x_max=None, y_min=None, y_max=None,
                   style='ggplot', ci_type='profile-likelihood', ci_level=None,
                   idx=None):
@@ -1635,23 +1742,49 @@ class EONR(object):
             self.onr_name = 'Agronomic'
             self.onr_acr = 'AONR'
 
-    def calculate_eonr(self, df, col_n_app=None, col_yld=None, col_crop_nup=None,
-                       col_nup_soil_fert=None, bootstrap_ci=True):
+    def calculate_eonr(self, df, col_n_app=None, col_yld=None,
+                       col_crop_nup=None, col_nup_soil_fert=None,
+                       col_year=None, col_location=None, col_time_n=None,
+                       bootstrap_ci=True):
         '''
         Calculates EONR for <df> and saves results to self
-        <n_steps> is the number of values across the range of N rates for which
-        the gross return and cost curves will be calculated. As <n_steps>
-        increases, the EONR calculation becomes more precise (recommended >
-        300).
+
+        <col_n_app> is the dataframe column name indicating the nitrogen
+        fertilizer rate
+        <col_yld) is the dataframe column name indicating the grain yield
+        These variables are required (they must either be passed in this
+        function, or must be set during the initialization of EONR().
+
+        <col_crop_nup> is the dataframe column name indicating the nitrogen
+        taken up by the crop
+        <col_nup_soil_fert> is the dataframe column name indicating the total
+        nitrogen contained in the soil and applied fertilizer
+        These variables are required to calculate the optimum nitrogen rate
+        when considering a social cost of nitrogen, and therefore,
+        EONR.cost_n_social must also be set.
+
+        <col_year> is the dataframe column name indicating the experimental
+        year
+        <col_location> is the dataframe column name indicating the experimental
+        location
+        <col_time_n> is the dataframe column name indicating the nitrogen
+        application timing
+        These variables are purely optional. They only affect the titles and
+        axes labels of the plots.
+
+        <bootstrap_ci> indicates whether the bootstraped confidence intervals
+        should be computed. If calculating the EONR for many sites or economic
+        scenarios, it may be desirable to set <bootstrap_ci> to False because
+        the bootstrap confidence intervals take the most time to compute.
         '''
         if col_n_app is not None:
-            self.col_n_app = col_n_app
+            self.col_n_app = str(col_n_app)
         if col_yld is not None:
-            self.col_yld = col_yld
+            self.col_yld = str(col_yld)
         if col_crop_nup is not None:
-            self.col_crop_nup = col_crop_nup
+            self.col_crop_nup = str(col_crop_nup)
         if col_nup_soil_fert is not None:
-            self.col_nup_soil_fert = col_nup_soil_fert
+            self.col_nup_soil_fert = str(col_nup_soil_fert)
         self.bootstrap_ci = bootstrap_ci
         self._reset_temp()
         self._set_df(df)
@@ -1676,9 +1809,13 @@ class EONR(object):
         if self.print_out is True:
             self._print_grtn()
         self._print_results()
+        if self.base_zero is True:
+            base_zero = self.coefs_grtn_primary['b0'].n
+        else:
+            base_zero = self.coefs_grtn['b0'].n
         results = [[self.price_grain, self.cost_n_fert, self.cost_n_social,
                     self.price_ratio, self.location, self.year, self.time_n,
-                    self.coefs_grtn_primary['b0'].n, self.eonr,
+                    base_zero, self.eonr,
                     self.coefs_nrtn['theta2_error'],
                     self.ci_level, self.df_ci_temp['wald_l'].item(),
                     self.df_ci_temp['wald_u'].item(),

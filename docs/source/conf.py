@@ -45,6 +45,7 @@ extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.doctest',
     'recommonmark',
+    'sphinx.ext.mathjax',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -90,14 +91,17 @@ html_theme_options = {
     'navbar_title': "EONR",
     'navbar_links': [
         # ('Home', 'home'),
-        ('Tutorial', 'tutorial'),
-        ('License', 'license'),
+        # ('Quick Start', 'quick_start.md'),
+        # ('License', 'license.md'),
         ('Github', "https://github.com/tnigon/eonr", True)
     ],
-    'navbar_pagenav_name': "Site",
+    'navbar_pagenav_name': "Page Menu",
     'bootswatch_theme': "Flatly",
     'bootstrap_version': "3",
     }
+
+
+
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
@@ -122,6 +126,16 @@ htmlhelp_basename = 'eonrdoc'
 
 
 # -- Options for LaTeX output ------------------------------------------------
+mathjax_path="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"
+
+mathjax_options = {
+    'integrity': 'sha384-......',
+}
+
+mathjax_config = {
+    'extensions': ['tex2jax.js'],
+    'jax': ['input/TeX', 'output/HTML-CSS'],
+}
 
 latex_elements = {
     # The paper size ('letterpaper' or 'a4paper').

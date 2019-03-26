@@ -1,17 +1,3 @@
-## README
-`EONR` is a Python package for computing the economic optimum nitrogen fertilizer rate using data from agronomic field trials under economic conditions defined by the user (i.e., grain price and fertilizer cost).
-The concept behind the *Economic Optimum Nitrogen Rate* approach (also referred to as the *Maximum Return to Nitrogen* approach) is to make the most favorable nitrogen fertilizer recommendation considering three variables:
-
-* Grain price ($ per kg)
-* Fertilizer cost ($ per kg)
-* Grain yield response to nitrogen fertilizer (modeled from input data)
-
-![](docs/source/img/intro_diagram_grey.png)
-
-On the left is a corn nitrogen rate response experiment in Minnesota (photo captured in July when the crop is about shoulder-high). Notice the different shades of green in the crop canopy - the dark, lush green is indicative of sufficient nitrogen availability and the lighter green is indicative of nitrogen stress. The ``EONR`` Python package was used to compute the economic optimum nitrogen rate (and its 90% confidence intervals) using experimental data, as illustrated in the plot on the right.
-
-For more information about how the economic optimum nitrogen rate is calculated, see the [`EONR` Documentation](docs/background.md).
-
 ## Quick Start
 
 The EONR package was designed to be used with as little Python expertise as possible. However, you may find it to your benefit to become at least a little bit familiar with Python before using EONR. If you're a beginner, I recommend reading the [basic Python Tutorial](https://docs.python.org/2/tutorial/ " Basic Python tutorial") or [Think Python](http://www.greenteapress.com/thinkpython/ "Think Python").
@@ -112,40 +98,6 @@ my_eonr.plot_eonr(x_min=-5, x_max=300, y_min=-100, y_max=1400)
 ```
 **Figure 2:** The plotted results - blue points are experimental data (yield value in USD as a function of nitrogen rate), the blue line is the best-fit quadratic-plateau model representing gross return to nitrogen, the red line is the cost of nitrogen fertilizer, and the green line is the difference between the two and represents the net return to nitrogen.
 
-![](docs/source/img/quick_start_eonr_2012_mn.png "quick-start-eonr-plot")
+![](img/quick_start_eonr_2012_mn.png "quick-start-eonr-plot")
 
  The point on the x-axis where the net return curve (green) reaches the maximum return is the **Economic Optimum Nitrogen Rate (EONR)**. The return to nitrogen at that maximum point is the **Maximum Return to Nitrogen (MRTN)**, indicating the profit that is earned at the economic optimum nitrogen rate. The 90% confidence intervals are illustrated as a transparent grey box surrounding the EONR/MRTN point.
-
-## Troubleshooting
-Please report any issues you encounter through the [Github issue tracker](https://github.com/tnigon/eonr).
-
-## License
-
-*Copyright &copy; 2019*
-
-*Tyler J Nigon*
-
-*All rights reserved*
-
-### The MIT license
-<p align="center">
-   Permission is hereby granted, free of charge, to any person obtaining a copy
-   of this software and associated documentation files (the "Software"), to deal
-   in the Software without restriction, including without limitation the rights
-   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-   copies of the Software, and to permit persons to whom the Software is
-   furnished to do so, subject to the following conditions:
-</p>
-<p align="center">
-   The above copyright notice and this permission notice shall be included in all
-   copies or substantial portions of the Software.
-</p>
-<p align="center">
-   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-   SOFTWARE.
-</p>
