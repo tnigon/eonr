@@ -37,7 +37,7 @@ class Plotting_tools(object):
         self.col_n_app = EONR.col_n_app
         self.col_yld = EONR.col_yld
         self.col_crop_nup = EONR.col_crop_nup
-        self.col_nup_soil_fert = EONR.col_nup_soil_fert
+        self.col_n_avail = EONR.col_n_avail
         self.unit_currency = EONR.unit_currency
         self.unit_fert = EONR.unit_fert
         self.unit_grain = EONR.unit_grain
@@ -702,7 +702,7 @@ class Plotting_tools(object):
                           [self.palette[0]], ax=g.ax)
         if self.cost_n_social > 0:
             try:
-                self._plot_points(self.col_nup_soil_fert, 'social_cost_n',
+                self._plot_points(self.col_n_avail, 'social_cost_n',
                                   self.df_data, [self.palette[8]], ax=g.ax)
             except KeyError as err:
                 print('{0}\nFixed social cost of N was used, so points will '
@@ -819,7 +819,7 @@ class Plotting_tools(object):
         self.col_n_app = EONR.col_n_app
         self.col_yld = EONR.col_yld
         self.col_crop_nup = EONR.col_crop_nup
-        self.col_nup_soil_fert = EONR.col_nup_soil_fert
+        self.col_n_avail = EONR.col_n_avail
         self.unit_currency = EONR.unit_currency
         self.unit_fert = EONR.unit_fert
         self.unit_grain = EONR.unit_grain

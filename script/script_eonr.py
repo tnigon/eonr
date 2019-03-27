@@ -358,7 +358,7 @@ def calc_all_siteyears(my_eonr, print_plot=False, y_min=-50,
 #    return my_eonr
 
 # In[6 Run EONR function]
-base_dir = os.path.join(r'G:\SOIL\GIS\SNS\eonr\2019-03-24', units)
+base_dir = os.path.join(r'G:\SOIL\GIS\SNS\eonr\2019-03-26', units)
 #base_dir = r'C:\Users\Tyler\eonr\2019-02-10'
 my_eonr = EONR(cost_n_fert=cost_n_fert,
                cost_n_social=cost_n_social,
@@ -393,7 +393,7 @@ cost_n_fert_list = [0, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 1]
 for cost_n_fert in cost_n_fert_list:
     cost_n_social = 0
     price_grain = 4.00
-    cost_n_fert = 0.0
+#    cost_n_fert = 0.0
     if units == 'metric':
         y_min = -100
         y_max = 1400
@@ -418,9 +418,9 @@ y_max = 700
 cost_n_social_list = [0.01, 0.1, 0.25, 0.5, 1, 2, 3, 5]
 
 for cost_n_social in cost_n_social_list:
-    cost_n_fert = 0.4
+    cost_n_fert = 0.6
     price_grain = 4.00
-#    cost_n_social = 1
+    cost_n_social = 0.5
     if units == 'metric':
         y_min = -600
         y_max = 1700

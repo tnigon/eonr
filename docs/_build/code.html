@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="python">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>8. EONR API2 &#8212; eonr 1.0.0 documentation</title>
+    <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <script async="async" integrity="sha384-......" type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"extensions": ["tex2jax.js"], "jax": ["input/TeX", "output/HTML-CSS"], "tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    <script type="text/javascript" src="_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="7. License" href="license.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="index.html">
+          EONR</a>
+        <span class="navbar-text navbar-version pull-left"><b></b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="https://github.com/tnigon/eonr">Github</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">1. Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quick_start.html">2. Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="background.html">3. Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">4. Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">5. API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="equations.html">6. Equations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">7. License</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">8. EONR API2</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page Menu <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">8. EONR API2</a></li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+  <li>
+    <a href="license.html" title="Previous Chapter: 7. License"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; 7. License</span>
+    </a>
+  </li>
+              
+            
+            
+            
+            
+              <li class="hidden-sm">
+<div id="sourcelink">
+  <a href="_sources/code.rst.txt"
+     rel="nofollow">Source</a>
+</div></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12 content">
+      
+  <div class="section" id="module-eonr">
+<span id="eonr-api2"></span><h1>8. EONR API2<a class="headerlink" href="#module-eonr" title="Permalink to this headline">¶</a></h1>
+<p>© 2019 Regents of the University of Minnesota. All rights reserved.</p>
+<dl class="class">
+<dt id="eonr.EONR">
+<em class="property">class </em><code class="descclassname">eonr.</code><code class="descname">EONR</code><span class="sig-paren">(</span><em>cost_n_fert=0.5</em>, <em>cost_n_social=0</em>, <em>price_grain=3.0</em>, <em>col_n_app='rate_n_applied_lbac'</em>, <em>col_yld='yld_grain_dry_buac'</em>, <em>col_crop_nup='nup_total_lbac'</em>, <em>col_n_avail='soil_plus_fert_n_lbac'</em>, <em>col_year='year'</em>, <em>col_location='location'</em>, <em>col_time_n='time_n'</em>, <em>unit_currency='$'</em>, <em>unit_fert='lbs'</em>, <em>unit_grain='bu'</em>, <em>unit_area='ac'</em>, <em>model='quad_plateau'</em>, <em>ci_level=0.9</em>, <em>base_dir=None</em>, <em>base_zero=True</em>, <em>print_out=False</em><span class="sig-paren">)</span><a class="headerlink" href="#eonr.EONR" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates Economic Optimum N Rate given table of N applied and yield</p>
+<p>&lt;cost_n_fert&gt; --&gt; Cost of N fertilizer
+&lt;cost_n_social&gt; --&gt; Social cost of N fertilier
+&lt;price_grain&gt; --&gt; Price of grain
+&lt;col_n_app&gt; --&gt; Column name pointing to the rate of applied N fertilizer</p>
+<blockquote>
+<div>data</div></blockquote>
+<p>&lt;col_yld&gt; --&gt; Column name pointing to the grain yield data
+&lt;col_crop_nup&gt; --&gt; Column name pointing to crop N uptake data
+&lt;col_n_soil_fert&gt; --&gt; Column name pointing to available soil N plus</p>
+<blockquote>
+<div>fertilizer</div></blockquote>
+<p>&lt;unit_currency&gt; --&gt; String describing the curency unit (default: '$')
+&lt;unit_fert&gt; --&gt; String describing the &quot;fertilizer&quot; unit (default: 'lbs')
+&lt;unit_grain&gt; --&gt; String describing the &quot;grain&quot; unit (default: 'bu')
+&lt;unit_area&gt; --&gt; String descibing the &quot;area&quot; unit (default: 'ac')
+&lt;model&gt; --&gt; Statistical model used to fit N rate response. 'quad_platau' =</p>
+<blockquote>
+<div>quadratic plateau; 'lin_plateau = linear plateau (default:
+'quad_plateau')</div></blockquote>
+<dl class="docutils">
+<dt>&lt;ci_level&gt; --&gt; Confidence interval level to save in eonr.df_results and to</dt>
+<dd>display in the EONR plot (confidence intervals are calculated at many
+alpha levels)</dd>
+</dl>
+<p>&lt;base_dir&gt; --&gt; Base file directory when saving results
+&lt;base_zero&gt; --&gt; Determines if gross return to N is expressed as an absolute</p>
+<blockquote>
+<div>value or relative to the yield/return at the zero rate (i.e., at the
+y-intercept of the absolute gross response to N curve); default: False</div></blockquote>
+<dl class="docutils">
+<dt>&lt;print_out&gt; --&gt; Determines if &quot;non-essential&quot; results are printed in the</dt>
+<dd>Python console (default: False)</dd>
+</dl>
+<dl class="method">
+<dt id="eonr.EONR.calculate_eonr">
+<code class="descname">calculate_eonr</code><span class="sig-paren">(</span><em>df</em>, <em>col_n_app=None</em>, <em>col_yld=None</em>, <em>col_crop_nup=None</em>, <em>col_n_avail=None</em>, <em>col_year=None</em>, <em>col_location=None</em>, <em>col_time_n=None</em>, <em>bootstrap_ci=True</em><span class="sig-paren">)</span><a class="headerlink" href="#eonr.EONR.calculate_eonr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates EONR for &lt;df&gt; and saves results to self</p>
+<p>&lt;col_n_app&gt; is the dataframe column name indicating the nitrogen
+fertilizer rate
+&lt;col_yld) is the dataframe column name indicating the grain yield
+These variables are required (they must either be passed in this
+function, or must be set during the initialization of EONR().</p>
+<p>&lt;col_crop_nup&gt; is the dataframe column name indicating the nitrogen
+taken up by the crop
+&lt;col_n_avail&gt; is the dataframe column name indicating the available
+nitrogen in soil at planting (inlcluding all fertilizer throughout the
+season)
+These variables are required to calculate the optimum nitrogen rate
+when considering a social cost of nitrogen, and therefore,
+EONR.cost_n_social must also be set.</p>
+<p>&lt;col_year&gt; is the dataframe column name indicating the experimental
+year
+&lt;col_location&gt; is the dataframe column name indicating the experimental
+location
+&lt;col_time_n&gt; is the dataframe column name indicating the nitrogen
+application timing
+These variables are purely optional. They only affect the titles and
+axes labels of the plots.</p>
+<p>&lt;bootstrap_ci&gt; indicates whether the bootstraped confidence intervals
+should be computed. If calculating the EONR for many sites or economic
+scenarios, it may be desirable to set &lt;bootstrap_ci&gt; to False because
+the bootstrap confidence intervals take the most time to compute.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="eonr.EONR.eonr_delta">
+<code class="descname">eonr_delta</code><span class="sig-paren">(</span><em>df_results=None</em><span class="sig-paren">)</span><a class="headerlink" href="#eonr.EONR.eonr_delta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inserts a new column &quot;eonr_delta&quot; into df_results. All data is filtered
+by location, year, and N timing, then &quot;eonr_delta&quot; is calculated as the
+difference from the economic scenario resulting in the highest EONR</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="eonr.EONR.plot_eonr">
+<code class="descname">plot_eonr</code><span class="sig-paren">(</span><em>x_min=None</em>, <em>x_max=None</em>, <em>y_min=None</em>, <em>y_max=None</em>, <em>style='ggplot'</em>, <em>ci_type='profile-likelihood'</em>, <em>ci_level=None</em>, <em>idx=None</em><span class="sig-paren">)</span><a class="headerlink" href="#eonr.EONR.plot_eonr" title="Permalink to this definition">¶</a></dt>
+<dd><p>&lt;dynamically modified based on contents of Plotting_tools.plot_eonr --
+load an instance of EONR to see docstring&gt;</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="eonr.EONR.plot_profile_likelihood">
+<code class="descname">plot_profile_likelihood</code><span class="sig-paren">(</span><em>df_ci=None</em>, <em>n_rows=3</em><span class="sig-paren">)</span><a class="headerlink" href="#eonr.EONR.plot_profile_likelihood" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots the profile likelihood confidence curve for a range of alpha
+values (see Cook and Weisberg, 1990)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="eonr.EONR.plot_save">
+<code class="descname">plot_save</code><span class="sig-paren">(</span><em>base_dir=None</em>, <em>fname='eonr_sns17w_pre.png'</em>, <em>fig=None</em>, <em>dpi=300</em><span class="sig-paren">)</span><a class="headerlink" href="#eonr.EONR.plot_save" title="Permalink to this definition">¶</a></dt>
+<dd><p>&lt;dynamically modified based on contents of Plotting_tools.plot_eonr --
+load an instance of EONR to see docstring&gt;</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="eonr.EONR.plot_tau">
+<code class="descname">plot_tau</code><span class="sig-paren">(</span><em>y_axis='t_stat'</em>, <em>emphasis='profile-likelihood'</em>, <em>run_n=None</em><span class="sig-paren">)</span><a class="headerlink" href="#eonr.EONR.plot_tau" title="Permalink to this definition">¶</a></dt>
+<dd><p>&lt;dynamically modified based on contents of Plotting_tools.plot_eonr --
+load an instance of EONR to see docstring&gt;</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="eonr.EONR.print_results">
+<code class="descname">print_results</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#eonr.EONR.print_results" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Prints the coefficients comprising the Economic Optimum Nitrogen Rate:</dt>
+<dd>&lt;mrtn&gt;
+&lt;eonr&gt;</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="eonr.EONR.set_column_names">
+<code class="descname">set_column_names</code><span class="sig-paren">(</span><em>col_n_app=None</em>, <em>col_yld=None</em>, <em>col_crop_nup=None</em>, <em>col_n_avail=None</em>, <em>col_year=None</em>, <em>col_location=None</em>, <em>col_time_n=None</em><span class="sig-paren">)</span><a class="headerlink" href="#eonr.EONR.set_column_names" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the column name(s) to use when accessing EONR.df_data. Any of the
+following can be set:</p>
+<p>&lt;col_n_app&gt; --&gt; Nitrogen application rate
+&lt;col_yield&gt; --&gt; Grain yield
+&lt;col_crop_nup&gt; --&gt; Crop nitrogen uptake
+&lt;col_n_avail&gt; --&gt; Available nitrogen in soil nitrogen in soil at
+planting (inlcluding all fertilizer throughout the season)
+&lt;col_year&gt; --&gt; Year
+&lt;col_location&gt; --&gt; Experimental location
+&lt;col_time_n&gt; --&gt; Nitrogen fertilizer timing
+year, location, or nitrogen timing (used for titles and axes
+labels for plotting).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="eonr.EONR.set_trial_details">
+<code class="descname">set_trial_details</code><span class="sig-paren">(</span><em>year=None</em>, <em>location=None</em>, <em>n_timing=None</em><span class="sig-paren">)</span><a class="headerlink" href="#eonr.EONR.set_trial_details" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the year, location, or nitrogen timing (used for titles and axes
+labels for plotting).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="eonr.EONR.update_econ">
+<code class="descname">update_econ</code><span class="sig-paren">(</span><em>cost_n_fert=None</em>, <em>cost_n_social=None</em>, <em>price_grain=None</em><span class="sig-paren">)</span><a class="headerlink" href="#eonr.EONR.update_econ" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets/resets the fertilizer cost, social cost of N, and price of grain</p>
+<p>Recomputes the price ratio based on this information, then adjusts the
+lowest level folder of base_dir to the ratio (e.g.,     rad_0010)</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2019, Tyler J Nigon.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

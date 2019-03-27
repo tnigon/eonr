@@ -40,30 +40,30 @@ class EONR(object):
     '''
     Calculates Economic Optimum N Rate given table of N applied and yield
 
-    <cost_n_fert> --> Cost of N fertilizer
-    <cost_n_social> --> Social cost of N fertilier
-    <price_grain> --> Price of grain
-    <col_n_app> --> Column name pointing to the rate of applied N fertilizer
+    <cost_n_fert (float): Cost of N fertilizer
+    <cost_n_social (float): Social cost of N fertilier
+    <price_grain (float): Price of grain
+    <col_n_app> (str) Column name pointing to the rate of applied N fertilizer
         data
-    <col_yld> --> Column name pointing to the grain yield data
-    <col_crop_nup> --> Column name pointing to crop N uptake data
-    <col_n_soil_fert> --> Column name pointing to available soil N plus
+    <col_yld> (str) Column name pointing to the grain yield data
+    <col_crop_nup (str) Column name pointing to crop N uptake data
+    <col_n_soil_fert (str) Column name pointing to available soil N plus
         fertilizer
-    <unit_currency> --> String describing the curency unit (default: '$')
-    <unit_fert> --> String describing the "fertilizer" unit (default: 'lbs')
-    <unit_grain> --> String describing the "grain" unit (default: 'bu')
-    <unit_area> --> String descibing the "area" unit (default: 'ac')
-    <model> --> Statistical model used to fit N rate response. 'quad_platau' =
+    <unit_currency (str) String describing the curency unit (default: '$')
+    <unit_fert (str) String describing the "fertilizer" unit (default: 'lbs')
+    <unit_grain (str): String describing the "grain" unit (default: 'bu')
+    <unit_area (str): String descibing the "area" unit (default: 'ac')
+    <model (str): Statistical model used to fit N rate response. 'quad_platau' =
         quadratic plateau; 'lin_plateau = linear plateau (default:
         'quad_plateau')
-    <ci_level> --> Confidence interval level to save in eonr.df_results and to
+    <ci_level (float): Confidence interval level to save in eonr.df_results and to
         display in the EONR plot (confidence intervals are calculated at many
         alpha levels)
-    <base_dir> --> Base file directory when saving results
-    <base_zero> --> Determines if gross return to N is expressed as an absolute
+    <base_dir (str): Base file directory when saving results
+    <base_zero (bool): Determines if gross return to N is expressed as an absolute
         value or relative to the yield/return at the zero rate (i.e., at the
         y-intercept of the absolute gross response to N curve); default: False
-    <print_out> --> Determines if "non-essential" results are printed in the
+    <print_out (bool): Determines if "non-essential" results are printed in the
         Python console (default: False)
     '''
     def __init__(self,
@@ -73,7 +73,7 @@ class EONR(object):
                  col_n_app='rate_n_applied_lbac',
                  col_yld='yld_grain_dry_buac',
                  col_crop_nup='nup_total_lbac',
-                 col_nup_soil_fert='soil_plus_fert_n_lbac',
+                 col_n_avail='soil_plus_fert_n_lbac',
                  col_year='year', col_location='location', col_time_n='time_n',
                  unit_currency='$',
                  unit_fert='lbs', unit_grain='bu', unit_area='ac',
@@ -87,7 +87,7 @@ class EONR(object):
         self.col_n_app = col_n_app
         self.col_yld = col_yld
         self.col_crop_nup = col_crop_nup
-        self.col_nup_soil_fert = col_nup_soil_fert
+        self.col_n_avail = col_n_avail
         self.col_year = col_year
         self.col_location = col_location
         self.col_time_n = col_time_n
@@ -687,7 +687,7 @@ class EONR(object):
         Computes the slope and intercept for the model describing the added
         social cost of N
         '''
-        self.df_data['resid_n'] = (self.df_data[self.col_nup_soil_fert] -
+        self.df_data['resid_n'] = (self.df_data[self.col_n_avail] -
                                    self.df_data[self.col_crop_nup])
         self.df_data['social_cost_n'] = self.df_data['resid_n'] *\
             self.cost_n_social
@@ -751,8 +751,8 @@ class EONR(object):
         '''
         Computes quadratic plateau coeficients using numpy.polyfit()
 
-        <col_x> --> df column name for x axis
-        <col_y> --> df column name for y axis
+        <col_x (str): df column name for x axis
+        <col_y (str): df column name for y axis
         '''
         df_data = self.df_data.copy()
         x = df_data[col_x].values
@@ -1141,9 +1141,9 @@ class EONR(object):
         <p> are used to determine tau (from the t-statistic)
         From page 104 - 105 (Gallant, 1987)
 
-        <n> --> number of samples
-        <p> --> number of parameters
-        <s2c> --> the variance of the EONR value(notation from Gallant, 1987)
+        <n (int): number of samples
+        <p (int): number of parameters
+        <s2c (float): the variance of the EONR value(notation from Gallant, 1987)
 
         s2 = SSE / (n - p)
         c = s2c / s2
@@ -1616,20 +1616,29 @@ class EONR(object):
         return df_ci
 
     def set_column_names(self, col_n_app=None, col_yld=None, col_crop_nup=None,
-                         col_nup_soil_fert=None, col_year=None,
+                         col_n_avail=None, col_year=None,
                          col_location=None, col_time_n=None):
-        '''
-        Sets the column name(s) to use when accessing EONR.df_data. Any of the
-        following can be set:
+        '''Sets the column name(s) for `EONR.df_data`
 
-        <col_n_app> --> Nitrogen application rate
-        <col_yield> --> Grain yield
-        <col_crop_nup> --> Crop nitrogen uptake
-        <col_nup_soil_fert> --> Nitrogen in soil plus fertilizer (at planting)
-        <col_year> --> Year
-        <col_location> --> Experimental location
-        <col_time_n> --> Nitrogen fertilizer timing
-        year, location, or nitrogen timing (used for titles and axes
+        Parameters:
+            col_n_app (str): Column name for nitrogen application rate (default
+            is None)
+            col_yield (str): Column name for grain yield (default is None)
+            col_crop_nup (str): Column name for crop nitrogen uptake (default
+            is None)
+            col_n_avail (str): Column name for available nitrogen in soil at
+            planting (inlcluding all fertilizer throughout the season) (default
+            is None)
+            col_year (str): Column name for year (default is None)
+            col_location (str): Column name for experimental location (default
+            is None)
+            col_time_n (str): Column name for nitrogen fertilizer timing
+            (default is None)
+
+        Returns:
+            None
+
+        *Note that year, location, or nitrogen timing (used for titles and axes
         labels for plotting).
         '''
         if col_n_app is not None:
@@ -1638,8 +1647,8 @@ class EONR(object):
             self.col_yld = str(col_yld)
         if col_crop_nup is not None:
             self.col_crop_nup = str(col_crop_nup)
-        if col_nup_soil_fert is not None:
-            self.col_nup_soil_fert = str(col_nup_soil_fert)
+        if col_n_avail is not None:
+            self.col_n_avail = str(col_n_avail)
         if col_year is not None:
             self.col_year = str(col_year)
         if col_location is not None:
@@ -1700,8 +1709,8 @@ class EONR(object):
         self.plotting_tools.plot_save(base_dir=base_dir, fname=fname, fig=fig,
                                       dpi=dpi)
 
-    def set_ratio(self, cost_n_fert=None, cost_n_social=None,
-                  price_grain=None):
+    def update_econ(self, cost_n_fert=None, cost_n_social=None,
+                    price_grain=None):
         '''
         Sets/resets the fertilizer cost, social cost of N, and price of grain
 
@@ -1743,7 +1752,7 @@ class EONR(object):
             self.onr_acr = 'AONR'
 
     def calculate_eonr(self, df, col_n_app=None, col_yld=None,
-                       col_crop_nup=None, col_nup_soil_fert=None,
+                       col_crop_nup=None, col_n_avail=None,
                        col_year=None, col_location=None, col_time_n=None,
                        bootstrap_ci=True):
         '''
@@ -1757,8 +1766,9 @@ class EONR(object):
 
         <col_crop_nup> is the dataframe column name indicating the nitrogen
         taken up by the crop
-        <col_nup_soil_fert> is the dataframe column name indicating the total
-        nitrogen contained in the soil and applied fertilizer
+        <col_n_avail> is the dataframe column name indicating the available
+        nitrogen in soil at planting (inlcluding all fertilizer throughout the
+        season)
         These variables are required to calculate the optimum nitrogen rate
         when considering a social cost of nitrogen, and therefore,
         EONR.cost_n_social must also be set.
@@ -1783,15 +1793,15 @@ class EONR(object):
             self.col_yld = str(col_yld)
         if col_crop_nup is not None:
             self.col_crop_nup = str(col_crop_nup)
-        if col_nup_soil_fert is not None:
-            self.col_nup_soil_fert = str(col_nup_soil_fert)
+        if col_n_avail is not None:
+            self.col_n_avail = str(col_n_avail)
         self.bootstrap_ci = bootstrap_ci
         self._reset_temp()
         self._set_df(df)
         self._replace_missing_vals(missing_val='.')
         self._calc_grtn()
         if self.cost_n_social > 0:
-            self._calc_social_cost(col_x=self.col_nup_soil_fert,
+            self._calc_social_cost(col_x=self.col_n_avail,
                                    col_y='social_cost_n')
         self._calc_nrtn(col_x=self.col_n_app, col_y='grtn')
         self._solve_eonr()

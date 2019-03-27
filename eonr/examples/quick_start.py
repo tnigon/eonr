@@ -4,7 +4,7 @@ import pandas as pd
 from eonr import EONR
 
 # In[2: Load the data]
-df_data = pd.read_csv(r'data\minnesota_2018.csv')
+df_data = pd.read_csv(r'data\minnesota_2012.csv')
 
 # In[3: Declare the names of the nitrogen rate and grain yield columns]
 col_n_app = 'rate_n_applied_kgha'

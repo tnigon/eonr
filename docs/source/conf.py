@@ -45,6 +45,7 @@ extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.doctest',
     'recommonmark',
+    'nbsphinx',
     'sphinx.ext.mathjax',
 ]
 
