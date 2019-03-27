@@ -513,7 +513,8 @@ class Plotting_tools(object):
                 y_val = tau_pair[0]
                 ymax = (tau_pair[0] - y_min) / (y_max - y_min)
 
-            if len(tau_list) - idx <= 5:
+            # skips 0.7 CI
+            if len(tau_list) - idx <= 6 and len(tau_list) - idx != 5:
                 g.ax.axhline(y_val, xmin=xmin, xmax=xmax, linestyle='--',
                              linewidth=0.5, color='#7b7b7b',
                              label='{0:.2f}'.format(tau_pair[1]),
@@ -553,7 +554,7 @@ class Plotting_tools(object):
             g.ax.plot(df_ci['pl_l'], y_ci,
                       color=self.palette[2], linestyle='--',
                       linewidth=lw_thick,
-                      label='Profile Likelihood', zorder=5)
+                      label='Profile-likelihood', zorder=5)
             g.ax.plot(df_ci['pl_u'], y_ci,
                       color=self.palette[2], linestyle='--',
                       linewidth=lw_thick,
@@ -679,22 +680,30 @@ class Plotting_tools(object):
         text_obj.prop.set_size(size_font)
         cax.add_artist(text_obj)
 
-    def plot_eonr(self, x_min=None, x_max=None, y_min=None, y_max=None,
-                  style='ggplot', ci_type='profile-likelihood', ci_level=None,
-                  idx=None):
-        '''
-        Plot EONR, MRTN, GRTN, and N cost
-        <style> can be any of the options supported by matplotlib:
-        https://tonysyu.github.io/raw_content/matplotlib-style-gallery/gallery.html
-        <ci_type> can be 'wald', 'profile-likelihood', or 'bootstrap':
-            'wald' uses uniform conf. ints (not recommended for EONR data)
-            'profile-likelihood' is based on work from Cook and Weisberg, 1990
-                and is demonstrated for EONR by Hernandez and Mulla, 2008
-            'bootstrap' uses a bootstraping method to explore the sampling
-                distribution of the EONR to estimate the conf. ints
-                (demonstrated by Hernandez and Mulla, 2008)
-        <ci_level> can be set to manually adjust the confidence level to
-            display on the plot (defaults to eonr.ci_level)
+    def plot_eonr(self, ci_type='profile-likelihood', ci_level=None,
+                  run_n=None, x_min=None, x_max=None, y_min=None, y_max=None,
+                  style='ggplot'):
+        '''Plots EONR, MRTN, GRTN, net return, and nitrogen cost
+
+        Parameters:
+            ci_type (str): Indicates which confidence interval type should be
+                plotted. Options are 'wald', to plot the Wald
+                CIs; 'profile-likelihood', to plot the profile-likelihood
+                CIs; or 'bootstrap', to plot the bootstrap CIs (default:
+                'profile-likelihood').
+            ci_level (float): The confidence interval level to be plotted, and
+                must be one of the values in EONR.ci_list. If None, uses the
+                EONR.ci_level (default: None).
+            run_n (int): NOT IMPLEMENTED. The run number to plot, as indicated
+                in EONR.df_results; if None, uses the most recent, or maximum,
+                run_n in EONR.df_results (default: None).
+            x_min (int): The minimum x-bounds of the plot (default: None)
+            x_max (int): The maximum x-bounds of the plot (default: None)
+            y_min (int): The minimum y-bounds of the plot (default: None)
+            y_max (int): The maximum y-bounds of the plot (default: None)
+            style (str): The style of the plolt; can be any of the options
+                supported by [matplotlib]
+                (https://tonysyu.github.io/raw_content/matplotlib-style-gallery/gallery.html)
         '''
         self._set_style(style)
         g = sns.FacetGrid(self.df_data)
@@ -722,12 +731,68 @@ class Plotting_tools(object):
 
         self.fig_eonr = g
 
+    def plot_save(self, fname=None, base_dir=None, fig=None,
+                  dpi=300):
+        '''Saves a generated matplotlib figure to file
+
+        Parameters:
+            fname (str): Filename to save plot to (default: None)
+            base_dir (str): Base file directory when saving results (default:
+                None)
+            fig (eonr.fig): EONR figure object to save (default: None)
+            dpi (int): Resolution to save the figure to in dots per inch
+                (default: 300)
+        '''
+        if fig is None and self.fig_eonr is not None:
+            fig = self.fig_eonr
+        elif fig is None and self.fig_tau is not None:
+            fig = self.fig_eonr
+        else:  # fig is None, will get caught by assert statement
+            pass
+        msg = ('A figure must be generated first. Please execute '
+               'EONR.plot_eonr() or EONR.plot_tau() first..\n')
+        assert fig is not None, msg
+
+        if fname is None:
+            if (self.location is not None and self.year is not None and
+                    self.time_n is not None):
+                fname = 'eonr_{0}_{1}_{2}.png'.format(self.location, self.year,
+                                                      self.time_n)
+            elif (self.location is not None and self.year is not None):
+                fname = 'eonr_{0}_{1}.png'.format(self.location, self.year)
+            elif (self.location is not None):
+                fname = 'eonr_{0}.png'.format(self.location)
+            elif (self.year is not None):
+                fname = 'eonr_{0}.png'.format(self.year)
+            else:
+                fname = 'eonr_figure.png'
+        if base_dir is None:
+            base_dir = self.base_dir
+        if not os.path.isdir(base_dir):
+            os.mkdir(base_dir)
+        if os.path.dirname(fname) == '':  # passing just file, add to base_dir
+            fname = os.path.join(base_dir, fname)
+        else:  # passing the entire filepath, just use fname
+            fname = fname
+        fig.savefig(fname, dpi=dpi)
+
     def plot_tau(self, y_axis='t_stat', emphasis='profile-likelihood',
                  run_n=None):
-        '''
-        Plots the t-statistic as a function of optimum nitrogen rate
-        <y_axis> --> value to plot on the y-axis; change to 'level' to plot the
-            confidence level as a function of EOR instead of tau
+        '''Plots the test statistic as a function nitrogen rate
+
+        Parameters:
+            y_axis (str): Value to plot on the y-axis. Options are 't_stat', to
+                plot the *T statistic*; 'f_stat', to plot the *F-statistic*;
+                or 'level', to plot the *confidence level*; (default:
+                't_stat').
+            emphasis (str): Indicates which confidence interval type, if any,
+                should be emphasized. Options are 'wald', to empahsize the Wald
+                CIs; 'profile-likelihood', to empahsize the profile-likelihood
+                CIs; 'bootstrap', to empahsize the bootstrap CIs; or None, to
+                empahsize no CI (default: 'profile-likelihood').
+            run_n (int): The run number to plot, as indicated in EONR.df_ci; if
+                None, uses the most recent, or maximum, run_n in df_ci
+                (default: None).
         '''
         if run_n is None:
             df_ci = self.df_ci[self.df_ci['run_n'] ==
@@ -791,26 +856,12 @@ class Plotting_tools(object):
         plt.tight_layout()
         self.fig_tau = g
 
-    def plot_save(self, base_dir=None, fname='eonr_sns17w_pre.png', fig=None,
-                  dpi=300):
-        '''
-        Saves a generated figure, <fig>, to file
-
-        '''
-        if fig is None:
-            fig = self.fig_eonr
-        msg = ('A figure must be generated first. Please execute '
-               'EONR.plot_eonr() or EONR.plot_tau() first..\n')
-        assert fig is not None, msg
-        if base_dir is None:
-            base_dir = self.base_dir
-        if not os.path.isdir(base_dir):
-            os.mkdir(base_dir)
-        fname = os.path.join(base_dir, fname)
-        fig.savefig(fname, dpi=dpi)
-
     def update_eonr(self, EONR):
-        '''Sets/updates all EONR variables required by the Models class'''
+        '''Sets/updates all EONR variables required by the Models class
+
+        Parameters:
+            EONR (EONR object): The EONR object to update
+        '''
         self.df_data = EONR.df_data
         self.cost_n_fert = EONR.cost_n_fert
         self.cost_n_social = EONR.cost_n_social

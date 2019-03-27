@@ -40,30 +40,41 @@ class EONR(object):
     '''
     Calculates Economic Optimum N Rate given table of N applied and yield
 
-    <cost_n_fert (float): Cost of N fertilizer
-    <cost_n_social (float): Social cost of N fertilier
-    <price_grain (float): Price of grain
-    <col_n_app> (str) Column name pointing to the rate of applied N fertilizer
-        data
-    <col_yld> (str) Column name pointing to the grain yield data
-    <col_crop_nup (str) Column name pointing to crop N uptake data
-    <col_n_soil_fert (str) Column name pointing to available soil N plus
-        fertilizer
-    <unit_currency (str) String describing the curency unit (default: '$')
-    <unit_fert (str) String describing the "fertilizer" unit (default: 'lbs')
-    <unit_grain (str): String describing the "grain" unit (default: 'bu')
-    <unit_area (str): String descibing the "area" unit (default: 'ac')
-    <model (str): Statistical model used to fit N rate response. 'quad_platau' =
+    cost_n_fert (float): Cost of N fertilizer (default: 0.50)
+    cost_n_social (float): Social cost of N fertilier (default: 0.00)
+    price_grain (float): Price of grain (default: 3.00)
+    col_n_app (str): Column name pointing to the rate of applied N fertilizer
+        data (default: 'rate_n_applied_lbac')
+    col_yld (str): Column name pointing to the grain yield data. This column is
+        multiplied by price_grain to create the 'grtn' column in `EONR.df_data`
+        (default: 'yld_grain_dry_buac')
+    col_crop_nup (str): Column name pointing to crop N uptake data
+        (default: 'nup_total_lbac')
+    col_n_avail (str): Column name pointing to available soil N plus
+        fertilizer  (default: 'soil_plus_fert_n_lbac')
+    col_year (str): Column name pointing to year (default: 'year')
+    col_location (str): Column name pointing to location (default: 'location')
+    col_time_n (str): Column name pointing to nitrogen application timing
+        (default: 'time_n')
+    unit_currency (str): String describing the curency unit (default: '$')
+    unit_fert (str): String describing the "fertilizer" unit (default: 'lbs')
+    unit_grain (str): String describing the "grain" unit (default: 'bu')
+    unit_area (str): String descibing the "area" unit (default: 'ac')
+    model (str): Statistical model used to fit N rate response. 'quad_platau' =
         quadratic plateau; 'lin_plateau = linear plateau (default:
         'quad_plateau')
-    <ci_level (float): Confidence interval level to save in eonr.df_results and to
-        display in the EONR plot (confidence intervals are calculated at many
-        alpha levels)
-    <base_dir (str): Base file directory when saving results
-    <base_zero (bool): Determines if gross return to N is expressed as an absolute
-        value or relative to the yield/return at the zero rate (i.e., at the
-        y-intercept of the absolute gross response to N curve); default: False
-    <print_out (bool): Determines if "non-essential" results are printed in the
+    ci_level (float): Confidence interval level to save in eonr.df_results and
+        to display in the EONR plot; note that confidence intervals are
+        calculated at many alpha levels, and we should choose from that list -
+        should be one of [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.667, 0.7, 0.8, 0.9,
+        0.95, or 0.99] (default: 0.90)
+    base_dir (str): Base file directory when saving results (default: None)
+    base_zero (bool): Determines if gross return to N is expressed as an
+        absolute value or relative to the yield/return at the zero rate. If
+        base_zero is True, observed data for the zero nitrogen rate will be
+        standardized by subtracting the y-intercept ($\beta_0$) from the 'grtn'
+        column of `EONR.df_data`. (default: True)
+    print_out (bool): Determines if "non-essential" results are printed in the
         Python console (default: False)
     '''
     def __init__(self,
@@ -1615,177 +1626,87 @@ class EONR(object):
         df_ci = pd.concat([df_ci, df_boot], axis=1)
         return df_ci
 
-    def set_column_names(self, col_n_app=None, col_yld=None, col_crop_nup=None,
-                         col_n_avail=None, col_year=None,
-                         col_location=None, col_time_n=None):
-        '''Sets the column name(s) for `EONR.df_data`
+    def calc_delta(self, df_results=None):
+        '''Calculates the change in EONR among economic scenarios
 
         Parameters:
-            col_n_app (str): Column name for nitrogen application rate (default
-            is None)
-            col_yield (str): Column name for grain yield (default is None)
-            col_crop_nup (str): Column name for crop nitrogen uptake (default
-            is None)
-            col_n_avail (str): Column name for available nitrogen in soil at
-            planting (inlcluding all fertilizer throughout the season) (default
-            is None)
-            col_year (str): Column name for year (default is None)
-            col_location (str): Column name for experimental location (default
-            is None)
-            col_time_n (str): Column name for nitrogen fertilizer timing
-            (default is None)
+            df_results (Pandas dataframe): The dataframe containing the
+                results from `EONR.calculate_eonr()` (default: None).
 
         Returns:
-            None
+            df_out (Pandas dataframe): The dataframe with the newly inserted
+                "EONR delta".
 
-        *Note that year, location, or nitrogen timing (used for titles and axes
-        labels for plotting).
+        `EONR.calc_delta()` filters all data by location, year, and nitrogen
+        timing, then the "delta" is calculated as the difference relative to
+        the economic scenario resulting in the highest EONR.
         '''
-        if col_n_app is not None:
-            self.col_n_app = str(col_n_app)
-        if col_yld is not None:
-            self.col_yld = str(col_yld)
-        if col_crop_nup is not None:
-            self.col_crop_nup = str(col_crop_nup)
-        if col_n_avail is not None:
-            self.col_n_avail = str(col_n_avail)
-        if col_year is not None:
-            self.col_year = str(col_year)
-        if col_location is not None:
-            self.col_location = str(col_location)
-        if col_time_n is not None:
-            self.col_time_n = str(col_time_n)
-        self._find_trial_details()  # Use new col_name(s) to update details
-
-    def set_trial_details(self, year=None, location=None, n_timing=None):
-        '''
-        Sets the year, location, or nitrogen timing (used for titles and axes
-        labels for plotting).
-        '''
-        if year is not None:
-            self.year = int(year)
-        if location is not None:
-            self.location = location
-        if n_timing is not None:
-            self.n_timing = n_timing
-
-    def plot_eonr(self, x_min=None, x_max=None, y_min=None, y_max=None,
-                  style='ggplot', ci_type='profile-likelihood', ci_level=None,
-                  idx=None):
-        '''
-        <dynamically modified based on contents of Plotting_tools.plot_eonr --
-        load an instance of EONR to see docstring>
-        '''
-        if self.plotting_tools is None:
-            self.plotting_tools = Plotting_tools(self)
+        if df_results is None:
+            df = self.df_results.unique()
         else:
-            self.plotting_tools.update_eonr(self)
-        self.plotting_tools.plot_eonr(x_min=x_min, x_max=x_max, y_min=y_min,
-                                      y_max=y_max, style=style,
-                                      ci_type=ci_type, ci_level=ci_level,
-                                      idx=idx)
-        self.fig_eonr = self.plotting_tools.fig_eonr
+            df = df_results.copy()
 
-    def plot_tau(self, y_axis='t_stat', emphasis='profile-likelihood',
-                 run_n=None):
-        '''
-        <dynamically modified based on contents of Plotting_tools.plot_eonr --
-        load an instance of EONR to see docstring>
-        '''
-        if self.plotting_tools is None:
-            self.plotting_tools = Plotting_tools(self)
-        else:
-            self.plotting_tools.update_eonr(self)
-        self.plotting_tools.plot_tau(y_axis=y_axis, emphasis=emphasis,
-                                     run_n=run_n)
-        self.fig_tau = self.plotting_tools.fig_tau
-
-    def plot_save(self, base_dir=None, fname='eonr_sns17w_pre.png', fig=None,
-                  dpi=300):
-        '''
-        <dynamically modified based on contents of Plotting_tools.plot_eonr --
-        load an instance of EONR to see docstring>
-        '''
-        self.plotting_tools.plot_save(base_dir=base_dir, fname=fname, fig=fig,
-                                      dpi=dpi)
-
-    def update_econ(self, cost_n_fert=None, cost_n_social=None,
-                    price_grain=None):
-        '''
-        Sets/resets the fertilizer cost, social cost of N, and price of grain
-
-        Recomputes the price ratio based on this information, then adjusts the
-        lowest level folder of base_dir to the ratio (e.g., \trad_0010\)
-        '''
-        if cost_n_fert is not None:
-            self.cost_n_fert = cost_n_fert  # in USD per lb
-        if cost_n_social is not None:
-            self.cost_n_social = cost_n_social  # in USD per lb lost
-        if price_grain is not None:
-            self.price_grain = price_grain  # in USD
-        self.price_ratio = ((self.cost_n_fert + self.cost_n_social) /
-                            self.price_grain)
-        if self.base_dir is not None:
-            if self.cost_n_social != 0 and self.metric is False:
-                join_name = '{0}_{1:.3f}_{2:.3f}'.format(
-                        'social', self.price_ratio, self.cost_n_social)
-            elif self.cost_n_social != 0 and self.metric is True:
-                join_name = '{0}_{1:.1f}_{2:.3f}'.format(
-                        'social', self.price_ratio, self.cost_n_social)
-            elif self.cost_n_social == 0 and self.metric is False:
-                join_name = '{0}_{1:.3f}'.format('trad', self.price_ratio)
-            elif self.cost_n_social == 0 and self.metric is True:
-                join_name = '{0}_{1:.1f}'.format('trad', self.price_ratio)
-            else:
-                join_name = '{0}_{1:.3f}'.format('trad', self.price_ratio)
-            join_name = re.sub(r'[.]', '', join_name)
-            self.base_dir = os.path.join(os.path.split(self.base_dir)[0],
-                                         join_name)
-        if self.cost_n_social > 0:
-            self.onr_name = 'Socially'
-            self.onr_acr = 'SONR'
-        elif self.cost_n_fert > 0:
-            self.onr_name = 'Economic'
-            self.onr_acr = 'EONR'
-        else:
-            self.onr_name = 'Agronomic'
-            self.onr_acr = 'AONR'
+        years = df['year'].unique()
+        years.sort()
+        df_out = None
+        for year in years:
+            df_year = df[df['year'] == year]
+            locs = df_year['location'].unique()
+            locs.sort()
+            for loc in locs:
+                df_loc = df_year[df_year['location'] == loc]
+                times = df_loc['time_n'].unique()
+                for time in times:
+                    df_yloct = df_loc[df_loc['time_n'] == time]
+                    eonr_base = df_yloct['eonr'].max()  # lowest fert:grain rat
+                    eonr_delta = df_yloct['eonr'] - eonr_base
+                    df_yloct.insert(8, 'eonr_delta', eonr_delta)
+                    if df_out is None:
+                        df_out = pd.DataFrame(columns=df_yloct.columns)
+                    df_out = df_out.append(df_yloct)
+        return df_out
 
     def calculate_eonr(self, df, col_n_app=None, col_yld=None,
                        col_crop_nup=None, col_n_avail=None,
                        col_year=None, col_location=None, col_time_n=None,
                        bootstrap_ci=True):
-        '''
-        Calculates EONR for <df> and saves results to self
+        '''Calculates the EONR and its confidence intervals
 
-        <col_n_app> is the dataframe column name indicating the nitrogen
-        fertilizer rate
-        <col_yld) is the dataframe column name indicating the grain yield
-        These variables are required (they must either be passed in this
-        function, or must be set during the initialization of EONR().
+        Parameters:
+            df (Pandas DataFrame): The dataframe containing the experimental
+                data.
+            col_n_app (str): Column name pointing to the rate of applied N
+                fertilizer data (default: None).
+            col_yld (str): Column name pointing to the grain yield data. This
+                column is multiplied by price_grain to create the 'grtn' column
+                in `EONR.df_data` (default: None).
+            col_crop_nup (str): Column name pointing to crop N uptake data
+                (default: None).
+            col_n_avail (str): Column name pointing to available soil N at
+                planting plus fertilizer throughout the season (default: None).
+            col_year (str): Column name pointing to year (default: None).
+            col_location (str): Column name pointing to location (default:
+                None).
+            col_time_n (str): Column name pointing to nitrogen application
+                timing (default: None).
+            bootstrap_ci (bool): Indicates whether bootstrap confidence
+                intervals are to be computed. If calculating the EONR for many
+                sites and/or economic scenarios, it may be desirable to set
+                to `False` because the bootstrap confidence intervals take the
+                most time to compute (default: True).
 
-        <col_crop_nup> is the dataframe column name indicating the nitrogen
-        taken up by the crop
-        <col_n_avail> is the dataframe column name indicating the available
-        nitrogen in soil at planting (inlcluding all fertilizer throughout the
-        season)
-        These variables are required to calculate the optimum nitrogen rate
-        when considering a social cost of nitrogen, and therefore,
-        EONR.cost_n_social must also be set.
 
-        <col_year> is the dataframe column name indicating the experimental
-        year
-        <col_location> is the dataframe column name indicating the experimental
-        location
-        <col_time_n> is the dataframe column name indicating the nitrogen
-        application timing
-        These variables are purely optional. They only affect the titles and
-        axes labels of the plots.
+        `col_n_app` and `col_yld` are required by `EONR`, but not necessarily
+        by `EONR.calculate_eonr()`. They must either be set during the
+        initialization of EONR(), or be passed in this method.
 
-        <bootstrap_ci> indicates whether the bootstraped confidence intervals
-        should be computed. If calculating the EONR for many sites or economic
-        scenarios, it may be desirable to set <bootstrap_ci> to False because
-        the bootstrap confidence intervals take the most time to compute.
+        `col_crop_nup and `col_n_avail` are required to calculate the socially
+        optimum nitrogen rate, SONR. The SONR is the optimum nitrogen rate
+        considering the social cost of nitrogen, so therefore,
+        `EONR.cost_n_social` must also be set.
+
+        `col_year`, `col_location`, and `col_time_n` are purely optional. They
+        only affect the titles and axes labels of the plots.
         '''
         if col_n_app is not None:
             self.col_n_app = str(col_n_app)
@@ -1847,97 +1768,193 @@ class EONR(object):
                 results, columns=self.df_results.columns),
                 ignore_index=True)
 
-    def print_results(self):
+    def plot_eonr(self, ci_type='profile-likelihood', ci_level=None,
+                  run_n=None, x_min=None, x_max=None, y_min=None, y_max=None,
+                  style='ggplot'):
+        '''Plots EONR, MRTN, GRTN, net return, and nitrogen cost
+
+        Parameters:
+            ci_type (str): Indicates which confidence interval type should be
+                plotted. Options are 'wald', to plot the Wald
+                CIs; 'profile-likelihood', to plot the profile-likelihood
+                CIs; or 'bootstrap', to plot the bootstrap CIs (default:
+                'profile-likelihood').
+            ci_level (float): The confidence interval level to be plotted, and
+                must be one of the values in EONR.ci_list. If None, uses the
+                EONR.ci_level (default: None).
+            run_n (int): NOT IMPLEMENTED. The run number to plot, as indicated
+                in EONR.df_results; if None, uses the most recent, or maximum,
+                run_n in EONR.df_results (default: None).
+            x_min (int): The minimum x-bounds of the plot (default: None)
+            x_max (int): The maximum x-bounds of the plot (default: None)
+            y_min (int): The minimum y-bounds of the plot (default: None)
+            y_max (int): The maximum y-bounds of the plot (default: None)
+            style (str): The style of the plolt; can be any of the options
+                supported by [matplotlib]
+                (https://tonysyu.github.io/raw_content/matplotlib-style-gallery/gallery.html)
         '''
-        Prints the coefficients comprising the Economic Optimum Nitrogen Rate:
-            <mrtn>
-            <eonr>
+        if self.plotting_tools is None:
+            self.plotting_tools = Plotting_tools(self)
+        else:
+            self.plotting_tools.update_eonr(self)
+        self.plotting_tools.plot_eonr(ci_type=ci_type, ci_level=ci_level,
+                                      run_n=run_n, x_min=x_min, x_max=x_max,
+                                      y_min=y_min, y_max=y_max, style=style)
+        self.fig_eonr = self.plotting_tools.fig_eonr
+
+    def plot_save(self, fname=None, base_dir=None, fig=None, dpi=300):
+        '''Saves a generated matplotlib figure to file
+
+        Parameters:
+            fname (str): Filename to save plot to (default: None)
+            base_dir (str): Base file directory when saving results (default:
+                None)
+            fig (eonr.fig): EONR figure object to save (default: None)
+            dpi (int): Resolution to save the figure to in dots per inch
+                (default: 300)
+        '''
+        self.plotting_tools.plot_save(fname=fname, base_dir=base_dir, fig=fig,
+                                      dpi=dpi)
+
+    def plot_tau(self, y_axis='t_stat', emphasis='profile-likelihood',
+                 run_n=None):
+        '''Plots the test statistic as a function nitrogen rate
+
+        Parameters:
+            y_axis (str): Value to plot on the y-axis. Options are 't_stat', to
+                plot the *T statistic*; 'f_stat', to plot the *F-statistic*;
+                or 'level', to plot the *confidence level*; (default:
+                't_stat').
+            emphasis (str): Indicates which confidence interval type, if any,
+                should be emphasized. Options are 'wald', to empahsize the Wald
+                CIs; 'profile-likelihood', to empahsize the profile-likelihood
+                CIs; 'bootstrap', to empahsize the bootstrap CIs; or None, to
+                empahsize no CI (default: 'profile-likelihood').
+            run_n (int): The run number to plot, as indicated in EONR.df_ci; if
+                None, uses the most recent, or maximum, run_n in df_ci
+                (default: None).
+        '''
+        if self.plotting_tools is None:
+            self.plotting_tools = Plotting_tools(self)
+        else:
+            self.plotting_tools.update_eonr(self)
+        self.plotting_tools.plot_tau(y_axis=y_axis, emphasis=emphasis,
+                                     run_n=run_n)
+        self.fig_tau = self.plotting_tools.fig_tau
+
+    def print_results(self):
+        '''Prints the results of the optimum nitrogen rate computation
         '''
         self._print_results()
 
-    def eonr_delta(self, df_results=None):
+    def set_column_names(self, col_n_app=None, col_yld=None, col_crop_nup=None,
+                         col_n_avail=None, col_year=None,
+                         col_location=None, col_time_n=None):
+        '''Sets the column name(s) for `EONR.df_data`
+
+        Parameters:
+            col_n_app (str): Column name pointing to the rate of applied N
+                fertilizer data (default: None).
+            col_yld (str): Column name pointing to the grain yield data. This
+                column is multiplied by price_grain to create the 'grtn' column
+                in `EONR.df_data` (default: None).
+            col_crop_nup (str): Column name pointing to crop N uptake data
+                (default: None).
+            col_n_avail (str): Column name pointing to available soil N at
+                planting plus fertilizer throughout the season (default: None).
+            col_year (str): Column name pointing to year (default: None).
+            col_location (str): Column name pointing to location (default:
+                None).
+            col_time_n (str): Column name pointing to nitrogen application
+                timing (default: None).
+
+        *Note that year, location, or nitrogen timing (used for titles and axes
+        labels for plotting).
         '''
-        Inserts a new column "eonr_delta" into df_results. All data is filtered
-        by location, year, and N timing, then "eonr_delta" is calculated as the
-        difference from the economic scenario resulting in the highest EONR
+        if col_n_app is not None:
+            self.col_n_app = str(col_n_app)
+        if col_yld is not None:
+            self.col_yld = str(col_yld)
+        if col_crop_nup is not None:
+            self.col_crop_nup = str(col_crop_nup)
+        if col_n_avail is not None:
+            self.col_n_avail = str(col_n_avail)
+        if col_year is not None:
+            self.col_year = str(col_year)
+        if col_location is not None:
+            self.col_location = str(col_location)
+        if col_time_n is not None:
+            self.col_time_n = str(col_time_n)
+        self._find_trial_details()  # Use new col_name(s) to update details
+
+    def set_trial_details(self, year=None, location=None, n_timing=None):
+        '''Sets the year, location, or nitrogen timing
+
+        Parameters:
+            year (optional): Year of experimental trial (default: None)
+            location (optional): Location of experimental trial (default:
+                None)
+            n_timing (optional): Nitrogen timing of experimental trial
+                (default: None)
+
+        *Note that year, location, or nitrogen timing (used for titles and axes
+        labels for plotting).
         '''
-        if df_results is None:
-            df = self.df_results.unique()
+        if year is not None:
+            self.year = int(year)
+        if location is not None:
+            self.location = location
+        if n_timing is not None:
+            self.n_timing = n_timing
+
+    def update_econ(self, cost_n_fert=None, cost_n_social=None,
+                    price_grain=None):
+        '''Sets or resets the nitrogen costs or grain price
+
+        Parameters:
+            cost_n_fert (float): Cost of nitrogen fertilizer  (default: None).
+            cost_n_social (float): Cost of pollution caused by excess nitrogen
+                 (default: None).
+            price_grain (float): Price of grain (default: None).
+
+        `update_econ()` recomputes the price ratio based on the passed
+        information, then adjusts the lowest level folder in the base
+        directory, `EONR.base_dir`, based on to the ratio (e.g., \trad_0010\
+        corresponding to `cost_n_social == 0` and `price_ratio = 0.10` for
+        "trad" and "0010", respectively; or \social_154_1100\ corresponding to
+        `cost_n_social > 0`, `price_ratio = 15.4`, and `cost_n_social = 1.10`
+        for "social", "154", and "1100", respectively).
+        '''
+        if cost_n_fert is not None:
+            self.cost_n_fert = cost_n_fert  # in USD per lb
+        if cost_n_social is not None:
+            self.cost_n_social = cost_n_social  # in USD per lb lost
+        if price_grain is not None:
+            self.price_grain = price_grain  # in USD
+        self.price_ratio = ((self.cost_n_fert + self.cost_n_social) /
+                            self.price_grain)
+        if self.base_dir is not None:
+            if self.cost_n_social != 0 and self.metric is False:
+                join_name = '{0}_{1:.3f}_{2:.3f}'.format(
+                        'social', self.price_ratio, self.cost_n_social)
+            elif self.cost_n_social != 0 and self.metric is True:
+                join_name = '{0}_{1:.1f}_{2:.3f}'.format(
+                        'social', self.price_ratio, self.cost_n_social)
+            elif self.cost_n_social == 0 and self.metric is False:
+                join_name = '{0}_{1:.3f}'.format('trad', self.price_ratio)
+            elif self.cost_n_social == 0 and self.metric is True:
+                join_name = '{0}_{1:.1f}'.format('trad', self.price_ratio)
+            else:
+                join_name = '{0}_{1:.3f}'.format('trad', self.price_ratio)
+            join_name = re.sub(r'[.]', '', join_name)
+            self.base_dir = os.path.join(os.path.split(self.base_dir)[0],
+                                         join_name)
+        if self.cost_n_social > 0:
+            self.onr_name = 'Socially'
+            self.onr_acr = 'SONR'
+        elif self.cost_n_fert > 0:
+            self.onr_name = 'Economic'
+            self.onr_acr = 'EONR'
         else:
-            df = df_results.copy()
-
-        years = df['year'].unique()
-        years.sort()
-        df_out = None
-        for year in years:
-            df_year = df[df['year'] == year]
-            locs = df_year['location'].unique()
-            locs.sort()
-            for loc in locs:
-                df_loc = df_year[df_year['location'] == loc]
-                times = df_loc['time_n'].unique()
-                for time in times:
-                    df_yloct = df_loc[df_loc['time_n'] == time]
-                    eonr_base = df_yloct['eonr'].max()  # lowest fert:grain rat
-                    eonr_delta = df_yloct['eonr'] - eonr_base
-                    df_yloct.insert(8, 'eonr_delta', eonr_delta)
-                    if df_out is None:
-                        df_out = pd.DataFrame(columns=df_yloct.columns)
-                    df_out = df_out.append(df_yloct)
-        return df_out
-
-    def plot_profile_likelihood(self, df_ci=None, n_rows=3):
-        '''
-        Plots the profile likelihood confidence curve for a range of alpha
-        values (see Cook and Weisberg, 1990)
-        '''
-        if df_ci is None:
-            df_ci = self.df_ci
-#        def convert_axis(df_ci, ax, ax2):
-#            ax2.set_ylim(df_ci['level'].iloc[0], df_ci['level'].iloc[-1])
-#            ax2.figure.canvas.draw()
-#            ax2.grid(False)
-        n_datasets = len(df_ci.drop_duplicates(subset=['year', 'location',
-                                                       'time_n']))
-        n_ratios = len(df_ci['price_ratio'].unique())
-
-        years = df_ci['year'].unique()
-        years.sort()
-        for year in years:
-            df_year = df_ci[df_ci['year'] == year]
-            locs = df_year['location'].unique()
-            locs.sort()
-            for loc in locs:
-                df_loc = df_year[df_year['location'] == loc]
-                times = df_loc['time_n'].unique()
-                for time in times:
-                    df_yloct = df_loc[df_loc['time_n'] == time]
-                    ratios = df_yloct['price_ratio'].unique()
-                    count = 0
-                    fig, ax = plt.subplots(1, len(ratios), sharey=True, figsize=(20,3))
-                    for ratio in ratios:
-                        df_filt = df_yloct[df_yloct['price_ratio'] == ratio]
-                #        ax2 = plt.twinx()
-                #        ax.callbacks.connect("ylim_changed", convert_axis(df_ci, ax, ax2))
-                        sns.lineplot(df_filt['wald_l'], df_filt['t_stat'], ax=ax[count], color='#7b7b7b')
-                        sns.lineplot(df_filt['wald_u'], df_filt['t_stat'], ax=ax[count], color='#7b7b7b')
-                        sns.scatterplot(df_filt['pl_l'], df_filt['t_stat'], ax=ax[count], color='red')
-                        sns.scatterplot(df_filt['pl_u'], df_filt['t_stat'], ax=ax[count], color='red')
-                        sns.scatterplot(df_filt['boot_l'], df_filt['t_stat'], ax=ax[count], color='blue')
-                        sns.scatterplot(df_filt['boot_u'], df_filt['t_stat'], ax=ax[count], color='blue')
-                        ax[count].set_xlabel('EONR')
-#                        ax[count].set_ylabel('T-statistic')
-                        ax[count].set_title('{0} {1} {2} - {3}'.format(year, loc, time, ratio), fontsize=8)
-                        count += 1
-#                        col += 1
-#                        print((((row*n_cols)+n_cols) % count + 1))
-#                        if (((row*n_cols)+n_cols) % count + 1) == 0:
-#                            row += 1
-#                            col = 0
-#                        break
-#                    input("Press Enter to continue...")
-                    ax[0].set_ylabel('T-statistic')
-                    plt.tight_layout()
-                    break
-                break
-            break
+            self.onr_name = 'Agronomic'
+            self.onr_acr = 'AONR'
