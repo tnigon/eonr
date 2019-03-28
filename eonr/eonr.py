@@ -1,20 +1,28 @@
 # -*- coding: utf-8 -*-
 """
-© 2019 Regents of the University of Minnesota. All rights reserved.
+Copyright &copy; 2019 Tyler J Nigon. All rights reserved.
 
-EONR is copyrighted by the Regents of the University of Minnesota. It can
-be freely used for educational and research purposes by non-profit
-institutions and US government agencies only. Other organizations are allowed
-to use EONR only for evaluation purposes, and any further uses will require
-prior approval. The software may not be sold or redistributed without prior
-approval. One may make copies of the software for their use provided that the
-copies, are not sold or distributed, are used under the same terms and
-conditions.
-As unestablished research software, this code is provided on an "as is" basis
-without warranty of any kind, either expressed or implied. The downloading, or
-executing any part of this software constitutes an implicit agreement to these
-terms. These terms and conditions are subject to change at any time without
-prior notice.
+LICENSE
+
+The MIT license
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+of the Software, and to permit persons to whom the Software is furnished to do
+so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
 """
 
 import numpy as np
@@ -27,7 +35,6 @@ from scipy.optimize import curve_fit
 from scipy.optimize import minimize
 from scipy.optimize import minimize_scalar
 from scipy.optimize import OptimizeWarning
-import seaborn as sns
 import uncertainties as unc
 from uncertainties import unumpy as unp
 import warnings
@@ -1637,9 +1644,10 @@ class EONR(object):
             df_out (Pandas dataframe): The dataframe with the newly inserted
                 "EONR delta".
 
-        `EONR.calc_delta()` filters all data by location, year, and nitrogen
-        timing, then the "delta" is calculated as the difference relative to
-        the economic scenario resulting in the highest EONR.
+        Note:
+            `EONR.calc_delta()` filters all data by location, year, and
+            nitrogen timing, then the "delta" is calculated as the difference
+            relative to the economic scenario resulting in the highest EONR.
         '''
         if df_results is None:
             df = self.df_results.unique()
@@ -1695,18 +1703,20 @@ class EONR(object):
                 to `False` because the bootstrap confidence intervals take the
                 most time to compute (default: True).
 
+        Note:
+            `col_n_app` and `col_yld` are required by `EONR`, but not
+            necessarily by `EONR.calculate_eonr()`. They must either be set
+            during the initialization of EONR(), or be passed in this method.
 
-        `col_n_app` and `col_yld` are required by `EONR`, but not necessarily
-        by `EONR.calculate_eonr()`. They must either be set during the
-        initialization of EONR(), or be passed in this method.
+        Note:
+            `col_crop_nup and `col_n_avail` are required to calculate the
+            socially optimum nitrogen rate, SONR. The SONR is the optimum
+            nitrogen rate considering the social cost of nitrogen, so
+            therefore, `EONR.cost_n_social` must also be set.
 
-        `col_crop_nup and `col_n_avail` are required to calculate the socially
-        optimum nitrogen rate, SONR. The SONR is the optimum nitrogen rate
-        considering the social cost of nitrogen, so therefore,
-        `EONR.cost_n_social` must also be set.
-
-        `col_year`, `col_location`, and `col_time_n` are purely optional. They
-        only affect the titles and axes labels of the plots.
+        Note:
+            `col_year`, `col_location`, and `col_time_n` are purely optional.
+            They only affect the titles and axes labels of the plots.
         '''
         if col_n_app is not None:
             self.col_n_app = str(col_n_app)
@@ -1868,8 +1878,9 @@ class EONR(object):
             col_time_n (str): Column name pointing to nitrogen application
                 timing (default: None).
 
-        *Note that year, location, or nitrogen timing (used for titles and axes
-        labels for plotting).
+        Note:
+            Year, location, or nitrogen timing (used for titles and axes labels
+            for plotting).
         '''
         if col_n_app is not None:
             self.col_n_app = str(col_n_app)
@@ -1897,8 +1908,9 @@ class EONR(object):
             n_timing (optional): Nitrogen timing of experimental trial
                 (default: None)
 
-        *Note that year, location, or nitrogen timing (used for titles and axes
-        labels for plotting).
+        Note:
+            Year, location, or nitrogen timing (used for titles and axes labels
+            for plotting).
         '''
         if year is not None:
             self.year = int(year)
@@ -1917,13 +1929,17 @@ class EONR(object):
                  (default: None).
             price_grain (float): Price of grain (default: None).
 
-        `update_econ()` recomputes the price ratio based on the passed
-        information, then adjusts the lowest level folder in the base
-        directory, `EONR.base_dir`, based on to the ratio (e.g., \trad_0010\
-        corresponding to `cost_n_social == 0` and `price_ratio = 0.10` for
-        "trad" and "0010", respectively; or \social_154_1100\ corresponding to
-        `cost_n_social > 0`, `price_ratio = 15.4`, and `cost_n_social = 1.10`
-        for "social", "154", and "1100", respectively).
+        Note:
+            `update_econ()` recomputes the price ratio based on the passed
+            information, then adjusts the lowest level folder in the base
+            directory, `EONR.base_dir`, based on to the ratio
+
+        Examples:
+            \trad_0010\ corresponding to `cost_n_social == 0` and
+            `price_ratio = 0.10` for "trad" and "0010", respectively.
+            \social_154_1100\ corresponding to `cost_n_social > 0`,
+            `price_ratio = 15.4`, and `cost_n_social = 1.10` for "social",
+            "154", and "1100", respectively.
         '''
         if cost_n_fert is not None:
             self.cost_n_fert = cost_n_fert  # in USD per lb

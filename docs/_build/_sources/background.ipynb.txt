@@ -9,8 +9,8 @@
     "### Nitrogen fertilizer recommendations\n",
     "The concept behind the _**Economic Optimum Nitrogen Rate**_ approach (also referred to as the _**Maximum Return to Nitrogen**_ approach) is to make the most favorable nitrogen fertilizer recommendation considering three variables:\n",
     "\n",
-    "* Grain price ($ per kg)\n",
-    "* Fertilizer cost ($ per kg)\n",
+    "* Grain price (\\\\$ per kg)\n",
+    "* Fertilizer cost (\\\\$ per kg)\n",
     "* Grain yield response to nitrogen fertilizer (modeled from input data)\n",
     "\n",
     "#### Why *nitrogen* and not other nutrients?\n",
@@ -18,34 +18,52 @@
     "\n",
     "**Figure 1**: The nitrogen cycle\n",
     "\n",
-    "<img src=\"_images/background_n_cycle.png\" align=\"center\"/>\n",
+    "![](_images/background_n_cycle.png)\n",
     "\n",
-    "<div class=\"alert alert-dismissible alert-light\">\n",
+    "<div class=\"alert alert-dismissible alert-success\">\n",
     "It is no wonder why farmers care so much about the nitrogen they apply to their crops. The <code>EONR</code> tool is an attempt to support them, through economics-driven research.\n",
-    "</div>\n",
-    "\n",
+    "</div>"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
     "### EONR? MRTN? ..what?\n",
     "As its name suggests, the _**Maximum Return to Nitrogen**_ (MRTN) is the maximum achievable profit expected after accounting for the cost of nitrogen fertilizer. The economic optimum nitrogen rate (EONR) is the nitrogen rate where the MRTN is reached. In statistical terms, the EONR is the point where the monetary return from yield is equal to the cost of the increase in nitrogen fertilizer input. The approach uses a best-fit statistical model that utilizes input data from replicated field trials with several nitrogen rate treatments. **Figure 2** is a typical nitrogen rate response curve - the blue points are observed experimental data plotted as nitrogen rate (x-axis) and return to nitrogen (y-axis). A quadratic-plateau model is fit to the experimental data to  Differences among replications from these trials can contribute to uncertainty in estimating the EONR, but the estimated EONR can be used as the baseline for which nitrogen fertilizer recommendations are made for a given location or soil.\n",
     "\n",
     "**Figure 2:** Plot generated from the `EONR` package. The plotted results - blue points are experimental data (yield value in USD as a function of nitrogen rate), the blue line is the best-fit quadratic-plateau model representing gross return to nitrogen, the red line is the cost of nitrogen fertilizer, and the green line is the difference between the two and represents the net return to nitrogen.\n",
     "\n",
-    "<img src=\"_images/quick_start_eonr_2012_mn.png\" align=\"center\"/>\n",
+    "![](_images/quick_start_eonr_2012_mn.png)\n",
     "\n",
-    "**Figure 1:** Aerial photo of a nitrogen rate response experiment for corn (photo captured in July when the crop is about shoulder-high). The plot boundaries were rendered over the photo to visualize the individual plots more easily. This particular experiment had nine (9) nitrogen rates applied at three (3) different times during the season, and was replicated four (4) times. See below for treatment details.\n",
+    "**Figure 3:** Aerial photo of a nitrogen rate response experiment for corn (photo captured in July when the crop is about shoulder-high). The plot boundaries were rendered over the photo to visualize the individual plots more easily. This particular experiment had nine (9) nitrogen rates applied at three (3) different times during the season, and was replicated four (4) times. See below for treatment details.\n",
     "\n",
-    "<img src=\"_images/background_mn_corn.png\" align=\"center\"/>\n",
-    "\n",
+    "![](_images/background_mn_corn.png)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
     "### The quadratic-plateau model\n",
     "The quadratic-plateau model is often identified as the most appropriate model for nitrogen response in corn. It is a piecewise function that can be described as:\n",
     "\n",
-    "<img src=\"_images/background_eq1_quad_plateau.png\" align=\"center\"/>\n",
+    "\\begin{equation}\n",
+    "y_i =\\begin{cases}\\beta_0 + \\beta_1x_i + \\beta_2x_i^2 + \\epsilon_i & if\\ x_i < \\frac{-\\beta_1}{2\\beta_2}\n",
+    "\\\\{\\beta_0} - \\frac{{\\beta_1^2}}{4{\\beta_2}} + \\epsilon_i & if\\ x_i \\geq \\frac{-\\beta_1}{2\\beta_2}\\end{cases}\n",
+    "\\label{qp}\n",
+    "\\end{equation}\n",
     "\n",
-    "where ![](_images/eq/eq_y.png) can represent grain yield (kg ha-1) or monetary return ($ ha-1) from grain yield, ![](_images/eq/eq_x.png) represents quantity of nitrogen fertilizer applied, and ![](_images/eq/eq_b0.png), ![](_images/eq/eq_b1.png), and ![](_images/eq/eq_b2.png) are the coefficients estimated from the experimental data assuming identically and independently distributed errors (![](_images/eq/eq_e.png)).\n",
+    "where $y_{i}$ can represent grain yield (kg ha-1) or monetary return (\\\\$ ha-1) from grain yield, $x_{i}$ represents quantity of nitrogen fertilizer applied, and $\\beta_{0}$, $\\beta_{1}$, and $\\beta_{2}$ are the coefficients estimated from the experimental data assuming identically and independently distributed errors, $\\epsilon_{i}$.\n",
     "\n",
-    "\n",
-    "\n",
-    "The point on the x-axis where the net return curve (green) reaches the maximum return is the **EONR/MRTN**. The profile-likelihood 90\\$% CIs are illustrated as a transparent grey box surrounding the EONR/MRTN point.\n",
-    "\n",
+    "The point on the x-axis where the net return curve (green) reaches the maximum return is the **EONR/MRTN**. The profile-likelihood 90\\% CIs are illustrated as a transparent grey box surrounding the EONR/MRTN point.\n",
+    "\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
     "### Confidence intervals\n",
     "One of the major novelties of the `EONR` package is that it calculates profile-likelihood CIs (as well as Wald and bootstrap CIs) from data fit with a quadratic-plateau model.\n",
     "\n",
@@ -54,8 +72,13 @@
     "From a scientific perspective, it is widely recognized that large uncertainties exist around the estimated EONR computed from yield data and that it is essential to report CIs. Still, few examples exist in the agronomic literature where CIs are actually estimated ([Bachmaier & Gandorfer, 2009](https://www.researchgate.net/publication/225680100_A_conceptual_framework_for_judging_the_precision_agriculture_hypothesis_with_regard_to_site-specific_nitrogen_application); [Hernandez & Mulla, 2008](https://dl.sciencesocieties.org/publications/aj/abstracts/100/5/1221); [Jaynes, 2011](https://link.springer.com/article/10.1007/s11119-010-9168-3); [Sela et al., 2017](https://dl.sciencesocieties.org/publications/jeq/abstracts/46/2/311)). Of these examples, only Jaynes (2011) calculated CIs for the quadratic-plateau response function (which has generally been recognized as the most appropriate model for describing yield response to nitrogen in corn). [Hernandez & Mulla, 2008](https://dl.sciencesocieties.org/publications/aj/abstracts/100/5/1221) describe three general methods that can be used for estimating CIs about the EONR:\n",
     "* the Wald CI\n",
     "* the profile-likelihood based CI\n",
-    "* a bootstrap-derived CI\n",
-    "\n",
+    "* a bootstrap-derived CI"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
     "### The social cost of nitrogen\n",
     "The `EONR` package also allows the user to define a __social cost of nitrogen__, which is then used in the optimum nitrogen rate calculations based on residual soil nitrogen (nitrogen fertilizer not taken up by the crop at the end of the season).\n",
     "\n",
@@ -66,8 +89,15 @@
     "Depending on the economic scenario defined by the user `EONR` will calculate one of the following:\n",
     "1. _**Agronomic Optimum Nitrogen Rate**_ *(AONR)*: both the cost of nitrogen fertilizer and social cost of nitrogen are ignored\n",
     "2. _**Economic Optimum Nitrogen Rate**_ *(EONR)*: cost of nitrogen fertilizer is considered but social cost is ignored\n",
-    "3. _**Socially Optimum Nitrogen Rate**_ *(SONR)*: both cost of nitrogen fertilizer and social cost of nitrogen are considered\n"
+    "3. _**Socially Optimum Nitrogen Rate**_ *(SONR)*: both cost of nitrogen fertilizer and social cost of nitrogen are considered"
    ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
   }
  ],
  "metadata": {

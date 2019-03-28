@@ -4,8 +4,8 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "## API Reference\n",
-    "\n"
+    "## Advanced Features\n",
+    "You may prefer to use some of the features that `EONR` has to offer to help conduct your analysis.  "
    ]
   },
   {
@@ -13,9 +13,7 @@
    "execution_count": null,
    "metadata": {},
    "outputs": [],
-   "source": [
-    "from eonr import EONR"
-   ]
+   "source": []
   }
  ],
  "metadata": {

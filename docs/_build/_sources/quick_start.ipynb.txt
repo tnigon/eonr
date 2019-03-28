@@ -4,16 +4,22 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "## Quick Start\n",
+    "## Tutorial\n",
+    "### Install Python\n",
     "\n",
-    "The EONR package was designed to be used with as little Python expertise as possible. However, you may find it to your benefit to become at least a little bit familiar with Python before using EONR. If you're a beginner, I recommend reading the [basic Python Tutorial](https://docs.python.org/2/tutorial/ \" Basic Python tutorial\") or [Think Python](http://www.greenteapress.com/thinkpython/ \"Think Python\").\n",
+    "The EONR package was designed to be used with as little Python expertise as possible. However, you may find it to your benefit to become at least a little bit familiar with Python before using EONR. If you're a beginner, it will be helpful to read the [Python Tutorial](https://docs.python.org/3/tutorial/) and/or get some hands-on practice with [this Python Tutorial by w3Schools](https://www.w3schools.com/python/).\n",
     "\n",
-    "With that said, you should be able to make use of EONR by following and executing the commands in the basic tutorial, with the only exception that you substitute in your data.\n",
+    "*Code for all the examples is located in your* `PYTHONPATH/Lib/site-packages/eonr/examples` *folder. With that said, you should be able to make use of* `EONR` *by following and executing the commands in this tutorial, with the only exception that you substitute in your data.*\n",
     "\n",
-    "Code for all the examples is located in your `PYTHONPATH/Lib/site-packages/eonr/examples` folder.\n",
-    "\n",
-    "You will find the following code included in the `quick_start.py` or `quick_start.ipynb` (for [Jupyter notebooks](https://jupyter.org/)) files in your `PYTHONPATH/Lib/site-packages/eonr/examples` folder - feel free to load that into your Python IDE to follow along.\n",
-    "\n",
+    "*You will find the following code included in the* `quick_start.py` *or* `quick_start.ipynb` *(for [Jupyter notebooks](https://jupyter.org/)) files in your* `PYTHONPATH/Lib/site-packages/eonr/examples` *folder - feel free to load that into your Python IDE to follow along.*"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "- - -\n",
+    "### Load modules\n",
     "After [installation](installation.md), load `Pandas` and the `EONR` module in a Python interpreter:"
    ]
   },
@@ -31,7 +37,9 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "Load the data. `EONR` uses Pandas dataframes to access and manipulate the experimental data."
+    "- - -\n",
+    "### Load the data\n",
+    "`EONR` uses Pandas dataframes to access and manipulate the experimental data."
    ]
   },
   {
@@ -577,9 +585,11 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "The table containing the experimental data **must** have a minimum of two columns:\n",
-    "* Nitrogen fertilizer rate\n",
-    "* Grain yield\n",
+    "- - -\n",
+    "### Set column names *(pre-init)*\n",
+    "*The table containing the experimental data **must** have a minimum of two columns:*\n",
+    "* *Nitrogen fertilizer rate*\n",
+    "* *Grain yield*\n",
     "\n",
     "`EONR` accepts custom column names. Just be sure to set them by either using `EONR.set_column_names()` or by passing them to `EONR.calculate_eonr()`. We will declare the names of the these two columns as they exist in the `Pandas` dataframe so they can be passed to `EONR` later:"
    ]
@@ -600,6 +610,8 @@
    "source": [
     "Each row of data in our dataframe should correspond to a nitrogen rate treatment plot. It is common to have several other columns describing each treatment plot (e.g., year, location, replication, nitrogen timing, etc.). These aren't necessary, but `EONR` will try pull information from \"year\", \"location\", and \"nitrogen timing\" for labeling the plots that are generated (see [Plotting](../../docs/build/html/plotting.html) for more information).\n",
     "\n",
+    "- - -\n",
+    "### Set units\n",
     "Although optional, it is good practice to declare units so we don't get confused:"
    ]
   },
@@ -621,6 +633,8 @@
    "source": [
     "These unit variables are only used for plotting (titles and axes labels), and they are not actually used for any computations.\n",
     "\n",
+    "- - -\n",
+    "### Set economic conditions\n",
     "`EONR` computes the _**Economic** Optimum Nitrogen Rate_ for any economic scenario that we define. All that is required is to declare the cost of the nitrogen fertilizer (per unit, as defined above) and the price of grain (also per unit). Note that the cost of nitrogen fertilizer can be set to zero, and the _**Agronomic** Optimum Nitrogen Rate_ will be computed."
    ]
   },
@@ -638,9 +652,11 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
+    "- - -\n",
+    "### Initialize `EONR`\n",
     "At this point, we can initialize an instance of `EONR`.\n",
     "\n",
-    "Before doing so, we may want to set the base directory. `EONR.base_dir` is the default location for saving plots and data processed by `EONR`. If `EONR.base_dir` is not set, it will be set to be a folder named \"eonr_temp_out\" in the current working directory during the intitialization (to see your current working directory, type `os.getcwd()`). If you do not wish to use this as your current working directory, it can be passed to the `EONR` instance using the `base_dir` keyword.\n",
+    "*Before doing so, we may want to set the base directory.* `EONR.base_dir` *is the default location for saving plots and data processed by* `EONR`*. If *`EONR.base_dir` *is not set, it will be set to be a folder named \"eonr_temp_out\" in the current working directory during the intitialization (to see your current working directory, type* `os.getcwd()`*). If you do not wish to use this as your current working directory, it can be passed to the* `EONR` *instance using the* `base_dir` *keyword.*\n",
     "\n",
     "For demonstration purposes, we will set `EONR.base_dir` to what would be the default folder if nothing were passed to the `base_dir` keyword --> that is, we will choose a folder named \"eonr_temp_out\" in the current working directory (`EONR` will create the directory if it does not exist).\n",
     "\n",
@@ -671,6 +687,8 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
+    "- - -\n",
+    "### Calculate the EONR\n",
     "With `my_eonr` initialized as an instance of `EONR`, we can now calculate the economic optimum nitrogen rate by calling the `calculate_eonr()` method and passing the dataframe with the loaded data:"
    ]
   },
@@ -707,7 +725,11 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "And that's it! The economic optimum for this dataset and economic scenario was **162 kg nitrogen per ha** (with 90% confidence bounds at **131** and **208 kg per ha**) and resulted in a maximum net return of nearly **$770 per ha**. This is great, but of course it'd be useful to see our data and results plotted. Do this by calling the ```plot_eonr()``` module and passing the minimum/maximum values for each axis (optional):"
+    "And that's it! The economic optimum for this dataset and economic scenario was **162 kg nitrogen per ha** (with 90% confidence bounds at **131** and **208 kg per ha**) and resulted in a maximum net return of nearly **$770 per ha**.\n",
+    "\n",
+    "- - - \n",
+    "### Plotting the EONR\n",
+    "This is great, but of course it'd be useful to see our data and results plotted. Do this by calling the ```plot_eonr()``` module and *(optionally)* passing the minimum/maximum values for each axis:"
    ]
   },
   {
@@ -734,10 +756,19 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "The blue points are experimental data (yield value in USD as a function of nitrogen rate), the blue line is the best-fit quadratic-plateau model representing gross return to nitrogen, the red line is the cost of nitrogen fertilizer, and the green line is the difference between the two and represents the net return to nitrogen.\n",
+    "* The blue points are _**experimental data**_ (yield value in \\\\$ per ha as a function of nitrogen rate)\n",
+    "* The blue line is the best-fit quadratic-plateau model representing _**gross return to nitrogen**_\n",
+    "* The red line is the _**cost of nitrogen fertilizer**_\n",
+    "* The green line is the difference between the two and represents the _**net return to nitrogen**_\n",
+    "* The green point is the _**Economic Optimum Nitrogen Rate (EONR)**_\n",
+    "* The transparent grey box surrounding the EONR/MRTN (green point) illustrates the _**90\\% confidence intervals**_\n",
     "\n",
-    "The point on the x-axis where the net return curve (green) reaches the maximum return is the **Economic Optimum Nitrogen Rate (EONR)**. The return to nitrogen at that maximum point is the **Maximum Return to Nitrogen (MRTN)**, indicating the profit that is earned at the economic optimum nitrogen rate. The 90% confidence intervals are illustrated as a transparent grey box surrounding the EONR/MRTN point.\n",
+    "The EONR is the point on the x-axis where the net return curve (green) reaches the maximum return. The return to nitrogen at the EONR is the **Maximum Return to Nitrogen (MRTN)**, indicating the profit that is earned at the economic optimum nitrogen rate.\n",
     "\n",
+    "*Notice the economic scenario (i.e., grain price, nitrogen fertilizer cost, etc.) and the \"Base zero\" values in the upper right corner describing the assumptions of EONR calculatioon. \"Base zero\" refers to the initial y-intercept of the gross return model (this setting can be turned on/off by seeting* `EONR.base_zero` *to* `True/False` *[Setting \"base zero\" section](quick_start#setting-base-zero) for more information).*\n",
+    "\n",
+    "- - -\n",
+    "### Accesing complete results\n",
     "All results (e.g., EONR, MRTN, r2 and root mean squared errors from best-fit models, confidence intervals, etc.) are stored in the `EONR.df_results` dataframe:"
    ]
   },
@@ -849,7 +880,9 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "By default, the confidence intervals (CIs) are calculated at many alpha levels. Let's visualize the Wald CIs, profile-likelihood CIs, and bootstrap CIs next to each other:"
+    "- - -\n",
+    "### Visualizing all confidence intervals\n",
+    "By default, the confidence intervals (CIs) are calculated at many alpha levels. Noting that $\\text{CI} = 1-\\alpha$, let's plot the _**Wald**_ CIs, _**profile-likelihood**_ CIs, and _**bootstrap**_ CIs for a range of $\\alpha$ values."
    ]
   },
   {
@@ -876,6 +909,12 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
+    "This plot shows the lower and upper confidence intervals of the *True EONR* (*True EONR* refers to the actual EONR value, which is not actually known due to uncertainty in the dataset). At 0\\% confidence, the *True EONR* is the *maximum likelihood* value, but as we increase the confidence level from 67\\%, 80\\%, 90\\%, 95\\%, and 99\\%, the statistical range of the *True EONR* widens.\n",
+    "\n",
+    "In general, the profile-likelihood CIs are considered the most accurate of the three methods because they reflect the actual, often asymmetric, uncertainty in a parameter estimate [Cook & Weisberg, 1990](https://www.tandfonline.com/doi/abs/10.1080/01621459.1990.10476233).\n",
+    "\n",
+    "- - -\n",
+    "### Accessing complete CI results\n",
     "All data relating to the calculation of the CIs are saved in the `EONR.df_ci` dataframe:"
    ]
   },
@@ -1277,7 +1316,10 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "These results were calculated for a specific economic scenario, but the cost of fertilizer and price of grain can be adjusted to run `EONR` for another economic scenario. If nitrogen uptake or residual nitrogen data are available, `EONR` can be used to calculate the _**Socially Optimum Nitrogen Rate (SONR)**_. Just adjust the economic scenario by passing any of:\n",
+    "- - - \n",
+    "### Adjusting the economic scenario\n",
+    "These results were calculated for a specific economic scenario, but the cost of fertilizer and price of grain can be adjusted to run `EONR` for another economic scenario. Just adjust the economic scenario by passing any of:\n",
+    "\n",
     "* `cost_n_fert`\n",
     "* `price_grain`\n",
     "* `cost_n_social`\n",
@@ -1287,22 +1329,56 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 12,
+   "execution_count": null,
    "metadata": {},
    "outputs": [],
    "source": [
     "cost_n_fert = 1.32  # adjusted from $0.88 per kg nitrogen\n",
-    "cost_n_social = 1.10 # in USD per kg nitrogen\n",
-    "\n",
-    "my_eonr.update_econ(cost_n_fert=cost_n_fert,\n",
-    "                    cost_n_social=cost_n_social)"
+    "my_eonr.update_econ(cost_n_fert=cost_n_fert)"
    ]
   },
   {
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "We haven't set the column names for nitrogen uptake or available nitrogen, so let's do that now using `EONR.set_column_names():"
+    "- - -\n",
+    "### Environmental observations\n",
+    "You'll notice above that we can pass the `cost_n_social` variable to `EONR.update_econ()`. This is becuase `EONR` will calculate the  _**Socially Optimum Nitrogen Rate (SONR)**_ if certain environmental data are available. For more information about the _**SONR**_, refer to the [Background chapter](background.html#The-social-cost-of-nitrogen).\n",
+    "\n",
+    "In the same way that `cost_n_fert` was adjusted in the previous code, `cost_n_social` will be set (for the first time):"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "metadata": {},
+   "outputs": [
+    {
+     "ename": "NameError",
+     "evalue": "name 'my_eonr' is not defined",
+     "output_type": "error",
+     "traceback": [
+      "\u001b[1;31m---------------------------------------------------------------------------\u001b[0m",
+      "\u001b[1;31mNameError\u001b[0m                                 Traceback (most recent call last)",
+      "\u001b[1;32m<ipython-input-1-e7ccae21ac69>\u001b[0m in \u001b[0;36m<module>\u001b[1;34m\u001b[0m\n\u001b[0;32m      1\u001b[0m \u001b[0mcost_n_social\u001b[0m \u001b[1;33m=\u001b[0m \u001b[1;36m1.10\u001b[0m \u001b[1;31m# in USD per kg nitrogen\u001b[0m\u001b[1;33m\u001b[0m\u001b[1;33m\u001b[0m\u001b[0m\n\u001b[1;32m----> 2\u001b[1;33m \u001b[0mmy_eonr\u001b[0m\u001b[1;33m.\u001b[0m\u001b[0mupdate_econ\u001b[0m\u001b[1;33m(\u001b[0m\u001b[0mcost_n_social\u001b[0m\u001b[1;33m=\u001b[0m\u001b[0mcost_n_social\u001b[0m\u001b[1;33m)\u001b[0m\u001b[1;33m\u001b[0m\u001b[1;33m\u001b[0m\u001b[0m\n\u001b[0m",
+      "\u001b[1;31mNameError\u001b[0m: name 'my_eonr' is not defined"
+     ]
+    }
+   ],
+   "source": [
+    "cost_n_social = 1.10 # in USD per kg nitrogen\n",
+    "my_eonr.update_econ(cost_n_social=cost_n_social)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "- - -\n",
+    "### Set column names *(post-init)*\n",
+    "You may have noticed that [the loaded data](quick_start.html#Load-the-data) for this tutorial contains columns for nitrogen uptake (\"nup_total_kgha\") and available nitrogen (\"soil_plus_fert_n_kgha\"). This data can be used to calculate the _**SONR**_ as long as the column names are correctly set. \n",
+    "\n",
+    "The column names were set for nitrogen fertilizer rate (`col_n_app`) and grain yield (`col_yld`) during the initialization of `EONR`, but they haven't been set for the nitrogen uptake or available nitrogen columns. This can be done (even after initilization of `EONR`) using `EONR.set_column_names()`:"
    ]
   },
   {
@@ -1322,7 +1398,11 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "Then just run `EONR.calculate_eonr()` again:"
+    "`EONR` simply subtracts *end of season total nitrogen uptake* from *available nitrogen* to get _**net crop nitrogen use**_, which is subsequently used to calculate the _**SONR**_.\n",
+    "\n",
+    "- - -\n",
+    "### Run `EONR` for the socially optimum rate\n",
+    "Then simply run `EONR.calculate_eonr()` again to calculate the _**SONR**_ for the updated economic scenario:"
    ]
   },
   {
@@ -1529,7 +1609,13 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "Both can be saved to the `EONR.base_dir` using the `Pandas` `df.to_csv()` function. A folder will be created in the base_dir from the *current* economic scenario:"
+    "Notice the added data in the nitrogen response plot:\n",
+    "* The gold points represent _**net crop nitrogen use**_ (expressed as a \\\\$ amount based on the value set for `cost_n_social`)\n",
+    "* The gold line is the best-fit exponential model representing _**net crop nitrogen use**_ (`EONR` fits both a linear and exponential model for this, then uses whichever has a higher $\\text{r}^2$)\n",
+    "\n",
+    "- - -\n",
+    "### Saving the data\n",
+    "The results generated by `EONR` can be saved to the `EONR.base_dir` using the `Pandas` `df.to_csv()` function. A folder will be created in the base_dir whose name is determined by the _**current economic scenario**_ of `my_eonr` (in this case \"social_154_1100\", corresponding to `cost_n_social > 0`, `price_ratio = 15.4`, and `cost_n_social = 1.10`, respectively):"
    ]
   },
   {
@@ -1550,6 +1636,26 @@
     "\n",
     "my_eonr.df_results.to_csv(os.path.join(os.path.split(my_eonr.base_dir)[0], 'quick_start_results.csv'), index=False)\n",
     "my_eonr.df_ci.to_csv(os.path.join(os.path.split(my_eonr.base_dir)[0], 'quick_start_ci.csv'), index=False)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Upon generating figures using `EONR.plot_eonr()` or `EONR.plot_tau()`, the `matplotlib` figures are stored to the `EONR` class. They can be saved to file by using `EONR.plot_save()`: "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "fname_eonr_plot = 'eonr_mn2012_pre.png'\n",
+    "fname_tau_plot = 'tau_mn2012_pre.png'\n",
+    "\n",
+    "my_eonr.plot_save(fname=fname_eonr_plot, fig=my_eonr.fig_eonr)\n",
+    "my_eonr.plot_save(fname=fname_tau_plot, fig=my_eonr.fig_tau)"
    ]
   }
  ],
