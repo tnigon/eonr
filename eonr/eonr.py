@@ -1,29 +1,74 @@
 # -*- coding: utf-8 -*-
-"""
-Copyright &copy; 2019 Tyler J Nigon. All rights reserved.
+'''**Calculates the economic optimum nitrogen rate and plots the results**
 
-LICENSE
+``EONR`` is a Python package for computing the economic optimum nitrogen
+fertilizer rate using data from agronomic field trials under economic
+conditions defined by the user (i.e., grain price and fertilizer cost).
+It can be used for any crop (e.g., corn, wheat, potatoes, etc.), but the
+current version only supports use of the quadratic-plateau piecewise
+model.
 
-The MIT license
+**Therefore, use caution in making sure that a quadratic-plateau model is
+appropriate for your application.** Future versions should add support for
+other models (quadratic, spherical, etc.) that may improve the fit of
+experimental yield response to nitrogen for other crops.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of
-this software and associated documentation files (the "Software"), to deal in
-the Software without restriction, including without limitation the rights to
-use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
-of the Software, and to permit persons to whom the Software is furnished to do
-so, subject to the following conditions:
+*Optional arguments when creating an instance of* ``EONR``:
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+Parameters:
+    cost_n_fert (float, optional): Cost of N fertilizer (default: 0.50)
+    cost_n_social (float, optional): Social cost of N fertilier (default: 0.00)
+    price_grain (float, optional): Price of grain (default: 3.00)
+    col_n_app (str, optional): Column name pointing to the rate of applied N
+        fertilizer data (default: 'rate_n_applied_lbac')
+    col_yld (str, optional): Column name pointing to the grain yield data. This
+        column is multiplied by price_grain to create the 'grtn' column in
+        ``EONR.df_data`` (default: 'yld_grain_dry_buac')
+    col_crop_nup (str, optional): Column name pointing to crop N uptake data
+        (default: 'nup_total_lbac')
+    col_n_avail (str, optional): Column name pointing to available soil N plus
+        fertilizer  (default: 'soil_plus_fert_n_lbac')
+    col_year (str, optional): Column name pointing to year (default: 'year')
+    col_location (str, optional): Column name pointing to location (default:
+        'location')
+    col_time_n (str, optional): Column name pointing to nitrogen application
+        timing (default: 'time_n')
+    unit_currency (str, optional): String describing the curency unit (default:
+        '$')
+    unit_fert (str, optional): String describing the "fertilizer" unit
+        (default: 'lbs')
+    unit_grain (str, optional): String describing the "grain" unit (default:
+        'bu')
+    unit_area (str, optional): String descibing the "area" unit (default: 'ac')
+    model (str, optional): Statistical model used to fit N rate response.
+        *'quad_plateau'* = quadratic plateau; *'lin_plateau'* = linear plateau
+        (default: 'quad_plateau')
+    ci_level (float, optional): Confidence interval level to save in
+        ``EONR.df_results`` and to display in the EONR plot; note that
+        confidence intervals are calculated at many alpha levels, and we should
+        choose from that list - should be one of [0.1, 0.2, 0.3, 0.4, 0.5, 0.6,
+        0.667, 0.7, 0.8, 0.9, 0.95, or 0.99] (default: 0.90)
+    base_dir (str, optional): Base file directory when saving results (default:
+        None)
+    base_zero (``bool``, optional): Determines if gross return to N is
+        expressed as an absolute value or relative to the yield/return at the
+        zero rate. If base_zero is True, observed data for the zero nitrogen
+        rate will be standardized by subtracting the y-intercept
+        (:math:`\\beta_0`) from the 'grtn' column of ``EONR.df_data``.
+        (default: True)
+    print_out (``bool``, optional): Determines if "non-essential" results are
+        printed in the Python console (default: False)
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-"""
+Requirements:
+    The minimum data requirement to utilize this package is observed (or
+    simulated) experimental data of agronomic yield response to nitrogen
+    fertilizer. In other words, your experiment should have multiple nitrogen
+    rate treatments, and you should have measured the yield for each
+    experimental plot at the end of the season. Suitable experimental design
+    for your particular experiment is always suggested (e.g., it should
+    probably be replicated).
+
+'''
 
 import numpy as np
 import os
@@ -44,46 +89,6 @@ from eonr import Plotting_tools
 
 
 class EONR(object):
-    '''
-    Calculates Economic Optimum N Rate given table of N applied and yield
-
-    cost_n_fert (float): Cost of N fertilizer (default: 0.50)
-    cost_n_social (float): Social cost of N fertilier (default: 0.00)
-    price_grain (float): Price of grain (default: 3.00)
-    col_n_app (str): Column name pointing to the rate of applied N fertilizer
-        data (default: 'rate_n_applied_lbac')
-    col_yld (str): Column name pointing to the grain yield data. This column is
-        multiplied by price_grain to create the 'grtn' column in `EONR.df_data`
-        (default: 'yld_grain_dry_buac')
-    col_crop_nup (str): Column name pointing to crop N uptake data
-        (default: 'nup_total_lbac')
-    col_n_avail (str): Column name pointing to available soil N plus
-        fertilizer  (default: 'soil_plus_fert_n_lbac')
-    col_year (str): Column name pointing to year (default: 'year')
-    col_location (str): Column name pointing to location (default: 'location')
-    col_time_n (str): Column name pointing to nitrogen application timing
-        (default: 'time_n')
-    unit_currency (str): String describing the curency unit (default: '$')
-    unit_fert (str): String describing the "fertilizer" unit (default: 'lbs')
-    unit_grain (str): String describing the "grain" unit (default: 'bu')
-    unit_area (str): String descibing the "area" unit (default: 'ac')
-    model (str): Statistical model used to fit N rate response. 'quad_platau' =
-        quadratic plateau; 'lin_plateau = linear plateau (default:
-        'quad_plateau')
-    ci_level (float): Confidence interval level to save in eonr.df_results and
-        to display in the EONR plot; note that confidence intervals are
-        calculated at many alpha levels, and we should choose from that list -
-        should be one of [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.667, 0.7, 0.8, 0.9,
-        0.95, or 0.99] (default: 0.90)
-    base_dir (str): Base file directory when saving results (default: None)
-    base_zero (bool): Determines if gross return to N is expressed as an
-        absolute value or relative to the yield/return at the zero rate. If
-        base_zero is True, observed data for the zero nitrogen rate will be
-        standardized by subtracting the y-intercept ($\beta_0$) from the 'grtn'
-        column of `EONR.df_data`. (default: True)
-    print_out (bool): Determines if "non-essential" results are printed in the
-        Python console (default: False)
-    '''
     def __init__(self,
                  cost_n_fert=0.5,
                  cost_n_social=0,
@@ -576,7 +581,7 @@ class EONR(object):
     def _build_mrtn_lines(self, n_steps=100):
         '''
         Builds the Net Return to N (MRTN) line for plotting
-        col_n_app    --> column heading for N applied (str)
+        col_n_app    --> column heading for N applied (``str``)
         '''
         df = self.df_data.copy()
         x_min = float(df.loc[:, [self.col_n_app]].min(axis=0))
@@ -769,8 +774,8 @@ class EONR(object):
         '''
         Computes quadratic plateau coeficients using numpy.polyfit()
 
-        <col_x (str): df column name for x axis
-        <col_y (str): df column name for y axis
+        <col_x (``str``): df column name for x axis
+        <col_y (``str``): df column name for y axis
         '''
         df_data = self.df_data.copy()
         x = df_data[col_x].values
@@ -1159,9 +1164,9 @@ class EONR(object):
         <p> are used to determine tau (from the t-statistic)
         From page 104 - 105 (Gallant, 1987)
 
-        <n (int): number of samples
-        <p (int): number of parameters
-        <s2c (float): the variance of the EONR value(notation from Gallant, 1987)
+        <n (``int``): number of samples
+        <p (``int``): number of parameters
+        <s2c (``float``): the variance of the EONR value(notation from Gallant, 1987)
 
         s2 = SSE / (n - p)
         c = s2c / s2
@@ -1637,17 +1642,18 @@ class EONR(object):
         '''Calculates the change in EONR among economic scenarios
 
         Parameters:
-            df_results (Pandas dataframe): The dataframe containing the
-                results from `EONR.calculate_eonr()` (default: None).
+            df_results (``Pandas dataframe``, optional): The dataframe
+                containing the results from ``EONR.calculate_eonr()``
+                (default: None).
 
         Returns:
-            df_out (Pandas dataframe): The dataframe with the newly inserted
-                "EONR delta".
+            df_out "The dataframe with the newly inserted EONR delta."
 
         Note:
-            `EONR.calc_delta()` filters all data by location, year, and
+            ``EONR.calc_delta()`` filters all data by location, year, and
             nitrogen timing, then the "delta" is calculated as the difference
             relative to the economic scenario resulting in the highest EONR.
+
         '''
         if df_results is None:
             df = self.df_results.unique()
@@ -1681,42 +1687,45 @@ class EONR(object):
         '''Calculates the EONR and its confidence intervals
 
         Parameters:
-            df (Pandas DataFrame): The dataframe containing the experimental
-                data.
-            col_n_app (str): Column name pointing to the rate of applied N
-                fertilizer data (default: None).
-            col_yld (str): Column name pointing to the grain yield data. This
-                column is multiplied by price_grain to create the 'grtn' column
-                in `EONR.df_data` (default: None).
-            col_crop_nup (str): Column name pointing to crop N uptake data
+            df (``Pandas dataframe``): The dataframe containing the
+                experimental data.
+            col_n_app (``str``, optional): Column name pointing to the rate of
+                applied N fertilizer data (default: None).
+            col_yld (``str``, optional): Column name pointing to the grain
+                yield data. This column is multiplied by price_grain to create
+                the 'grtn' column in ``EONR.df_data`` (default: None).
+            col_crop_nup (``str``, optional): Column name pointing to crop N
+                uptake data (default: None).
+            col_n_avail (``str``, optional): Column name pointing to available
+                soil N at planting plus fertilizer throughout the season
                 (default: None).
-            col_n_avail (str): Column name pointing to available soil N at
-                planting plus fertilizer throughout the season (default: None).
-            col_year (str): Column name pointing to year (default: None).
-            col_location (str): Column name pointing to location (default:
-                None).
-            col_time_n (str): Column name pointing to nitrogen application
-                timing (default: None).
-            bootstrap_ci (bool): Indicates whether bootstrap confidence
-                intervals are to be computed. If calculating the EONR for many
-                sites and/or economic scenarios, it may be desirable to set
-                to `False` because the bootstrap confidence intervals take the
-                most time to compute (default: True).
+            col_year (``str``, optional): Column name pointing to year
+                (default: None).
+            col_location (``str``, optional): Column name pointing to location
+                (default: None).
+            col_time_n (``str``, optional): Column name pointing to nitrogen
+                application timing (default: None).
+            bootstrap_ci (``bool``, optional): Indicates whether bootstrap
+                confidence intervals are to be computed. If calculating the
+                EONR for many sites and/or economic scenarios, it may be
+                desirable to set to ``False`` because the bootstrap confidence
+                intervals take the most time to compute (default: True).
 
         Note:
-            `col_n_app` and `col_yld` are required by `EONR`, but not
-            necessarily by `EONR.calculate_eonr()`. They must either be set
+            ``col_n_app`` and ``col_yld`` are required by ``EONR``, but not
+            necessarily by ``EONR.calculate_eonr()``. They must either be set
             during the initialization of EONR(), or be passed in this method.
 
         Note:
-            `col_crop_nup and `col_n_avail` are required to calculate the
+            ``col_crop_nup`` and ``col_n_avail`` are required to calculate the
             socially optimum nitrogen rate, SONR. The SONR is the optimum
             nitrogen rate considering the social cost of nitrogen, so
-            therefore, `EONR.cost_n_social` must also be set.
+            therefore, ``EONR.cost_n_social`` must also be set.
 
         Note:
-            `col_year`, `col_location`, and `col_time_n` are purely optional.
-            They only affect the titles and axes labels of the plots.
+            ``col_year``, ``col_location``, and ``col_time_n`` are purely
+            optional. They only affect the titles and axes labels of the plots.
+
         '''
         if col_n_app is not None:
             self.col_n_app = str(col_n_app)
@@ -1784,24 +1793,36 @@ class EONR(object):
         '''Plots EONR, MRTN, GRTN, net return, and nitrogen cost
 
         Parameters:
-            ci_type (str): Indicates which confidence interval type should be
-                plotted. Options are 'wald', to plot the Wald
+            ci_type (``str``, optional): Indicates which confidence interval
+                type should be plotted. Options are 'wald', to plot the Wald
                 CIs; 'profile-likelihood', to plot the profile-likelihood
                 CIs; or 'bootstrap', to plot the bootstrap CIs (default:
                 'profile-likelihood').
-            ci_level (float): The confidence interval level to be plotted, and
-                must be one of the values in EONR.ci_list. If None, uses the
-                EONR.ci_level (default: None).
-            run_n (int): NOT IMPLEMENTED. The run number to plot, as indicated
-                in EONR.df_results; if None, uses the most recent, or maximum,
-                run_n in EONR.df_results (default: None).
-            x_min (int): The minimum x-bounds of the plot (default: None)
-            x_max (int): The maximum x-bounds of the plot (default: None)
-            y_min (int): The minimum y-bounds of the plot (default: None)
-            y_max (int): The maximum y-bounds of the plot (default: None)
-            style (str): The style of the plolt; can be any of the options
-                supported by [matplotlib]
-                (https://tonysyu.github.io/raw_content/matplotlib-style-gallery/gallery.html)
+            ci_level (``float``, optional): The confidence interval level to be
+                plotted, and must be one of the values in EONR.ci_list. If
+                ``None``, uses the
+                ``EONR.ci_level`` (default: None).
+            run_n (``int``, optional): NOT IMPLEMENTED. The run number to plot,
+                as indicated in EONR.df_results; if None, uses the most recent,
+                or maximum, run_n in EONR.df_results (default: None).
+            x_min (``int``, optional): The minimum x-bounds of the plot
+                (default: None)
+            x_max (``int``, optional): The maximum x-bounds of the plot
+                (default: None)
+            y_min (``int``, optional): The minimum y-bounds of the plot
+                (default: None)
+            y_max (``int``, optional): The maximum y-bounds of the plot
+                (default: None)
+            style (``str``, optional): The style of the plolt; can be any of
+                the options supported by ``matplotlib``
+
+        Note:
+            ``x_min``, ``x_max``, ``y_min``, and ``y_max`` are set by
+            Matplotlib if left as ``None``.
+
+        .. _matplotlib:
+            https://tonysyu.github.io/raw_content/matplotlib-style-gallery/gallery.html
+
         '''
         if self.plotting_tools is None:
             self.plotting_tools = Plotting_tools(self)
@@ -1816,12 +1837,14 @@ class EONR(object):
         '''Saves a generated matplotlib figure to file
 
         Parameters:
-            fname (str): Filename to save plot to (default: None)
-            base_dir (str): Base file directory when saving results (default:
+            fname (``str``, optional): Filename to save plot to (default: None)
+            base_dir (``str``, optional): Base file directory when saving
+                results (default: None)
+            fig (eonr.fig, optional): EONR figure object to save (default:
                 None)
-            fig (eonr.fig): EONR figure object to save (default: None)
-            dpi (int): Resolution to save the figure to in dots per inch
-                (default: 300)
+            dpi (``int``, optional): Resolution to save the figure to in dots
+                per inch (default: 300)
+
         '''
         self.plotting_tools.plot_save(fname=fname, base_dir=base_dir, fig=fig,
                                       dpi=dpi)
@@ -1831,18 +1854,20 @@ class EONR(object):
         '''Plots the test statistic as a function nitrogen rate
 
         Parameters:
-            y_axis (str): Value to plot on the y-axis. Options are 't_stat', to
-                plot the *T statistic*; 'f_stat', to plot the *F-statistic*;
-                or 'level', to plot the *confidence level*; (default:
-                't_stat').
-            emphasis (str): Indicates which confidence interval type, if any,
-                should be emphasized. Options are 'wald', to empahsize the Wald
-                CIs; 'profile-likelihood', to empahsize the profile-likelihood
-                CIs; 'bootstrap', to empahsize the bootstrap CIs; or None, to
-                empahsize no CI (default: 'profile-likelihood').
-            run_n (int): The run number to plot, as indicated in EONR.df_ci; if
-                None, uses the most recent, or maximum, run_n in df_ci
-                (default: None).
+            y_axis (``str``, optional): Value to plot on the y-axis. Options
+                are 't_stat', to plot the *T statistic*; 'f_stat', to plot the
+                *F-statistic*; or 'level', to plot the *confidence level*;
+                (default: 't_stat').
+            emphasis (``str``, optional): Indicates which confidence interval
+                type, if any, should be emphasized. Options are 'wald', to
+                empahsize the Wald CIs;
+                'profile-likelihood', to empahsize the profile-likelihood CIs;
+                'bootstrap', to empahsize the bootstrap CIs; or
+                ``None``, to empahsize no CI (default: 'profile-likelihood').
+            run_n (``int``, optional): The run number to plot, as indicated in
+                ``EONR.df_ci``; if ``None``, uses the most recent, or maximum,
+                run_n in ``EONR.df_ci`` (default: None).
+
         '''
         if self.plotting_tools is None:
             self.plotting_tools = Plotting_tools(self)
@@ -1854,33 +1879,37 @@ class EONR(object):
 
     def print_results(self):
         '''Prints the results of the optimum nitrogen rate computation
+
         '''
         self._print_results()
 
     def set_column_names(self, col_n_app=None, col_yld=None, col_crop_nup=None,
                          col_n_avail=None, col_year=None,
                          col_location=None, col_time_n=None):
-        '''Sets the column name(s) for `EONR.df_data`
+        '''Sets the column name(s) for ``EONR.df_data``
 
         Parameters:
-            col_n_app (str): Column name pointing to the rate of applied N
-                fertilizer data (default: None).
-            col_yld (str): Column name pointing to the grain yield data. This
-                column is multiplied by price_grain to create the 'grtn' column
-                in `EONR.df_data` (default: None).
-            col_crop_nup (str): Column name pointing to crop N uptake data
+            col_n_app (``str``, optional): Column name pointing to the rate of
+                applied N fertilizer data (default: None).
+            col_yld (``str``, optional): Column name pointing to the grain
+                yield data. This column is multiplied by price_grain to create
+                the 'grtn' column in ``EONR.df_data`` (default: None).
+            col_crop_nup (``str``, optional): Column name pointing to crop N
+                uptake data (default: None).
+            col_n_avail (``str``, optional): Column name pointing to available
+                soil N at planting plus fertilizer throughout the season
                 (default: None).
-            col_n_avail (str): Column name pointing to available soil N at
-                planting plus fertilizer throughout the season (default: None).
-            col_year (str): Column name pointing to year (default: None).
-            col_location (str): Column name pointing to location (default:
-                None).
-            col_time_n (str): Column name pointing to nitrogen application
-                timing (default: None).
+            col_year (``str``, optional): Column name pointing to year
+                (default: None).
+            col_location (``str``, optional): Column name pointing to location
+                (default: None).
+            col_time_n (``str``, optional): Column name pointing to nitrogen
+                application timing (default: None).
 
         Note:
             Year, location, or nitrogen timing (used for titles and axes labels
             for plotting).
+
         '''
         if col_n_app is not None:
             self.col_n_app = str(col_n_app)
@@ -1902,15 +1931,17 @@ class EONR(object):
         '''Sets the year, location, or nitrogen timing
 
         Parameters:
-            year (optional): Year of experimental trial (default: None)
-            location (optional): Location of experimental trial (default:
-                None)
-            n_timing (optional): Nitrogen timing of experimental trial
+            year (``str`` or ``int``, optional): Year of experimental trial
                 (default: None)
+            location (``str`` or ``int``, optional): Location of experimental
+                trial (default: None)
+            n_timing (``str`` or ``int``, optional): Nitrogen timing of
+                experimental trial (default: None)
 
         Note:
             Year, location, or nitrogen timing (used for titles and axes labels
             for plotting).
+
         '''
         if year is not None:
             self.year = int(year)
@@ -1924,22 +1955,32 @@ class EONR(object):
         '''Sets or resets the nitrogen costs or grain price
 
         Parameters:
-            cost_n_fert (float): Cost of nitrogen fertilizer  (default: None).
-            cost_n_social (float): Cost of pollution caused by excess nitrogen
-                 (default: None).
-            price_grain (float): Price of grain (default: None).
+            cost_n_fert (``float``, optional): Cost of nitrogen fertilizer
+                (default: None).
+            cost_n_social (``float``, optional): Cost of pollution caused by
+                excess nitrogen (default: None).
+            price_grain (``float``, optional): Price of grain (default: None).
 
         Note:
-            `update_econ()` recomputes the price ratio based on the passed
-            information, then adjusts the lowest level folder in the base
-            directory, `EONR.base_dir`, based on to the ratio
+            ``update_econ()`` recomputes the price ratio based on the passed
+            information, then adjusts/renames the lowest level folder in the
+            base directory, ``EONR.base_dir``, based on to the ratio. The
+            folder name is set according to the economic scenario (useful when
+            running ``EONR`` for many different economic scenarios then
+            plotting and saving results for each scenario). See examples below.
 
-        Examples:
-            \trad_0010\ corresponding to `cost_n_social == 0` and
-            `price_ratio = 0.10` for "trad" and "0010", respectively.
-            \social_154_1100\ corresponding to `cost_n_social > 0`,
-            `price_ratio = 15.4`, and `cost_n_social = 1.10` for "social",
-            "154", and "1100", respectively.
+            Example 1 (*how folder name is set when social cost of nitrogen is
+            zero*): folder name will be set to **"trad_0010"** if
+            ``cost_n_social == 0`` and ``price_ratio == 0.10``, coresponding to
+            *"trad"* and *"0010"* in the folder name, respectively.
+
+            Example 2 (*how folder name is set when social cost of nitrogen is
+            greater than zero*): folder name will be set to
+            **"social_154_1100"** if ``cost_n_social > 0``,
+            ``price_ratio = 15.4``, and ``cost_n_social = 1.10``, corresponding
+            to *"social"*, *"154"*, and *"1100"* in the folder name,
+            respectively.
+
         '''
         if cost_n_fert is not None:
             self.cost_n_fert = cost_n_fert  # in USD per lb

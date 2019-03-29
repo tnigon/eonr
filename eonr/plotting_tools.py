@@ -1,28 +1,6 @@
 # -*- coding: utf-8 -*-
 """
 Copyright &copy; 2019 Tyler J Nigon. All rights reserved.
-
-LICENSE
-
-The MIT license
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of
-this software and associated documentation files (the "Software"), to deal in
-the Software without restriction, including without limitation the rights to
-use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
-of the Software, and to permit persons to whom the Software is furnished to do
-so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
 """
 
 import matplotlib.colors as colors
@@ -710,8 +688,9 @@ class Plotting_tools(object):
             y_min (int): The minimum y-bounds of the plot (default: None)
             y_max (int): The maximum y-bounds of the plot (default: None)
             style (str): The style of the plolt; can be any of the options
-                supported by [matplotlib]
-                (https://tonysyu.github.io/raw_content/matplotlib-style-gallery/gallery.html)
+                supported by
+                supported by
+                <a href="https://tonysyu.github.io/raw_content/matplotlib-style-gallery/gallery.html">matplotlib</a>
         '''
         self._set_style(style)
         g = sns.FacetGrid(self.df_data)

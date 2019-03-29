@@ -12,7 +12,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="_static/language_data.js"></script>
-    <script async="async" integrity="sha384-......" type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script async="async" type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"extensions": ["tex2jax.js"], "jax": ["input/TeX", "output/HTML-CSS"], "tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     <script type="text/javascript" src="_static/js/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="_static/js/jquery-fix.js"></script>
@@ -60,12 +60,10 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Home</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">1. Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorial.html">2. Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="background.html">3. Background</a></li>
-<li class="toctree-l1"><a class="reference internal" href="advanced_use.html">4. Advanced Features</a></li>
-<li class="toctree-l1"><a class="reference internal" href="api.html">5. API Reference</a></li>
-<li class="toctree-l1"><a class="reference internal" href="theory.html">6. Theory</a></li>
-<li class="toctree-l1"><a class="reference internal" href="license.html">7. License</a></li>
-<li class="toctree-l1"><a class="reference internal" href="eonr.html">8. eonr package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced_tutorial.html">3. Advanced Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="background.html">4. Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="my_eonr.html">5. API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">6. License</a></li>
 </ul>
 </ul>
 </li>
@@ -86,7 +84,7 @@
 <li><a class="reference internal" href="#data-requirements">Data requirements</a></li>
 <li><a class="reference internal" href="#intended-audience">Intended audience</a></li>
 <li><a class="reference internal" href="#concept-of-the-eonr">Concept of the EONR</a></li>
-<li><a class="reference internal" href="#motivation-for-development-of-eonr">Motivation for development of <cite>EONR</cite></a></li>
+<li><a class="reference internal" href="#motivation-for-development-of-eonr">Motivation for development of <code class="docutils literal notranslate"><span class="pre">EONR</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
@@ -147,12 +145,10 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Home</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">1. Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorial.html">2. Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="background.html">3. Background</a></li>
-<li class="toctree-l1"><a class="reference internal" href="advanced_use.html">4. Advanced Features</a></li>
-<li class="toctree-l1"><a class="reference internal" href="api.html">5. API Reference</a></li>
-<li class="toctree-l1"><a class="reference internal" href="theory.html">6. Theory</a></li>
-<li class="toctree-l1"><a class="reference internal" href="license.html">7. License</a></li>
-<li class="toctree-l1"><a class="reference internal" href="eonr.html">8. eonr package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced_tutorial.html">3. Advanced Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="background.html">4. Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="my_eonr.html">5. API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">6. License</a></li>
 </ul>
 </div>
 </div>
@@ -162,7 +158,7 @@
 </div>
 <div class="section" id="about">
 <h2>About<a class="headerlink" href="#about" title="Permalink to this headline">¶</a></h2>
-<p><cite>EONR</cite> is a Python package for computing the economic optimum nitrogen fertilizer rate using data from agronomic field trials under economic conditions defined by the user (i.e., grain price and fertilizer cost).
+<p><code class="docutils literal notranslate"><span class="pre">EONR</span></code> is a Python package for computing the economic optimum nitrogen fertilizer rate using data from agronomic field trials under economic conditions defined by the user (i.e., grain price and fertilizer cost).
 It can be used for any crop (e.g., corn, wheat, potatoes, etc.), but the current version (1.0.0) only supports use of the quadratic-plateau piecewise model.</p>
 <p><strong>Therefore, use caution in making sure that a quadratic-plateau model is appropriate for your application.</strong></p>
 <p><em>Future versions should add support for other models (quadratic, spherical, etc.) that may improve the fit of experimental yield response to nitrogen for other crops.</em></p>
@@ -191,10 +187,10 @@ The <code class="docutils literal notranslate"><span class="pre">EONR</span></co
 <p>For more information about how the economic optimum nitrogen rate is calculated, see the <a class="reference external" href="background.html">Background section</a>.</p>
 </div>
 <div class="section" id="motivation-for-development-of-eonr">
-<h3>Motivation for development of <cite>EONR</cite><a class="headerlink" href="#motivation-for-development-of-eonr" title="Permalink to this headline">¶</a></h3>
+<h3>Motivation for development of <code class="docutils literal notranslate"><span class="pre">EONR</span></code><a class="headerlink" href="#motivation-for-development-of-eonr" title="Permalink to this headline">¶</a></h3>
 <p>Although calculation of the economic optimum nitrogen rate (EONR) from a nitrogen response experiment is a trivial task for agronomic researchers, the computation of its confidence intervals are not.
 This is especially true for calculating confidence intervals for data that are explained best with a quadratic-plateau model, which is generally thought of as the most appropriate model for describing yield response to nitrogen in corn.
-With the <cite>EONR</cite> package available and accessible, I hope all published EONR research also reports the confidence intervals of the maximum likelihood EONR.
+With the <code class="docutils literal notranslate"><span class="pre">EONR</span></code> package available and accessible, I hope all published EONR research also reports the confidence intervals of the maximum likelihood EONR.
 Furthermore, I hope this package enables researchers and farmers to take a closer look at evaluating what <em>the best</em> nitrogen rate may be.
 The EONR considers the cost of nitrogen in addition to the price a farmer receives for their grain. This is great, but this package takes this concept one step further with an added <em>social cost of nitrogen</em>.
 To consider the environmental or social effect of nitrogen application in agriculture, two things are necessary:</p>

@@ -20,6 +20,9 @@ import sphinx_bootstrap_theme
 import recommonmark
 from recommonmark.transform import AutoStructify
 
+autodoc_default_flags = ['members']
+autosummary_generate = True
+
 # -- Project information -----------------------------------------------------
 project = 'eonr'
 copyright = '2019, Tyler J Nigon'
@@ -40,8 +43,11 @@ release = '1.0.0'
 # ones.
 extensions = [
     'sphinx.ext.autodoc',
+    'sphinx.ext.autosummary',  # Creates TOC sub-level for EONR methods
+    'sphinx.ext.intersphinx',
     'sphinx.ext.doctest',
     'sphinx.ext.mathjax',
+    'sphinx.ext.viewcode',
     'recommonmark',
     'nbsphinx',  # converts Jupyter notebooks to html
     'sphinx.ext.napoleon'  # for parsing docstrings
@@ -66,7 +72,9 @@ language = 'python'
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
-exclude_patterns = []
+# Keeps sphinx from reading files in this folder. This does not affect
+# sphinx-apidoc (must add it again when creating docs)
+exclude_patterns = ['_build', '**.ipynb_checkpoints']
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = None
@@ -125,10 +133,6 @@ htmlhelp_basename = 'eonrdoc'
 # -- Options for LaTeX output ------------------------------------------------
 mathjax_path="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"
 
-mathjax_options = {
-    'integrity': 'sha384-......',
-}
-
 mathjax_config = {
     'extensions': ['tex2jax.js'],
     'jax': ['input/TeX', 'output/HTML-CSS'],
@@ -156,7 +160,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'eonr.tex', 'eonr Documentation',
+    (master_doc, 'eonr.tex', 'EONR Documentation',
      'Tyler J Nigon', 'manual'),
 ]
 
@@ -166,7 +170,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'eonr', 'eonr Documentation',
+    (master_doc, 'EONR', 'EONR Documentation',
      [author], 1)
 ]
 
@@ -177,8 +181,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'eonr', 'eonr Documentation',
-     author, 'eonr', 'One line description of project.',
+    (master_doc, 'EONR', 'EONR Documentation',
+     author, 'EONR', 'Calculates the economic optimum nitrogen rate and plots the results',
      'Miscellaneous'),
 ]
 

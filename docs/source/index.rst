@@ -19,15 +19,13 @@ Table of Contents
    :numbered:
    :titlesonly:
 
-   Home<index>
+   Home <index.rst>
    installation.ipynb
    tutorial.ipynb
+   advanced_tutorial.ipynb
    background.ipynb
-   advanced_use.ipynb
-   api.ipynb
-   theory.ipynb
+   my_eonr.rst
    license.ipynb
-   eonr.rst
 
 
 ##################
@@ -35,11 +33,10 @@ Troubleshooting
 ##################
 Please report any issues you encounter through the `Github issue tracker <https://github.com/tnigon/eonr/issues>`_.
 
-
 #######
 About
 #######
-`EONR` is a Python package for computing the economic optimum nitrogen fertilizer rate using data from agronomic field trials under economic conditions defined by the user (i.e., grain price and fertilizer cost).
+``EONR`` is a Python package for computing the economic optimum nitrogen fertilizer rate using data from agronomic field trials under economic conditions defined by the user (i.e., grain price and fertilizer cost).
 It can be used for any crop (e.g., corn, wheat, potatoes, etc.), but the current version (|version_current|) only supports use of the quadratic-plateau piecewise model.
 
 **Therefore, use caution in making sure that a quadratic-plateau model is appropriate for your application.**
@@ -77,11 +74,11 @@ The ``EONR`` Python package was used to compute the economic optimum nitrogen ra
 
 For more information about how the economic optimum nitrogen rate is calculated, see the `Background section <background.html>`__.
 
-Motivation for development of `EONR`
+Motivation for development of ``EONR``
 *************************************
 Although calculation of the economic optimum nitrogen rate (EONR) from a nitrogen response experiment is a trivial task for agronomic researchers, the computation of its confidence intervals are not.
 This is especially true for calculating confidence intervals for data that are explained best with a quadratic-plateau model, which is generally thought of as the most appropriate model for describing yield response to nitrogen in corn.
-With the `EONR` package available and accessible, I hope all published EONR research also reports the confidence intervals of the maximum likelihood EONR.
+With the ``EONR`` package available and accessible, I hope all published EONR research also reports the confidence intervals of the maximum likelihood EONR.
 Furthermore, I hope this package enables researchers and farmers to take a closer look at evaluating what *the best* nitrogen rate may be.
 The EONR considers the cost of nitrogen in addition to the price a farmer receives for their grain. This is great, but this package takes this concept one step further with an added *social cost of nitrogen*.
 To consider the environmental or social effect of nitrogen application in agriculture, two things are necessary:

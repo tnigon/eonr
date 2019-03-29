@@ -1,151 +1,55 @@
 ## README
-`EONR` is a Python package for computing the economic optimum nitrogen fertilizer rate using data from agronomic field trials under economic conditions defined by the user (i.e., grain price and fertilizer cost).
+
+### About
+``EONR`` is a Python package for computing the economic optimum nitrogen fertilizer rate using data from agronomic field trials under economic conditions defined by the user (i.e., grain price and fertilizer cost).
+It can be used for any crop (e.g., corn, wheat, potatoes, etc.), but the current version only supports use of the quadratic-plateau piecewise model.
+
+**Therefore, use caution in making sure that a quadratic-plateau model is appropriate for your application.**
+
+*Future versions should add support for other models (quadratic, spherical, etc.) that may improve the fit of experimental yield response to nitrogen for other crops.*
+
+#### Data requirements
+The minimum data requirement to utilize this package is observed (or simulated) experimental data of agronomic yield response to nitrogen fertilizer.
+In other words, your experiment should have multiple nitrogen rate treatments, and you should have measured the yield for each experimental plot at the end of the season.
+Suitable experimental design for your particular experiment is always suggested (e.g., it should probably be replicated).
+
+#### Intended audience
+The intended audiences for this package are agricultural researchers, private sector organizations and consultants that support farmers, and of course those inquisitive farmers that always want to know more about their soils and the environment around them.
+
+#### Concept of the EONR
 The concept behind the *Economic Optimum Nitrogen Rate* approach (also referred to as the *Maximum Return to Nitrogen* approach) is to make the most favorable nitrogen fertilizer recommendation considering three variables:
 
 * Grain price ($ per kg)
 * Fertilizer cost ($ per kg)
 * Grain yield response to nitrogen fertilizer (modeled from input data)
 
-![](docs/source/img/intro_diagram_grey.png)
+[Corn nitrogen rate response experiment in Minnesota (photo captured in July when the crop is about shoulder-high)](docs/_images/intro_diagram_grey.png)
 
-On the left is a corn nitrogen rate response experiment in Minnesota (photo captured in July when the crop is about shoulder-high). Notice the different shades of green in the crop canopy - the dark, lush green is indicative of sufficient nitrogen availability and the lighter green is indicative of nitrogen stress. The ``EONR`` Python package was used to compute the economic optimum nitrogen rate (and its 90% confidence intervals) using experimental data, as illustrated in the plot on the right.
+On the left is a corn nitrogen rate response experiment in Minnesota (photo captured in July when the crop is about shoulder-high).
+Notice the different shades of green in the crop canopy - the dark, lush green is indicative of sufficient nitrogen availability and the lighter green is indicative of nitrogen stress.
+The ``EONR`` Python package was used to compute the economic optimum nitrogen rate (and its 90% confidence intervals) using experimental data, as illustrated in the plot on the right.
 
-For more information about how the economic optimum nitrogen rate is calculated, see the [`EONR` Documentation](docs/background.md).
+For more information about how the economic optimum nitrogen rate is calculated, see the Background section of the EONR Documentation.
 
-## Quick Start
+#### Motivation for development of ``EONR``
+Although calculation of the economic optimum nitrogen rate (EONR) from a nitrogen response experiment is a trivial task for agronomic researchers, the computation of its confidence intervals are not.
+This is especially true for calculating confidence intervals for data that are explained best with a quadratic-plateau model, which is generally thought of as the most appropriate model for describing yield response to nitrogen in corn.
+With the ``EONR`` package available and accessible, I hope all published EONR research also reports the confidence intervals of the maximum likelihood EONR.
+Furthermore, I hope this package enables researchers and farmers to take a closer look at evaluating what *the best* nitrogen rate may be.
+The EONR considers the cost of nitrogen in addition to the price a farmer receives for their grain. This is great, but this package takes this concept one step further with an added *social cost of nitrogen*.
+To consider the environmental or social effect of nitrogen application in agriculture, two things are necessary:
 
-The EONR package was designed to be used with as little Python expertise as possible. However, you may find it to your benefit to become at least a little bit familiar with Python before using EONR. If you're a beginner, I recommend reading the [basic Python Tutorial](https://docs.python.org/2/tutorial/ " Basic Python tutorial") or [Think Python](http://www.greenteapress.com/thinkpython/ "Think Python").
+* We have to make it a habit to measure total crop nitrogen uptake (or at least residual soil nitrogen) at the end of the season.
+* As a society we have to do a better job of putting a value on the cost of pollution caused by nitrogen fertilizers.
 
-With that said, you should be able to make use of EONR by following and executing the commands in the basic tutorial, with the only exception that you substitute in your data.
+This second point is especially tricky because it is *very subjective* and everyone will have a different opinion.
+It's a complex question whose answer changes not only from watershed to watershed, but from household to household, and perhaps even within a household.
 
-Code for all the examples is located in your `PYTHONPATH/Lib/site-packages/eonr/examples` folder.
+Although it is important to recognize that nitrogen probably has some social cost, it is just as important to figure out who pays for that cost. Just remember, farmers farm to produce food and earn a living, they don't farm to pollute the water and air.
+Sure, they definitely bear a lot of responsibility in managing their land and their inputs, but that doesn't mean they should also bear all the costs.
+If we as a society recognize that pollution caused by nitrogen fertilizer in agriculture is indeed a problem, we should work together to figure out how to support the farmers to help fix the problem (or at least stop it from getting worse).
 
-You will find the following code included in the `quick_start.py` or `quick_start.ipynb` (for [Jupyter notebooks](https://jupyter.org/)) files in your `PYTHONPATH/Lib/site-packages/eonr/examples` folder - feel free to load that into your Python IDE to follow along.
-
-After [installation](installation.md), load `Pandas` and the `EONR` module in a Python interpreter:
-```python
-import pandas as pd
-from eonr import EONR
-```
-
-Load the data. `EONR` uses Pandas dataframes to access and manipulate the experimental data.
-
-```python
-df_data = pd.read_csv(r'examples\minnesota_2012.csv')
-df_data.head()
-```
-
-**Figure 1:** Dataframe containing nitrogen rate, grain yield, and nitrogen uptake data from a field trial in Minnesota.
-![](img/quick_start_minnesota_dataframe.png "Minnesota 2012 EONR Data")
-
-The table containing the experimental data **must** have a minimum of two columns:
-* Nitrogen fertilizer rate
-* Grain yield
-
-`EONR` accepts custom column names. Just be sure to set them by either using `EONR.set_column_names()` or by passing them to `EONR.calculate_eonr()`. We will declare the names of the these two columns as they exist in the `Pandas` dataframe so they can be passed to `EONR` later:
-```python
-col_n_app = 'rate_n_applied_kgha'
-col_yld = 'yld_grain_dry_kgha'
-```
-
-Each row of data in our dataframe should correspond to a nitrogen rate treatment plot. It is common to have several other columns describing each treatment plot (e.g., year, location, replication, nitrogen timing, etc.). These aren't necessary, but `EONR` will try pull information from "year", "location", and "nitrogen timing" for labeling the plots that are generated (see [Plotting](plotting.md) for more information).
-
-Although optional, it is good practice to declare units so we don't get confused:
-
-```python
-unit_currency = '$'
-unit_fert = 'kg'
-unit_grain = 'kg'
-unit_area = 'ha'
-```
-
-These unit variables are only used for plotting (titles and axes labels), and they are not actually used for any computations.
-
-`EONR` computes the _**Economic** Optimum Nitrogen Rate_ for any economic scenario that we define. All that is required is to declare the cost of the nitrogen fertilizer (per unit, as defined above) and the price of grain (also per unit). Note that the cost of nitrogen fertilizer can be set to zero, and the _**Agronomic** Optimum Nitrogen Rate_ will be computed.
-
-```python
-cost_n_fert = 0.88  # in USD per kg nitrogen
-price_grain = 0.157  # in USD per kg grain
-```
-
-At this point, we can initialize an instance of `EONR`.
-
-Before doing so, we may want to set the base directory. `EONR.base_dir` is the default location for saving plots and data processed by `EONR`. If `EONR.base_dir` is not set, it will be set to be a folder named "eonr_temp_out" in the current working directory during the intitialization (to see your current working directory, type `os.getcwd()`). If you do not wish to use this as your current working directory, it can be passed to the `EONR` instance using the `base_dir` keyword.
-
-For demonstration purposes, we will set `EONR.base_dir` to what would be the default folder if nothing were passed to the `base_dir` keyword --> that is, we will choose a folder named "eonr_temp_out" in the current working directory (`EONR` will create the directory if it does not exist).
-
-And finally, to create an instance of `EONR`, pass the appropriate variables to `EONR()`:
-
-```python
-import os
-base_dir = os.path.join(os.getcwd(), 'eonr_temp_out')
-
-my_eonr = EONR(cost_n_fert=cost_n_fert,
-               price_grain=price_grain,
-               col_n_app=col_n_app,
-               col_yld=col_yld,
-               unit_currency=unit_currency,
-               unit_grain=unit_grain,
-               unit_fert=unit_fert,
-							 base_dir=base_dir,
-               unit_area=unit_area)
-```
-
-With `my_eonr` initialized as an instance of `EONR`, we can now calculate the economic optimum nitrogen rate by calling the `calculate_eonr()` method and passing the dataframe with the loaded data:
-
-```python
-my_eonr.calculate_eonr(df_data)
-```
-
-It may take several seconds to run - this is because it computes the profile-likelihood and bootstrap confidence intervals by default (and as described in the [Background page](background.md) this is the real novelty of `EONR` package).
-
-	Computing EONR for Minnesota 2012 Pre
-	Cost of N fertilizer: $0.88 per kg
-	Price grain: $0.16 per kg
-	Economic optimum N rate (EONR): 162.3 kg per ha [130.5, 207.8] (90.0% confidence)
-	Maximum return to N (MRTN): $767.93 per ha
-
-And that's it! The economic optimum for this dataset and economic scenario was **162 kg nitrogen per ha** (with 90% confidence bounds at **131** and **208 kg per ha**) and resulted in a maximum net return of nearly **$770 per ha**. This is great, but of course it'd be useful to see our data and results plotted. Do this by calling the ```plot_eonr()``` module and passing the minimum/maximum values for each axis (optional):
-
-```python
-my_eonr.plot_eonr(x_min=-5, x_max=300, y_min=-100, y_max=1400)
-```
-**Figure 2:** The plotted results - blue points are experimental data (yield value in USD as a function of nitrogen rate), the blue line is the best-fit quadratic-plateau model representing gross return to nitrogen, the red line is the cost of nitrogen fertilizer, and the green line is the difference between the two and represents the net return to nitrogen.
-
-![](docs/source/img/quick_start_eonr_2012_mn.png "quick-start-eonr-plot")
-
- The point on the x-axis where the net return curve (green) reaches the maximum return is the **Economic Optimum Nitrogen Rate (EONR)**. The return to nitrogen at that maximum point is the **Maximum Return to Nitrogen (MRTN)**, indicating the profit that is earned at the economic optimum nitrogen rate. The 90% confidence intervals are illustrated as a transparent grey box surrounding the EONR/MRTN point.
+After all, **farmers farm to grow food, they don't farm to pollute**, *right?*
 
 ## Troubleshooting
 Please report any issues you encounter through the [Github issue tracker](https://github.com/tnigon/eonr).
-
-## License
-
-*Copyright &copy; 2019*
-
-*Tyler J Nigon*
-
-*All rights reserved*
-
-### The MIT license
-<p align="center">
-   Permission is hereby granted, free of charge, to any person obtaining a copy
-   of this software and associated documentation files (the "Software"), to deal
-   in the Software without restriction, including without limitation the rights
-   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-   copies of the Software, and to permit persons to whom the Software is
-   furnished to do so, subject to the following conditions:
-</p>
-<p align="center">
-   The above copyright notice and this permission notice shall be included in all
-   copies or substantial portions of the Software.
-</p>
-<p align="center">
-   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-   SOFTWARE.
-</p>

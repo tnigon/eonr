@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="python">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>5. API &#8212; eonr 1.0.0 documentation</title>
+    <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"extensions": ["tex2jax.js"], "jax": ["input/TeX", "output/HTML-CSS"], "tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    <script type="text/javascript" src="_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="6. License" href="license.html" />
+    <link rel="prev" title="4. Background" href="background.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="index.html">
+          EONR</a>
+        <span class="navbar-text navbar-version pull-left"><b>1.0.0</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="https://github.com/tnigon/eonr">Github</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Home</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">1. Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">2. Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced_tutorial.html">3. Advanced Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="background.html">4. Background</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">5. API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">6. License</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page Menu <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">5. API</a><ul>
+<li><a class="reference internal" href="#module-eonr.eonr">5.1. EONR Class</a></li>
+<li><a class="reference internal" href="#eonr-instance-methods">5.2. EONR Instance Methods</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+  <li>
+    <a href="background.html" title="Previous Chapter: 4. Background"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; 4. Background</span>
+    </a>
+  </li>
+  <li>
+    <a href="license.html" title="Next Chapter: 6. License"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">6. License &raquo;</span>
+    </a>
+  </li>
+              
+            
+            
+            
+            
+              <li class="hidden-sm">
+<div id="sourcelink">
+  <a href="_sources/my_eonr.rst.txt"
+     rel="nofollow">Source</a>
+</div></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12 content">
+      
+  <div class="section" id="api">
+<h1>5. API<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-eonr.eonr">
+<span id="eonr-class"></span><h2>5.1. EONR Class<a class="headerlink" href="#module-eonr.eonr" title="Permalink to this headline">¶</a></h2>
+<p><strong>Calculates the economic optimum nitrogen rate and plots the results</strong></p>
+<p><code class="docutils literal notranslate"><span class="pre">EONR</span></code> is a Python package for computing the economic optimum nitrogen
+fertilizer rate using data from agronomic field trials under economic
+conditions defined by the user (i.e., grain price and fertilizer cost).
+It can be used for any crop (e.g., corn, wheat, potatoes, etc.), but the
+current version only supports use of the quadratic-plateau piecewise
+model.</p>
+<p><strong>Therefore, use caution in making sure that a quadratic-plateau model is
+appropriate for your application.</strong> Future versions should add support for
+other models (quadratic, spherical, etc.) that may improve the fit of
+experimental yield response to nitrogen for other crops.</p>
+<p><em>Optional arguments when creating an instance of</em> <code class="docutils literal notranslate"><span class="pre">EONR</span></code>:</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name" colspan="2">param cost_n_fert:</th></tr>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body">Cost of N fertilizer (default: 0.50)</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">type cost_n_fert:</th></tr>
+<tr class="field-even field"><td>&#160;</td><td class="field-body">float, optional</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2">param cost_n_social:</th></tr>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body">Social cost of N fertilier (default: 0.00)</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">type cost_n_social:</th></tr>
+<tr class="field-even field"><td>&#160;</td><td class="field-body">float, optional</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2">param price_grain:</th></tr>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body">Price of grain (default: 3.00)</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">type price_grain:</th></tr>
+<tr class="field-even field"><td>&#160;</td><td class="field-body">float, optional</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2">param col_n_app:</th></tr>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body">Column name pointing to the rate of applied N
+fertilizer data (default: 'rate_n_applied_lbac')</td>
+</tr>
+<tr class="field-even field"><th class="field-name">type col_n_app:</th><td class="field-body">str, optional</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">param col_yld:</th><td class="field-body">Column name pointing to the grain yield data. This
+column is multiplied by price_grain to create the 'grtn' column in
+<code class="docutils literal notranslate"><span class="pre">EONR.df_data</span></code> (default: 'yld_grain_dry_buac')</td>
+</tr>
+<tr class="field-even field"><th class="field-name">type col_yld:</th><td class="field-body">str, optional</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2">param col_crop_nup:</th></tr>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body">Column name pointing to crop N uptake data
+(default: 'nup_total_lbac')</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">type col_crop_nup:</th></tr>
+<tr class="field-even field"><td>&#160;</td><td class="field-body">str, optional</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2">param col_n_avail:</th></tr>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body">Column name pointing to available soil N plus
+fertilizer  (default: 'soil_plus_fert_n_lbac')</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">type col_n_avail:</th></tr>
+<tr class="field-even field"><td>&#160;</td><td class="field-body">str, optional</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">param col_year:</th><td class="field-body">Column name pointing to year (default: 'year')</td>
+</tr>
+<tr class="field-even field"><th class="field-name">type col_year:</th><td class="field-body">str, optional</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2">param col_location:</th></tr>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body">Column name pointing to location (default:
+'location')</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">type col_location:</th></tr>
+<tr class="field-even field"><td>&#160;</td><td class="field-body">str, optional</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2">param col_time_n:</th></tr>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body">Column name pointing to nitrogen application
+timing (default: 'time_n')</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">type col_time_n:</th></tr>
+<tr class="field-even field"><td>&#160;</td><td class="field-body">str, optional</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2">param unit_currency:</th></tr>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body">String describing the curency unit (default:
+'$')</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">type unit_currency:</th></tr>
+<tr class="field-even field"><td>&#160;</td><td class="field-body">str, optional</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2">param unit_fert:</th></tr>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body">String describing the &quot;fertilizer&quot; unit
+(default: 'lbs')</td>
+</tr>
+<tr class="field-even field"><th class="field-name">type unit_fert:</th><td class="field-body">str, optional</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2">param unit_grain:</th></tr>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body">String describing the &quot;grain&quot; unit (default:
+'bu')</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">type unit_grain:</th></tr>
+<tr class="field-even field"><td>&#160;</td><td class="field-body">str, optional</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2">param unit_area:</th></tr>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body">String descibing the &quot;area&quot; unit (default: 'ac')</td>
+</tr>
+<tr class="field-even field"><th class="field-name">type unit_area:</th><td class="field-body">str, optional</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">param model:</th><td class="field-body">Statistical model used to fit N rate response.
+<em>'quad_plateau'</em> = quadratic plateau; <em>'lin_plateau'</em> = linear plateau
+(default: 'quad_plateau')</td>
+</tr>
+<tr class="field-even field"><th class="field-name">type model:</th><td class="field-body">str, optional</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">param ci_level:</th><td class="field-body">Confidence interval level to save in
+<code class="docutils literal notranslate"><span class="pre">EONR.df_results</span></code> and to display in the EONR plot; note that
+confidence intervals are calculated at many alpha levels, and we should
+choose from that list - should be one of [0.1, 0.2, 0.3, 0.4, 0.5, 0.6,
+0.667, 0.7, 0.8, 0.9, 0.95, or 0.99] (default: 0.90)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">type ci_level:</th><td class="field-body">float, optional</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">param base_dir:</th><td class="field-body">Base file directory when saving results (default:
+None)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">type base_dir:</th><td class="field-body">str, optional</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2">param base_zero:</th></tr>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body">Determines if gross return to N is
+expressed as an absolute value or relative to the yield/return at the
+zero rate. If base_zero is True, observed data for the zero nitrogen
+rate will be standardized by subtracting the y-intercept
+(<span class="math notranslate nohighlight">\(\beta_0\)</span>) from the 'grtn' column of <code class="docutils literal notranslate"><span class="pre">EONR.df_data</span></code>.
+(default: True)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">type base_zero:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">bool</span></code>, optional</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2">param print_out:</th></tr>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body">Determines if &quot;non-essential&quot; results are
+printed in the Python console (default: False)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">type print_out:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">bool</span></code>, optional</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>Requirements:</dt>
+<dd>The minimum data requirement to utilize this package is observed (or
+simulated) experimental data of agronomic yield response to nitrogen
+fertilizer. In other words, your experiment should have multiple nitrogen
+rate treatments, and you should have measured the yield for each
+experimental plot at the end of the season. Suitable experimental design
+for your particular experiment is always suggested (e.g., it should
+probably be replicated).</dd>
+</dl>
+</div>
+<div class="section" id="eonr-instance-methods">
+<h2>5.2. EONR Instance Methods<a class="headerlink" href="#eonr-instance-methods" title="Permalink to this headline">¶</a></h2>
+<p><em>Class methods available for any instance of</em> <code class="docutils literal notranslate"><span class="pre">EONR</span></code>. <em>Run</em> <code class="docutils literal notranslate"><span class="pre">my_eonr</span> <span class="pre">=</span> <span class="pre">EONR([options])</span></code> <em>to create a new</em> <code class="docutils literal notranslate"><span class="pre">EONR</span></code> <em>instance, then you'll have access to any of the following methods.</em></p>
+<dl class="class">
+<dt id="eonr.EONR">
+<em class="property">class </em><code class="descclassname">eonr.</code><code class="descname">EONR</code><span class="sig-paren">(</span><em>cost_n_fert=0.5</em>, <em>cost_n_social=0</em>, <em>price_grain=3.0</em>, <em>col_n_app='rate_n_applied_lbac'</em>, <em>col_yld='yld_grain_dry_buac'</em>, <em>col_crop_nup='nup_total_lbac'</em>, <em>col_n_avail='soil_plus_fert_n_lbac'</em>, <em>col_year='year'</em>, <em>col_location='location'</em>, <em>col_time_n='time_n'</em>, <em>unit_currency='$'</em>, <em>unit_fert='lbs'</em>, <em>unit_grain='bu'</em>, <em>unit_area='ac'</em>, <em>model='quad_plateau'</em>, <em>ci_level=0.9</em>, <em>base_dir=None</em>, <em>base_zero=True</em>, <em>print_out=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/eonr/eonr.html#EONR"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#eonr.EONR" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="eonr.EONR.calc_delta">
+<code class="descname">calc_delta</code><span class="sig-paren">(</span><em>df_results=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/eonr/eonr.html#EONR.calc_delta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#eonr.EONR.calc_delta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the change in EONR among economic scenarios</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>df_results</strong> (<code class="docutils literal notranslate"><span class="pre">Pandas</span> <span class="pre">dataframe</span></code>, optional) -- The dataframe
+containing the results from <code class="docutils literal notranslate"><span class="pre">EONR.calculate_eonr()</span></code>
+(default: None).</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">df_out &quot;The dataframe with the newly inserted EONR delta.&quot;</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><code class="docutils literal notranslate"><span class="pre">EONR.calc_delta()</span></code> filters all data by location, year, and
+nitrogen timing, then the &quot;delta&quot; is calculated as the difference
+relative to the economic scenario resulting in the highest EONR.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="eonr.EONR.calculate_eonr">
+<code class="descname">calculate_eonr</code><span class="sig-paren">(</span><em>df</em>, <em>col_n_app=None</em>, <em>col_yld=None</em>, <em>col_crop_nup=None</em>, <em>col_n_avail=None</em>, <em>col_year=None</em>, <em>col_location=None</em>, <em>col_time_n=None</em>, <em>bootstrap_ci=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/eonr/eonr.html#EONR.calculate_eonr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#eonr.EONR.calculate_eonr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the EONR and its confidence intervals</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>df</strong> (<code class="docutils literal notranslate"><span class="pre">Pandas</span> <span class="pre">dataframe</span></code>) -- The dataframe containing the
+experimental data.</li>
+<li><strong>col_n_app</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>, optional) -- Column name pointing to the rate of
+applied N fertilizer data (default: None).</li>
+<li><strong>col_yld</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>, optional) -- Column name pointing to the grain
+yield data. This column is multiplied by price_grain to create
+the 'grtn' column in <code class="docutils literal notranslate"><span class="pre">EONR.df_data</span></code> (default: None).</li>
+<li><strong>col_crop_nup</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>, optional) -- Column name pointing to crop N
+uptake data (default: None).</li>
+<li><strong>col_n_avail</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>, optional) -- Column name pointing to available
+soil N at planting plus fertilizer throughout the season
+(default: None).</li>
+<li><strong>col_year</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>, optional) -- Column name pointing to year
+(default: None).</li>
+<li><strong>col_location</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>, optional) -- Column name pointing to location
+(default: None).</li>
+<li><strong>col_time_n</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>, optional) -- Column name pointing to nitrogen
+application timing (default: None).</li>
+<li><strong>bootstrap_ci</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>, optional) -- Indicates whether bootstrap
+confidence intervals are to be computed. If calculating the
+EONR for many sites and/or economic scenarios, it may be
+desirable to set to <code class="docutils literal notranslate"><span class="pre">False</span></code> because the bootstrap confidence
+intervals take the most time to compute (default: True).</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><code class="docutils literal notranslate"><span class="pre">col_n_app</span></code> and <code class="docutils literal notranslate"><span class="pre">col_yld</span></code> are required by <code class="docutils literal notranslate"><span class="pre">EONR</span></code>, but not
+necessarily by <code class="docutils literal notranslate"><span class="pre">EONR.calculate_eonr()</span></code>. They must either be set
+during the initialization of EONR(), or be passed in this method.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><code class="docutils literal notranslate"><span class="pre">col_crop_nup</span></code> and <code class="docutils literal notranslate"><span class="pre">col_n_avail</span></code> are required to calculate the
+socially optimum nitrogen rate, SONR. The SONR is the optimum
+nitrogen rate considering the social cost of nitrogen, so
+therefore, <code class="docutils literal notranslate"><span class="pre">EONR.cost_n_social</span></code> must also be set.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><code class="docutils literal notranslate"><span class="pre">col_year</span></code>, <code class="docutils literal notranslate"><span class="pre">col_location</span></code>, and <code class="docutils literal notranslate"><span class="pre">col_time_n</span></code> are purely
+optional. They only affect the titles and axes labels of the plots.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="eonr.EONR.plot_eonr">
+<code class="descname">plot_eonr</code><span class="sig-paren">(</span><em>ci_type='profile-likelihood'</em>, <em>ci_level=None</em>, <em>run_n=None</em>, <em>x_min=None</em>, <em>x_max=None</em>, <em>y_min=None</em>, <em>y_max=None</em>, <em>style='ggplot'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/eonr/eonr.html#EONR.plot_eonr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#eonr.EONR.plot_eonr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots EONR, MRTN, GRTN, net return, and nitrogen cost</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>ci_type</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>, optional) -- Indicates which confidence interval
+type should be plotted. Options are 'wald', to plot the Wald
+CIs; 'profile-likelihood', to plot the profile-likelihood
+CIs; or 'bootstrap', to plot the bootstrap CIs (default:
+'profile-likelihood').</li>
+<li><strong>ci_level</strong> (<code class="docutils literal notranslate"><span class="pre">float</span></code>, optional) -- The confidence interval level to be
+plotted, and must be one of the values in EONR.ci_list. If
+<code class="docutils literal notranslate"><span class="pre">None</span></code>, uses the
+<code class="docutils literal notranslate"><span class="pre">EONR.ci_level</span></code> (default: None).</li>
+<li><strong>run_n</strong> (<code class="docutils literal notranslate"><span class="pre">int</span></code>, optional) -- NOT IMPLEMENTED. The run number to plot,
+as indicated in EONR.df_results; if None, uses the most recent,
+or maximum, run_n in EONR.df_results (default: None).</li>
+<li><strong>x_min</strong> (<code class="docutils literal notranslate"><span class="pre">int</span></code>, optional) -- The minimum x-bounds of the plot
+(default: None)</li>
+<li><strong>x_max</strong> (<code class="docutils literal notranslate"><span class="pre">int</span></code>, optional) -- The maximum x-bounds of the plot
+(default: None)</li>
+<li><strong>y_min</strong> (<code class="docutils literal notranslate"><span class="pre">int</span></code>, optional) -- The minimum y-bounds of the plot
+(default: None)</li>
+<li><strong>y_max</strong> (<code class="docutils literal notranslate"><span class="pre">int</span></code>, optional) -- The maximum y-bounds of the plot
+(default: None)</li>
+<li><strong>style</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>, optional) -- The style of the plolt; can be any of
+the options supported by <code class="docutils literal notranslate"><span class="pre">matplotlib</span></code></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><code class="docutils literal notranslate"><span class="pre">x_min</span></code>, <code class="docutils literal notranslate"><span class="pre">x_max</span></code>, <code class="docutils literal notranslate"><span class="pre">y_min</span></code>, and <code class="docutils literal notranslate"><span class="pre">y_max</span></code> are set by
+Matplotlib if left as <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="eonr.EONR.plot_save">
+<code class="descname">plot_save</code><span class="sig-paren">(</span><em>fname=None</em>, <em>base_dir=None</em>, <em>fig=None</em>, <em>dpi=300</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/eonr/eonr.html#EONR.plot_save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#eonr.EONR.plot_save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Saves a generated matplotlib figure to file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>fname</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>, optional) -- Filename to save plot to (default: None)</li>
+<li><strong>base_dir</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>, optional) -- Base file directory when saving
+results (default: None)</li>
+<li><strong>fig</strong> (<em>eonr.fig</em><em>, </em><em>optional</em>) -- EONR figure object to save (default:
+None)</li>
+<li><strong>dpi</strong> (<code class="docutils literal notranslate"><span class="pre">int</span></code>, optional) -- Resolution to save the figure to in dots
+per inch (default: 300)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="eonr.EONR.plot_tau">
+<code class="descname">plot_tau</code><span class="sig-paren">(</span><em>y_axis='t_stat'</em>, <em>emphasis='profile-likelihood'</em>, <em>run_n=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/eonr/eonr.html#EONR.plot_tau"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#eonr.EONR.plot_tau" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots the test statistic as a function nitrogen rate</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>y_axis</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>, optional) -- Value to plot on the y-axis. Options
+are 't_stat', to plot the <em>T statistic</em>; 'f_stat', to plot the
+<em>F-statistic</em>; or 'level', to plot the <em>confidence level</em>;
+(default: 't_stat').</li>
+<li><strong>emphasis</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>, optional) -- Indicates which confidence interval
+type, if any, should be emphasized. Options are 'wald', to
+empahsize the Wald CIs;
+'profile-likelihood', to empahsize the profile-likelihood CIs;
+'bootstrap', to empahsize the bootstrap CIs; or
+<code class="docutils literal notranslate"><span class="pre">None</span></code>, to empahsize no CI (default: 'profile-likelihood').</li>
+<li><strong>run_n</strong> (<code class="docutils literal notranslate"><span class="pre">int</span></code>, optional) -- The run number to plot, as indicated in
+<code class="docutils literal notranslate"><span class="pre">EONR.df_ci</span></code>; if <code class="docutils literal notranslate"><span class="pre">None</span></code>, uses the most recent, or maximum,
+run_n in <code class="docutils literal notranslate"><span class="pre">EONR.df_ci</span></code> (default: None).</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="eonr.EONR.print_results">
+<code class="descname">print_results</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/eonr/eonr.html#EONR.print_results"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#eonr.EONR.print_results" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints the results of the optimum nitrogen rate computation</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="eonr.EONR.set_column_names">
+<code class="descname">set_column_names</code><span class="sig-paren">(</span><em>col_n_app=None</em>, <em>col_yld=None</em>, <em>col_crop_nup=None</em>, <em>col_n_avail=None</em>, <em>col_year=None</em>, <em>col_location=None</em>, <em>col_time_n=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/eonr/eonr.html#EONR.set_column_names"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#eonr.EONR.set_column_names" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the column name(s) for <code class="docutils literal notranslate"><span class="pre">EONR.df_data</span></code></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>col_n_app</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>, optional) -- Column name pointing to the rate of
+applied N fertilizer data (default: None).</li>
+<li><strong>col_yld</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>, optional) -- Column name pointing to the grain
+yield data. This column is multiplied by price_grain to create
+the 'grtn' column in <code class="docutils literal notranslate"><span class="pre">EONR.df_data</span></code> (default: None).</li>
+<li><strong>col_crop_nup</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>, optional) -- Column name pointing to crop N
+uptake data (default: None).</li>
+<li><strong>col_n_avail</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>, optional) -- Column name pointing to available
+soil N at planting plus fertilizer throughout the season
+(default: None).</li>
+<li><strong>col_year</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>, optional) -- Column name pointing to year
+(default: None).</li>
+<li><strong>col_location</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>, optional) -- Column name pointing to location
+(default: None).</li>
+<li><strong>col_time_n</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>, optional) -- Column name pointing to nitrogen
+application timing (default: None).</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Year, location, or nitrogen timing (used for titles and axes labels
+for plotting).</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="eonr.EONR.set_trial_details">
+<code class="descname">set_trial_details</code><span class="sig-paren">(</span><em>year=None</em>, <em>location=None</em>, <em>n_timing=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/eonr/eonr.html#EONR.set_trial_details"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#eonr.EONR.set_trial_details" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the year, location, or nitrogen timing</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>year</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code> or <code class="docutils literal notranslate"><span class="pre">int</span></code>, optional) -- Year of experimental trial
+(default: None)</li>
+<li><strong>location</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code> or <code class="docutils literal notranslate"><span class="pre">int</span></code>, optional) -- Location of experimental
+trial (default: None)</li>
+<li><strong>n_timing</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code> or <code class="docutils literal notranslate"><span class="pre">int</span></code>, optional) -- Nitrogen timing of
+experimental trial (default: None)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Year, location, or nitrogen timing (used for titles and axes labels
+for plotting).</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="eonr.EONR.update_econ">
+<code class="descname">update_econ</code><span class="sig-paren">(</span><em>cost_n_fert=None</em>, <em>cost_n_social=None</em>, <em>price_grain=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/eonr/eonr.html#EONR.update_econ"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#eonr.EONR.update_econ" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets or resets the nitrogen costs or grain price</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>cost_n_fert</strong> (<code class="docutils literal notranslate"><span class="pre">float</span></code>, optional) -- Cost of nitrogen fertilizer
+(default: None).</li>
+<li><strong>cost_n_social</strong> (<code class="docutils literal notranslate"><span class="pre">float</span></code>, optional) -- Cost of pollution caused by
+excess nitrogen (default: None).</li>
+<li><strong>price_grain</strong> (<code class="docutils literal notranslate"><span class="pre">float</span></code>, optional) -- Price of grain (default: None).</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p><code class="docutils literal notranslate"><span class="pre">update_econ()</span></code> recomputes the price ratio based on the passed
+information, then adjusts/renames the lowest level folder in the
+base directory, <code class="docutils literal notranslate"><span class="pre">EONR.base_dir</span></code>, based on to the ratio. The
+folder name is set according to the economic scenario (useful when
+running <code class="docutils literal notranslate"><span class="pre">EONR</span></code> for many different economic scenarios then
+plotting and saving results for each scenario). See examples below.</p>
+<p>Example 1 (<em>how folder name is set when social cost of nitrogen is
+zero</em>): folder name will be set to <strong>&quot;trad_0010&quot;</strong> if
+<code class="docutils literal notranslate"><span class="pre">cost_n_social</span> <span class="pre">==</span> <span class="pre">0</span></code> and <code class="docutils literal notranslate"><span class="pre">price_ratio</span> <span class="pre">==</span> <span class="pre">0.10</span></code>, coresponding to
+<em>&quot;trad&quot;</em> and <em>&quot;0010&quot;</em> in the folder name, respectively.</p>
+<p class="last">Example 2 (<em>how folder name is set when social cost of nitrogen is
+greater than zero</em>): folder name will be set to
+<strong>&quot;social_154_1100&quot;</strong> if <code class="docutils literal notranslate"><span class="pre">cost_n_social</span> <span class="pre">&gt;</span> <span class="pre">0</span></code>,
+<code class="docutils literal notranslate"><span class="pre">price_ratio</span> <span class="pre">=</span> <span class="pre">15.4</span></code>, and <code class="docutils literal notranslate"><span class="pre">cost_n_social</span> <span class="pre">=</span> <span class="pre">1.10</span></code>, corresponding
+to <em>&quot;social&quot;</em>, <em>&quot;154&quot;</em>, and <em>&quot;1100&quot;</em> in the folder name,
+respectively.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2019, Tyler J Nigon.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

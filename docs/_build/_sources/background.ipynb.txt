@@ -18,11 +18,9 @@
     "\n",
     "**Figure 1**: The nitrogen cycle\n",
     "\n",
-    "![](_images/background_n_cycle.png)\n",
+    "![The nitrogen cycle](_images/background_n_cycle.png \"the-nitrogen-cycle\")\n",
     "\n",
-    "<div class=\"alert alert-dismissible alert-success\">\n",
-    "It is no wonder why farmers care so much about the nitrogen they apply to their crops. The <code>EONR</code> tool is an attempt to support them, through economics-driven research.\n",
-    "</div>"
+    "_**It is no wonder why farmers care so much about the nitrogen they apply to their crops. The**_ `EONR` _**tool is an attempt to support them, through economics-driven research.**_"
    ]
   },
   {
@@ -34,11 +32,11 @@
     "\n",
     "**Figure 2:** Plot generated from the `EONR` package. The plotted results - blue points are experimental data (yield value in USD as a function of nitrogen rate), the blue line is the best-fit quadratic-plateau model representing gross return to nitrogen, the red line is the cost of nitrogen fertilizer, and the green line is the difference between the two and represents the net return to nitrogen.\n",
     "\n",
-    "![](_images/quick_start_eonr_2012_mn.png)\n",
+    "![](_images/quick_start_eonr_2012_mn.png \"eonr-plot\")\n",
     "\n",
     "**Figure 3:** Aerial photo of a nitrogen rate response experiment for corn (photo captured in July when the crop is about shoulder-high). The plot boundaries were rendered over the photo to visualize the individual plots more easily. This particular experiment had nine (9) nitrogen rates applied at three (3) different times during the season, and was replicated four (4) times. See below for treatment details.\n",
     "\n",
-    "![](_images/background_mn_corn.png)"
+    "![](_images/background_mn_corn.png \"mn-corn\")"
    ]
   },
   {
@@ -89,15 +87,10 @@
     "Depending on the economic scenario defined by the user `EONR` will calculate one of the following:\n",
     "1. _**Agronomic Optimum Nitrogen Rate**_ *(AONR)*: both the cost of nitrogen fertilizer and social cost of nitrogen are ignored\n",
     "2. _**Economic Optimum Nitrogen Rate**_ *(EONR)*: cost of nitrogen fertilizer is considered but social cost is ignored\n",
-    "3. _**Socially Optimum Nitrogen Rate**_ *(SONR)*: both cost of nitrogen fertilizer and social cost of nitrogen are considered"
+    "3. _**Socially Optimum Nitrogen Rate**_ *(SONR)*: both cost of nitrogen fertilizer and social cost of nitrogen are considered\n",
+    "\n",
+    "The `EONR` package is able to calculate the *AONR*, *EONR*, or *SONR* for your dataset by simply adjusting the economic scenario (i.e., by adjusting `price_grain`, `cost_n_fert`, and `cost_n_social`)."
    ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": []
   }
  ],
  "metadata": {
