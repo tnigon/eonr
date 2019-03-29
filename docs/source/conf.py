@@ -21,11 +21,11 @@ try:
     import sphinx_bootstrap_theme
 except ModuleNotFoundError:
     from pip._internal import main as pipmain
-    failed = pipmain(["install", sphinx_bootstrap_theme])
+    failed = pipmain(["install", 'sphinx_bootstrap_theme'])
     import sphinx_bootstrap_theme
 except ImportError:
     from pip._internal import main as pipmain
-    failed = pipmain(["install", sphinx_bootstrap_theme])
+    failed = pipmain(["install", 'sphinx_bootstrap_theme'])
     import sphinx_bootstrap_theme
 
 import recommonmark
