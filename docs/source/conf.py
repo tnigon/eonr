@@ -16,6 +16,8 @@ import os
 import sys
 sys.path.insert(0, os.path.abspath('.'))
 # print(sys.path)
+pip install sphinx_bootstrap_theme
+
 import sphinx_bootstrap_theme
 import recommonmark
 from recommonmark.transform import AutoStructify
