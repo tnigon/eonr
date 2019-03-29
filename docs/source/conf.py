@@ -16,10 +16,15 @@ import os
 import sys
 sys.path.insert(0, os.path.abspath('.'))
 # print(sys.path)
+
 try:
     import sphinx_bootstrap_theme
-except ImportError:
+except ModuleNotFoundError:
     import pip
+    failed = pip.main(["install", sphinx_bootstrap_theme])
+    import sphinx_bootstrap_theme
+except ImportError:
+        import pip
     failed = pip.main(["install", sphinx_bootstrap_theme])
     import sphinx_bootstrap_theme
 
