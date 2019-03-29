@@ -154,6 +154,8 @@ class EONR(object):
         self.alpha_list = [1 - xi for xi in self.ci_list]
         self.df_results = pd.DataFrame(columns=['price_grain', 'cost_n_fert',
                                                 'cost_n_social', 'price_ratio',
+                                                'unit_price_grain',
+                                                'unit_cost_n',
                                                 'location', 'year', 'time_n',
                                                 'base_zero', 'eonr',
                                                 'eonr_error', 'ci_level',
@@ -1761,10 +1763,17 @@ class EONR(object):
         self._print_results()
         if self.base_zero is True:
             base_zero = self.coefs_grtn_primary['b0'].n
+            grtn_y_int = self.coefs_grtn['b0'].n
         else:
-            base_zero = self.coefs_grtn['b0'].n
+            base_zero = np.nan
+            grtn_y_int = self.coefs_grtn['b0'].n
+        'unit_grain', 'unit_costs',
+        unit_price_grain = self.unit_rtn
+        unit_cost_n = '{0} per {1}'.format(self.unit_currency,
+                                           self.unit_fert)
         results = [[self.price_grain, self.cost_n_fert, self.cost_n_social,
-                    self.price_ratio, self.location, self.year, self.time_n,
+                    self.price_ratio, unit_price_grain, unit_cost_n,
+                    self.location, self.year, self.time_n,
                     base_zero, self.eonr,
                     self.coefs_nrtn['eonr_error'],
                     self.ci_level, self.df_ci_temp['wald_l'].item(),
@@ -1777,7 +1786,7 @@ class EONR(object):
                     self.coefs_grtn['rmse'],
                     self.coefs_grtn['max_y'],
                     self.coefs_grtn['crit_x'],
-                    self.results_temp['grtn_y_int'],
+                    grtn_y_int,
                     self.results_temp['scn_lin_r2'],
                     self.results_temp['scn_lin_rmse'],
                     self.results_temp['scn_exp_r2'],

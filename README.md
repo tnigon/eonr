@@ -51,5 +51,12 @@ If we as a society recognize that pollution caused by nitrogen fertilizer in agr
 
 After all, **farmers farm to grow food, they don't farm to pollute**, *right?*
 
+#### Acknowledgments
+Development of the `EONR` package was possible because of financial support from [Minnesota's Discovery, Research, and InnoVation Economy](https://mndrive.umn.edu) and the University of Minnesota. The [MnDRIVE Global Food Ventures initiative](https://mndrive.umn.edu/food) and [University of Minnesota Informatics Institute](https://research.umn.edu/units/umii) each provided one year of financial support.
+
+Financial support and other contributions from my graduate advisors, [Dr. David Mulla](https://www.swac.umn.edu/directory/faculty/david-mulla) and [Dr. Ce Yang](https://bbe.umn.edu/directory/faculty/ceyang), were invaluable in the initial development and publication of `EONR`. [Dr. Daniel Kaiser](https://www.swac.umn.edu/directory/faculty/daniel-kaiser) also played a key role in this project, notably through his efforts in organizing and carrying out many of the field experiments that provided necessary data for this project.
+
+This project is part of a larger project being conducted in fulfillment of my PhD degree in Land and Atmospheric Science. Check out my [personal website](https://tylernigon.me) for an overview of some of my other work.
+
 ## Troubleshooting
 Please report any issues you encounter through the [Github issue tracker](https://github.com/tnigon/eonr).

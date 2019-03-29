@@ -14,7 +14,7 @@ import seaborn as sns
 from matplotlib.offsetbox import AnchoredText
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
-from eonr import EONR
+import eonr
 
 def replace_missing_vals(df, missing_val=['.', '#VALUE!'], cols_numeric=None):
     '''
@@ -360,22 +360,22 @@ def calc_all_siteyears(my_eonr, print_plot=False, y_min=-50,
 # In[6 Run EONR function]
 base_dir = os.path.join(r'G:\SOIL\GIS\SNS\eonr\2019-03-29', units)
 #base_dir = r'C:\Users\Tyler\eonr\2019-02-10'
-my_eonr = EONR(cost_n_fert=cost_n_fert,
-               cost_n_social=cost_n_social,
-               price_grain=price_grain,
-               col_n_app=col_n_app,
-               col_yld=col_yld,
-               col_crop_nup=col_crop_nup,
-               col_n_avail=col_n_avail,
-               unit_currency=unit_currency,
-               unit_grain=unit_grain,
-               unit_fert=unit_fert,
-               unit_area=unit_area,
-               model='quad_plateau',
-               ci_level=0.9,
-               base_dir=base_dir,
-               base_zero=True,
-               print_out=False)
+my_eonr = eonr.EONR(cost_n_fert=cost_n_fert,
+                    cost_n_social=cost_n_social,
+                    price_grain=price_grain,
+                    col_n_app=col_n_app,
+                    col_yld=col_yld,
+                    col_crop_nup=col_crop_nup,
+                    col_n_avail=col_n_avail,
+                    unit_currency=unit_currency,
+                    unit_grain=unit_grain,
+                    unit_fert=unit_fert,
+                    unit_area=unit_area,
+                    model='quad_plateau',
+                    ci_level=0.9,
+                    base_dir=base_dir,
+                    base_zero=True,
+                    print_out=False)
 
 # In[]
 my_eonr.plot_eonr()

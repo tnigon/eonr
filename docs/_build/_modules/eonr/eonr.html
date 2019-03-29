@@ -4,7 +4,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>eonr.eonr &#8212; eonr 1.0.0 documentation</title>
+    <title>eonr.eonr &#8212; eonr 0.0.1 documentation</title>
     <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -38,7 +38,7 @@
         </button>
         <a class="navbar-brand" href="../../index.html">
           EONR</a>
-        <span class="navbar-text navbar-version pull-left"><b>1.0.0</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.0.1</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -266,6 +266,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">alpha_list</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span> <span class="o">-</span> <span class="n">xi</span> <span class="k">for</span> <span class="n">xi</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ci_list</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">df_results</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;price_grain&#39;</span><span class="p">,</span> <span class="s1">&#39;cost_n_fert&#39;</span><span class="p">,</span>
                                                 <span class="s1">&#39;cost_n_social&#39;</span><span class="p">,</span> <span class="s1">&#39;price_ratio&#39;</span><span class="p">,</span>
+                                                <span class="s1">&#39;unit_price_grain&#39;</span><span class="p">,</span>
+                                                <span class="s1">&#39;unit_cost_n&#39;</span><span class="p">,</span>
                                                 <span class="s1">&#39;location&#39;</span><span class="p">,</span> <span class="s1">&#39;year&#39;</span><span class="p">,</span> <span class="s1">&#39;time_n&#39;</span><span class="p">,</span>
                                                 <span class="s1">&#39;base_zero&#39;</span><span class="p">,</span> <span class="s1">&#39;eonr&#39;</span><span class="p">,</span>
                                                 <span class="s1">&#39;eonr_error&#39;</span><span class="p">,</span> <span class="s1">&#39;ci_level&#39;</span><span class="p">,</span>
@@ -1873,10 +1875,17 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_print_results</span><span class="p">()</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_zero</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
             <span class="n">base_zero</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coefs_grtn_primary</span><span class="p">[</span><span class="s1">&#39;b0&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">n</span>
+            <span class="n">grtn_y_int</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coefs_grtn</span><span class="p">[</span><span class="s1">&#39;b0&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">n</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">base_zero</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coefs_grtn</span><span class="p">[</span><span class="s1">&#39;b0&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">n</span>
+            <span class="n">base_zero</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+            <span class="n">grtn_y_int</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coefs_grtn</span><span class="p">[</span><span class="s1">&#39;b0&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">n</span>
+        <span class="s1">&#39;unit_grain&#39;</span><span class="p">,</span> <span class="s1">&#39;unit_costs&#39;</span><span class="p">,</span>
+        <span class="n">unit_price_grain</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">unit_rtn</span>
+        <span class="n">unit_cost_n</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> per </span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">unit_currency</span><span class="p">,</span>
+                                           <span class="bp">self</span><span class="o">.</span><span class="n">unit_fert</span><span class="p">)</span>
         <span class="n">results</span> <span class="o">=</span> <span class="p">[[</span><span class="bp">self</span><span class="o">.</span><span class="n">price_grain</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cost_n_fert</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cost_n_social</span><span class="p">,</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">price_ratio</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">location</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">year</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_n</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">price_ratio</span><span class="p">,</span> <span class="n">unit_price_grain</span><span class="p">,</span> <span class="n">unit_cost_n</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">location</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">year</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_n</span><span class="p">,</span>
                     <span class="n">base_zero</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">eonr</span><span class="p">,</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">coefs_nrtn</span><span class="p">[</span><span class="s1">&#39;eonr_error&#39;</span><span class="p">],</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">ci_level</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_ci_temp</span><span class="p">[</span><span class="s1">&#39;wald_l&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">(),</span>
@@ -1889,7 +1898,7 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">coefs_grtn</span><span class="p">[</span><span class="s1">&#39;rmse&#39;</span><span class="p">],</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">coefs_grtn</span><span class="p">[</span><span class="s1">&#39;max_y&#39;</span><span class="p">],</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">coefs_grtn</span><span class="p">[</span><span class="s1">&#39;crit_x&#39;</span><span class="p">],</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">results_temp</span><span class="p">[</span><span class="s1">&#39;grtn_y_int&#39;</span><span class="p">],</span>
+                    <span class="n">grtn_y_int</span><span class="p">,</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">results_temp</span><span class="p">[</span><span class="s1">&#39;scn_lin_r2&#39;</span><span class="p">],</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">results_temp</span><span class="p">[</span><span class="s1">&#39;scn_lin_rmse&#39;</span><span class="p">],</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">results_temp</span><span class="p">[</span><span class="s1">&#39;scn_exp_r2&#39;</span><span class="p">],</span>

@@ -42,9 +42,9 @@ copyright = '2019, Tyler J Nigon'
 author = 'Tyler J Nigon'
 
 # The short X.Y version
-version = '1.0.0'
+version = '0.0.1'
 # The full version, including alpha/beta/rc tags
-release = '1.0.0'
+release = '0.0.1'
 
 # -- General configuration ---------------------------------------------------
 # If your documentation needs a minimal Sphinx version, state it here.
@@ -56,7 +56,8 @@ release = '1.0.0'
 # ones.
 extensions = [
     'sphinx.ext.autodoc',
-    'sphinx.ext.autosummary',  # Creates TOC sub-level for EONR methods
+    # 'docfx_yaml.extension',  # creates configuration.yaml file
+    # 'sphinx.ext.autosummary',  # Creates TOC sub-level for EONR methods
     'sphinx.ext.intersphinx',
     'sphinx.ext.doctest',
     'sphinx.ext.mathjax',
@@ -101,6 +102,8 @@ pygments_style = None
 html_theme = 'bootstrap'
 # html_theme = 'sphinx_rtd_theme'
 html_theme_path = sphinx_bootstrap_theme.get_html_theme_path()
+def setup(app):
+    app.add_stylesheet('bootstrap.min.css')
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.

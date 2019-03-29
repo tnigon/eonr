@@ -5,7 +5,7 @@ EONR Documentation
 
 *A Python tool for computing the optimum nitrogen rate and its confidence intervals from agricultural research data*
 
-.. |version_current| replace:: 1.0.0
+.. |version_current| replace:: 0.0.1
 Current version: |version_current|
 
 ##################
@@ -72,10 +72,10 @@ On the left is a corn nitrogen rate response experiment in Minnesota (photo capt
 Notice the different shades of green in the crop canopy - the dark, lush green is indicative of sufficient nitrogen availability and the lighter green is indicative of nitrogen stress.
 The ``EONR`` Python package was used to compute the economic optimum nitrogen rate (and its 90% confidence intervals) using experimental data, as illustrated in the plot on the right.
 
-For more information about how the economic optimum nitrogen rate is calculated, see the `Background section <background.html>`__.
+For more information about how the economic optimum nitrogen rate is calculated, see the `Background section <background.html>`_.
 
 Motivation for development of ``EONR``
-*************************************
+***************************************
 Although calculation of the economic optimum nitrogen rate (EONR) from a nitrogen response experiment is a trivial task for agronomic researchers, the computation of its confidence intervals are not.
 This is especially true for calculating confidence intervals for data that are explained best with a quadratic-plateau model, which is generally thought of as the most appropriate model for describing yield response to nitrogen in corn.
 With the ``EONR`` package available and accessible, I hope all published EONR research also reports the confidence intervals of the maximum likelihood EONR.
@@ -95,6 +95,14 @@ If we as a society recognize that pollution caused by nitrogen fertilizer in agr
 
 After all, **farmers farm to grow food, they don't farm to pollute**, *right?*
 
+Acknowledgments
+****************
+
+Development of the ``EONR`` package was possible because of financial support from `Minnesota\'s Discovery, Research, and InnoVation Economy <https://mndrive.umn.edu>`_ and the University of Minnesota. The `MnDRIVE Global Food Ventures initiative <https://mndrive.umn.edu/food>`_ and `University of Minnesota Informatics Institute <https://research.umn.edu/units/umii>`_ each provided one year of financial support.
+
+Financial support and other contributions from my graduate advisors, `Dr. David Mulla <https://www.swac.umn.edu/directory/faculty/david-mulla>`_ and `Dr. Ce Yang <https://bbe.umn.edu/directory/faculty/ceyang>`_, were invaluable in the initial development and publication of ``EONR``. `Dr. Daniel Kaiser <https://www.swac.umn.edu/directory/faculty/daniel-kaiser>`_ also played a key role in this project, notably through his efforts in organizing and carrying out many of the field experiments that provided necessary data for this project.
+
+This project is part of a larger project being conducted in fulfillment of my PhD degree in Land and Atmospheric Science. Check out my `personal website <https://tylernigon.me>`_ for an overview of some of my other work.
 
 ###################
 Indices and tables
