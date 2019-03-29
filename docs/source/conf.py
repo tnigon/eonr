@@ -96,9 +96,9 @@ pygments_style = None
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-# html_theme = 'bootstrap'
-html_theme = 'sphinx_rtd_theme'
-# html_theme_path = sphinx_bootstrap_theme.get_html_theme_path()
+html_theme = 'bootstrap'
+# html_theme = 'sphinx_rtd_theme'
+html_theme_path = sphinx_bootstrap_theme.get_html_theme_path()
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
@@ -107,17 +107,21 @@ html_theme_options = {
     # Navigation bar title. (Default: ``project`` value)
     'navbar_title': "EONR",
     'navbar_links': [
-        # ('Home', 'home'),
-        # ('Quick Start', 'quick_start.md'),
-        # ('License', 'license.md'),
         ('Github', "https://github.com/tnigon/eonr", True)
     ],
-    'navbar_pagenav_name': "Page Menu",
-    # 'bootswatch_theme': "Flatly",
-    # 'bootstrap_version': "3",
+    'navbar_site_name': "Contents",
+    'globaltoc_depth': 1,
+    'navbar_pagenav': False,  # sidebar is doing this
+    # 'navbar_pagenav_name': "Page Menu",
+    'navbar_fixed_top': "true",
+    'bootswatch_theme': "Flatly",
+    'bootstrap_version': "3",
     }
 
-
+html_sidebars = {
+   '**': ['localtoc.html', 'relations.html', 'searchbox.html'],
+   'using/windows': ['windowssidebar.html', 'searchbox.html'],
+}
 
 
 # Add any paths that contain custom static files (such as style sheets) here,

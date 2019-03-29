@@ -19,13 +19,13 @@ Table of Contents
    :numbered:
    :titlesonly:
 
-   Home <index.rst>
-   installation.ipynb
-   tutorial.ipynb
-   advanced_tutorial.ipynb
-   background.ipynb
-   my_eonr.rst
-   license.ipynb
+   Home <index>
+   installation
+   tutorial
+   advanced_tutorial
+   background
+   my_eonr
+   license
 
 
 ##################
