@@ -41,6 +41,7 @@ def history():
         return history_file.read()
 
 requirements = [
+	'nbsphinx',  # for documentation
     'matplotlib',
     'numpy',
     'pandas',

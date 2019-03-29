@@ -418,9 +418,9 @@ y_max = 700
 cost_n_social_list = [0.01, 0.1, 0.25, 0.5, 1, 2, 3, 5]
 
 for cost_n_social in cost_n_social_list:
-    cost_n_fert = 0.6
+    cost_n_fert = 0.4
     price_grain = 4.00
-#    cost_n_social = 0.5
+#    cost_n_social = 0.01
     if units == 'metric':
         y_min = -600
         y_max = 1700
