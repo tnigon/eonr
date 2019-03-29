@@ -20,12 +20,12 @@ sys.path.insert(0, os.path.abspath('.'))
 try:
     import sphinx_bootstrap_theme
 except ModuleNotFoundError:
-    import pip
-    failed = pip.main(["install", sphinx_bootstrap_theme])
+    from pip._internal import main as pipmain
+    failed = pipmain(["install", sphinx_bootstrap_theme])
     import sphinx_bootstrap_theme
 except ImportError:
-    import pip
-    failed = pip.main(["install", sphinx_bootstrap_theme])
+    from pip._internal import main as pipmain
+    failed = pipmain(["install", sphinx_bootstrap_theme])
     import sphinx_bootstrap_theme
 
 import recommonmark
