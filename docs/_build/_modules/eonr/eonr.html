@@ -268,7 +268,7 @@
                                                 <span class="s1">&#39;cost_n_social&#39;</span><span class="p">,</span> <span class="s1">&#39;price_ratio&#39;</span><span class="p">,</span>
                                                 <span class="s1">&#39;location&#39;</span><span class="p">,</span> <span class="s1">&#39;year&#39;</span><span class="p">,</span> <span class="s1">&#39;time_n&#39;</span><span class="p">,</span>
                                                 <span class="s1">&#39;base_zero&#39;</span><span class="p">,</span> <span class="s1">&#39;eonr&#39;</span><span class="p">,</span>
-                                                <span class="s1">&#39;theta2_error&#39;</span><span class="p">,</span> <span class="s1">&#39;ci_level&#39;</span><span class="p">,</span>
+                                                <span class="s1">&#39;eonr_error&#39;</span><span class="p">,</span> <span class="s1">&#39;ci_level&#39;</span><span class="p">,</span>
                                                 <span class="s1">&#39;ci_wald_l&#39;</span><span class="p">,</span> <span class="s1">&#39;ci_wald_u&#39;</span><span class="p">,</span>
                                                 <span class="s1">&#39;ci_pl_l&#39;</span><span class="p">,</span> <span class="s1">&#39;ci_pl_u&#39;</span><span class="p">,</span>
                                                 <span class="s1">&#39;ci_boot_l&#39;</span><span class="p">,</span> <span class="s1">&#39;ci_boot_u&#39;</span><span class="p">,</span>
@@ -663,7 +663,7 @@
                                               <span class="n">theta2</span><span class="p">,</span>
                                               <span class="n">popt</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">coefs_nrtn</span><span class="p">[</span><span class="s1">&#39;ss_res_social&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ss_res</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">coefs_nrtn</span><span class="p">[</span><span class="s1">&#39;theta2_error&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">theta2</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">eonr</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">coefs_nrtn</span><span class="p">[</span><span class="s1">&#39;eonr_error&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">theta2</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">eonr</span>
 
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">cost_n_social</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">R</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">price_ratio</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">price_grain</span>
@@ -939,7 +939,7 @@
                     <span class="s1">&#39;popt&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
                     <span class="s1">&#39;pcov&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
                     <span class="s1">&#39;ss_res&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-                    <span class="s1">&#39;theta2_error&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                    <span class="s1">&#39;eonr_error&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
                     <span class="s1">&#39;theta2_social&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
                     <span class="s1">&#39;popt_social&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
                     <span class="s1">&#39;ss_res_social&#39;</span><span class="p">:</span> <span class="kc">None</span>
@@ -1070,7 +1070,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">update_eonr</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="n">popt</span><span class="p">,</span> <span class="n">pcov</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_curve_fit_opt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">qp_theta2</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">p0</span><span class="o">=</span><span class="n">guess</span><span class="p">,</span>
                                          <span class="n">maxfev</span><span class="o">=</span><span class="mi">800</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">coefs_nrtn</span><span class="p">[</span><span class="s1">&#39;theta2_error&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">popt</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">eonr</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">coefs_nrtn</span><span class="p">[</span><span class="s1">&#39;eonr_error&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">popt</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">eonr</span>
 
     <span class="c1">#  Following are functions used in calculating confidence intervals</span>
     <span class="k">def</span> <span class="nf">_bs_statfunction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
@@ -1627,7 +1627,7 @@
 <span class="c1">#        popt, pcov = self._curve_fit_opt(self._f_qp_theta2, x, y, p0=guess, maxfev=800, info=info)</span>
         <span class="n">wald_l</span><span class="p">,</span> <span class="n">wald_u</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_wald</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">alpha</span><span class="p">)</span>
         <span class="n">pl_guess</span> <span class="o">=</span> <span class="p">(</span><span class="n">wald_u</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">eonr</span><span class="p">)</span>  <span class="c1"># Adjust +/- init guess based on Wald</span>
-        <span class="n">theta2_bias</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coefs_nrtn</span><span class="p">[</span><span class="s1">&#39;theta2_error&#39;</span><span class="p">]</span>
+        <span class="n">theta2_bias</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coefs_nrtn</span><span class="p">[</span><span class="s1">&#39;eonr_error&#39;</span><span class="p">]</span>
         <span class="n">theta2_opt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eonr</span> <span class="o">+</span> <span class="n">theta2_bias</span>  <span class="c1"># check if this should add the 2</span>
 
         <span class="c1"># Lower CI: uses the Nelder-Mead algorithm</span>
@@ -1878,7 +1878,7 @@
         <span class="n">results</span> <span class="o">=</span> <span class="p">[[</span><span class="bp">self</span><span class="o">.</span><span class="n">price_grain</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cost_n_fert</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cost_n_social</span><span class="p">,</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">price_ratio</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">location</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">year</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_n</span><span class="p">,</span>
                     <span class="n">base_zero</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">eonr</span><span class="p">,</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">coefs_nrtn</span><span class="p">[</span><span class="s1">&#39;theta2_error&#39;</span><span class="p">],</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">coefs_nrtn</span><span class="p">[</span><span class="s1">&#39;eonr_error&#39;</span><span class="p">],</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">ci_level</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_ci_temp</span><span class="p">[</span><span class="s1">&#39;wald_l&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">(),</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">df_ci_temp</span><span class="p">[</span><span class="s1">&#39;wald_u&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">(),</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">df_ci_temp</span><span class="p">[</span><span class="s1">&#39;pl_l&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">(),</span>
@@ -2140,7 +2140,7 @@
       
     </p>
     <p>
-        &copy; Copyright 2019, `Tyler J Nigon.<br/>
+        &copy; Copyright 2019, Tyler J Nigon.<br/>
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.<br/>
     </p>
   </div>
