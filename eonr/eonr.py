@@ -156,7 +156,7 @@ class EONR(object):
                                                 'cost_n_social', 'price_ratio',
                                                 'location', 'year', 'time_n',
                                                 'base_zero', 'eonr',
-                                                'theta2_error', 'ci_level',
+                                                'eonr_error', 'ci_level',
                                                 'ci_wald_l', 'ci_wald_u',
                                                 'ci_pl_l', 'ci_pl_u',
                                                 'ci_boot_l', 'ci_boot_u',
@@ -551,7 +551,7 @@ class EONR(object):
                                               theta2,
                                               popt[0]]
             self.coefs_nrtn['ss_res_social'] = ss_res
-            self.coefs_nrtn['theta2_error'] = theta2 - self.eonr
+            self.coefs_nrtn['eonr_error'] = theta2 - self.eonr
 
         elif self.cost_n_social == 0:
             self.R = self.price_ratio * self.price_grain
@@ -827,7 +827,7 @@ class EONR(object):
                     'popt': None,
                     'pcov': None,
                     'ss_res': None,
-                    'theta2_error': None,
+                    'eonr_error': None,
                     'theta2_social': None,
                     'popt_social': None,
                     'ss_res_social': None
@@ -958,7 +958,7 @@ class EONR(object):
         self.models.update_eonr(self)
         popt, pcov = self._curve_fit_opt(self.models.qp_theta2, x, y, p0=guess,
                                          maxfev=800)
-        self.coefs_nrtn['theta2_error'] = popt[1] - self.eonr
+        self.coefs_nrtn['eonr_error'] = popt[1] - self.eonr
 
     #  Following are functions used in calculating confidence intervals
     def _bs_statfunction(self, x, y):
@@ -1515,7 +1515,7 @@ class EONR(object):
 #        popt, pcov = self._curve_fit_opt(self._f_qp_theta2, x, y, p0=guess, maxfev=800, info=info)
         wald_l, wald_u = self._compute_wald(n, p, alpha)
         pl_guess = (wald_u - self.eonr)  # Adjust +/- init guess based on Wald
-        theta2_bias = self.coefs_nrtn['theta2_error']
+        theta2_bias = self.coefs_nrtn['eonr_error']
         theta2_opt = self.eonr + theta2_bias  # check if this should add the 2
 
         # Lower CI: uses the Nelder-Mead algorithm
@@ -1766,7 +1766,7 @@ class EONR(object):
         results = [[self.price_grain, self.cost_n_fert, self.cost_n_social,
                     self.price_ratio, self.location, self.year, self.time_n,
                     base_zero, self.eonr,
-                    self.coefs_nrtn['theta2_error'],
+                    self.coefs_nrtn['eonr_error'],
                     self.ci_level, self.df_ci_temp['wald_l'].item(),
                     self.df_ci_temp['wald_u'].item(),
                     self.df_ci_temp['pl_l'].item(),

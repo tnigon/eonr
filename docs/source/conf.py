@@ -14,7 +14,8 @@
 
 import os
 import sys
-sys.path.insert(0, os.path.abspath('.'))
+sys.path.insert(0, os.path.abspath('../../'))
+# sys.path.insert(0, os.path.abspath('.'))
 # print(sys.path)
 
 try:
@@ -114,13 +115,13 @@ html_theme_options = {
     'navbar_pagenav': False,  # sidebar is doing this
     # 'navbar_pagenav_name': "Page Menu",
     'navbar_fixed_top': "true",
-    # 'bootswatch_theme': "Flatly",
-    'bootswatch_theme': "Sandstone",
+    'bootswatch_theme': "Flatly",
+    # 'bootswatch_theme': "Sandstone",
     'bootstrap_version': "3",
     }
 
 html_sidebars = {
-   '**': ['localtoc.html', 'relations.html', 'searchbox.html'],
+   '**': ['localtoc.html', 'searchbox.html'],
    'using/windows': ['windowssidebar.html', 'searchbox.html'],
 }
 
