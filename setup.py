@@ -54,7 +54,7 @@ test_requirements = [
     # TODO: put package test requirements here
 ]
 
-setuptools.setup(name='EONR',
+setuptools.setup(name='eonr',
                  version='1.0.0',
                  description='A tool for calculating economic optimum nitrogen rates',
                  long_description=readme(),

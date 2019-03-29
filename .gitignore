@@ -15,7 +15,7 @@ __pycache__/
 #data files
 *.out
 *.in
-*.csv
+*_x.csv
 
 #design files
 *.ppt

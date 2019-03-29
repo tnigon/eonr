@@ -53,16 +53,16 @@ if units == 'metric':
     col_n_app = 'rate_n_applied_kgha'
     col_yld = 'yld_grain_dry_kgha'
     col_crop_nup = 'nup_total_kgha'
-    col_nup_soil_fert = 'soil_plus_fert_n_kgha'
+    col_n_avail = 'soil_plus_fert_n_kgha'
 else:
     col_n_app = 'rate_n_applied_lbac'
     col_yld = 'yld_grain_dry_buac'
     col_crop_nup = 'nup_total_lbac'
-    col_nup_soil_fert = 'soil_plus_fert_n_lbac'
+    col_n_avail = 'soil_plus_fert_n_lbac'
 
 col_names = ['year', 'location', 'plot', 'trt', 'rep', 'time_n',
-             col_n_app, col_yld, col_crop_nup, col_nup_soil_fert]
-cols_numeric = [col_n_app, col_yld, col_crop_nup, col_nup_soil_fert]
+             col_n_app, col_yld, col_crop_nup, col_n_avail]
+cols_numeric = [col_n_app, col_yld, col_crop_nup, col_n_avail]
 df_eonr_sns = replace_missing_vals(df_full_sns[col_names], cols_numeric=cols_numeric)
 df_eonr_nue = replace_missing_vals(df_full_nue[col_names], cols_numeric=cols_numeric)
 
@@ -358,7 +358,7 @@ def calc_all_siteyears(my_eonr, print_plot=False, y_min=-50,
 #    return my_eonr
 
 # In[6 Run EONR function]
-base_dir = os.path.join(r'G:\SOIL\GIS\SNS\eonr\2019-03-26', units)
+base_dir = os.path.join(r'G:\SOIL\GIS\SNS\eonr\2019-03-29', units)
 #base_dir = r'C:\Users\Tyler\eonr\2019-02-10'
 my_eonr = EONR(cost_n_fert=cost_n_fert,
                cost_n_social=cost_n_social,
@@ -366,7 +366,7 @@ my_eonr = EONR(cost_n_fert=cost_n_fert,
                col_n_app=col_n_app,
                col_yld=col_yld,
                col_crop_nup=col_crop_nup,
-               col_nup_soil_fert=col_nup_soil_fert,
+               col_n_avail=col_n_avail,
                unit_currency=unit_currency,
                unit_grain=unit_grain,
                unit_fert=unit_fert,
@@ -400,7 +400,7 @@ for cost_n_fert in cost_n_fert_list:
         cost_n_fert, cost_n_social, price_grain = imperial_to_metric(
                 cost_n_fert=cost_n_fert, cost_n_social=cost_n_social,
                 price_grain=price_grain)
-    my_eonr.set_ratio(cost_n_fert=cost_n_fert,
+    my_eonr.update_econ(cost_n_fert=cost_n_fert,
                       cost_n_social=cost_n_social,
                       price_grain=price_grain)
     my_eonr = calc_all_siteyears(my_eonr, print_plot=print_plot, y_min=y_min,
@@ -420,14 +420,14 @@ cost_n_social_list = [0.01, 0.1, 0.25, 0.5, 1, 2, 3, 5]
 for cost_n_social in cost_n_social_list:
     cost_n_fert = 0.6
     price_grain = 4.00
-    cost_n_social = 0.5
+#    cost_n_social = 0.5
     if units == 'metric':
         y_min = -600
         y_max = 1700
         cost_n_fert, cost_n_social, price_grain = imperial_to_metric(
                 cost_n_fert=cost_n_fert, cost_n_social=cost_n_social,
                 price_grain=price_grain)
-    my_eonr.set_ratio(cost_n_fert=cost_n_fert,
+    my_eonr.update_econ(cost_n_fert=cost_n_fert,
                       cost_n_social=cost_n_social,
                       price_grain=price_grain)
     my_eonr = calc_all_siteyears(my_eonr, print_plot=print_plot, y_min=y_min,
