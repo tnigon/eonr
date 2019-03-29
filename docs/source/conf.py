@@ -24,7 +24,7 @@ except ModuleNotFoundError:
     failed = pip.main(["install", sphinx_bootstrap_theme])
     import sphinx_bootstrap_theme
 except ImportError:
-        import pip
+    import pip
     failed = pip.main(["install", sphinx_bootstrap_theme])
     import sphinx_bootstrap_theme
 
