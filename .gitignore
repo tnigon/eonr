@@ -19,7 +19,7 @@ __pycache__/
 
 #design files
 *.ppt
-*.png
+*_x.png
 *.jpg
 
 # Distribution / packaging
