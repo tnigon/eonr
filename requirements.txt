@@ -1,0 +1,11 @@
+nbsphinx
+matplotlib
+numpy
+pandas
+scikits.bootstrap
+scipy
+seaborn
+uncertainties
+
+sphinx>=1.8
+ipykernel
