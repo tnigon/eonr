@@ -1,6 +1,8 @@
 ## README
 
 ### About
+For more information and tutorials, check out the [EONR documentation](https://eonr.readthedocs.io/en/latest/).
+
 ``EONR`` is a Python package for computing the economic optimum nitrogen fertilizer rate using data from agronomic field trials under economic conditions defined by the user (i.e., grain price and fertilizer cost).
 It can be used for any crop (e.g., corn, wheat, potatoes, etc.), but the current version only supports use of the quadratic-plateau piecewise model.
 

@@ -358,9 +358,9 @@ def calc_all_siteyears(my_eonr, print_plot=False, y_min=-50,
 #    return my_eonr
 
 # In[6 Run EONR function]
-base_dir = os.path.join(r'G:\SOIL\GIS\SNS\eonr\2019-03-29', units)
+base_dir = os.path.join(r'G:\SOIL\GIS\SNS\eonr\2019-03-30', units)
 #base_dir = r'C:\Users\Tyler\eonr\2019-02-10'
-my_eonr = eonr.EONR(cost_n_fert=cost_n_fert,
+my_eonr = EONR(cost_n_fert=cost_n_fert,
                     cost_n_social=cost_n_social,
                     price_grain=price_grain,
                     col_n_app=col_n_app,
@@ -382,6 +382,8 @@ my_eonr.plot_eonr()
 my_eonr.plot_tau()
 cost_n_fert = 1.94  # in USD per kg nitrogen
 price_grain = 0.006199  # in USD per kg grain
+
+
 # In[Run traditional]
 social = False
 print_plot = True
@@ -409,6 +411,9 @@ for cost_n_fert in cost_n_fert_list:
 my_eonr.df_results.to_csv(os.path.join(os.path.split(my_eonr.base_dir)[0], 'trad_results.csv'), index=False)
 my_eonr.df_ci.to_csv(os.path.join(os.path.split(my_eonr.base_dir)[0], 'trad_ci.csv'), index=False)
 
+# In[]
+my_eonr.calculate_eonr(df_nue13wil_pre_low)
+my_eonr.calculate_eonr(df_nue13wil_pre_high)
 # In[Run social]
 social = True
 print_plot = True

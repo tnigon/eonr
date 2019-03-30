@@ -1422,6 +1422,7 @@ class EONR(object):
                                          side=side,
                                          pl_guess_init=pl_guess_init)
         elif result.success is True and side == 'lower':
+#            if result.x[0] > self.eonr:
             if result.x[0] > theta2_opt:
                 return self._run_minimize_pl(f, theta2_opt,
                                              pl_guess*1.05,
@@ -1439,8 +1440,8 @@ class EONR(object):
                                              pl_guess_init=pl_guess_init)
             else:
                 pl_out = result.x[0]
-        else:  # finally, return result
-            pl_out = result.x[0]
+#        else:  # finally, return result
+#            pl_out = result.x[0]
         return pl_out
 
     def _get_likelihood(self, alpha, col_x, col_y, stat='t',
@@ -1531,6 +1532,16 @@ class EONR(object):
             pl_l += theta2_bias
         if pl_u is not None:
             pl_u += theta2_bias
+        if pl_l > self.eonr or pl_u < self.eonr:  # can't trust the data
+            print('Profile-likelihood calculations are not realistic: '
+                  '[{0:.1f}, {1:.1f}] setting to NaN'.format(pl_l, pl_u))
+            pl_l = np.nan
+            pl_u = np.nan
+            #  TODO: this will still add CIs to df_ci after the CI falls
+            #  above/below the EONR. Could assume a uniform distribution and
+            #  add this to theta2_bias for subsequent calculations. It seems
+            #  as if theta2_bias changed from when it was set in coefs_nrtn:
+            #  perhaps it should be recalculated
         return pl_l, pl_u, wald_l, wald_u, method, method
 
     def _handle_no_ci(self):
