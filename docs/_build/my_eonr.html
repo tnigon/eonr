@@ -1,15 +1,11 @@
-
-
-
 <!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml" lang="python">
   <head>
     <meta charset="utf-8" />
     <title>5. API &#8212; eonr 0.0.1 documentation</title>
-    <link rel="stylesheet" href="_static/cloud.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
@@ -17,68 +13,123 @@
     <script type="text/javascript" src="_static/language_data.js"></script>
     <script async="async" type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"extensions": ["tex2jax.js"], "jax": ["input/TeX", "output/HTML-CSS"], "tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
-    <script type="text/javascript" src="_static/jquery.cookie.js"></script>
-    <script type="text/javascript" src="_static/cloud.base.js"></script>
-    <script type="text/javascript" src="_static/cloud.js"></script>
+    <script type="text/javascript" src="_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="6. License" href="license.html" />
-    <link rel="prev" title="4. Background" href="background.html" /> 
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="prev" title="4. Background" href="background.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
   </head><body>
-    <div class="relbar-top">
-        
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="license.html" title="6. License"
-             accesskey="N">next</a> &nbsp; &nbsp;</li>
-        <li class="right" >
-          <a href="background.html" title="4. Background"
-             accesskey="P">previous</a> &nbsp; &nbsp;</li>
-    <li><a href="index.html">eonr 0.0.1 documentation</a> &#187;</li>
- 
-      </ul>
-    </div>
-    </div>
-  
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body" role="main">
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="index.html">
+          EONR</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.0.1</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
             
-  
-<style>
-/* CSS overrides for cloud theme */
+                <li><a href="https://github.com/tnigon/eonr">Github</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="index.html">Contents <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Home</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">1. Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">2. Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced_tutorial.html">3. Advanced Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="background.html">4. Background</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">5. API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">6. License</a></li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+  <li>
+    <a href="background.html" title="Previous Chapter: 4. Background"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; 4. Background</span>
+    </a>
+  </li>
+  <li>
+    <a href="license.html" title="Next Chapter: 6. License"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">6. License &raquo;</span>
+    </a>
+  </li>
+              
+            
+            
+            
+            
+              <li class="hidden-sm">
+<div id="sourcelink">
+  <a href="_sources/my_eonr.rst.txt"
+     rel="nofollow">Source</a>
+</div></li>
+            
+          </ul>
 
-/* nicer titles and more space for info and warning logos */
+          
+            
+<form class="navbar-form navbar-right" action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
 
-div.admonition p.admonition-title {
-    background: rgba(0, 0, 0, .05);
-    margin: .5em -1em;
-    margin-top: -.5em !important;
-    padding: .5em .5em .5em 2.65em;
-}
+<div class="container">
+  <div class="row">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary"><ul>
+<li><a class="reference internal" href="#">5. API</a><ul>
+<li><a class="reference internal" href="#eonr-class">5.1. EONR Class</a></li>
+<li><a class="reference internal" href="#eonr-instance-methods">5.2. EONR Instance Methods</a></li>
+</ul>
+</li>
+</ul>
 
-/* indent single paragraph */
-div.admonition {
-    text-indent: 20px;
-}
-/* don't indent multiple paragraphs */
-div.admonition > p {
-    text-indent: 0;
-}
-/* remove excessive padding */
-div.admonition.inline-title p.admonition-title {
-    padding-left: .2em;
-}
-</style>
-<div class="section" id="api">
+<form action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+        </div>
+      </div>
+    <div class="col-md-9 content">
+      
+  <div class="section" id="api">
 <h1>5. API<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="eonr-class">
 <h2>5.1. EONR Class<a class="headerlink" href="#eonr-class" title="Permalink to this headline">¶</a></h2>
@@ -90,76 +141,21 @@ div.admonition.inline-title p.admonition-title {
 </div>
 
 
-          </div>
-        </div>
-      </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper"><div class="sphinx-toc sphinxlocaltoc">
-    <h3><a href="index.html">Page contents</a></h3>
-    <ul>
-<li><a class="reference internal" href="#">5. API</a><ul>
-<li><a class="reference internal" href="#eonr-class">5.1. EONR Class</a></li>
-<li><a class="reference internal" href="#eonr-instance-methods">5.2. EONR Instance Methods</a></li>
-</ul>
-</li>
-</ul>
-
+    </div>
+      
   </div>
-<div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
-    </form>
-    </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
-        </div>
-      </div>
-    
-    
-        <div class="sidebar-toggle-group no-js">
-            
-            <button class="sidebar-toggle" id="sidebar-hide" title="Hide the sidebar menu">
-                 «
-                <span class="show-for-small">hide menu</span>
-                
-            </button>
-            <button class="sidebar-toggle" id="sidebar-show" title="Show the sidebar menu">
-                
-                <span class="show-for-small">menu</span>
-                <span class="hide-for-small">sidebar</span>
-                 »
-            </button>
-        </div>
-    
-      <div class="clearer"></div>
-    </div>
-    <div class="relbar-bottom">
-        
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="genindex.html" title="General Index"
-             >index</a></li>
-        <li class="right" >
-          <a href="license.html" title="6. License"
-             >next</a> &nbsp; &nbsp;</li>
-        <li class="right" >
-          <a href="background.html" title="4. Background"
-             >previous</a> &nbsp; &nbsp;</li>
-    <li><a href="index.html">eonr 0.0.1 documentation</a> &#187;</li>
- 
-      </ul>
-    </div>
-    </div>
-
-    <div class="footer" role="contentinfo">
-        &#169; Copyright 2019, Tyler J Nigon.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.0.0.
-    </div>
-    <!-- cloud_sptheme 1.4 -->
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2019, Tyler J Nigon.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.0.0.<br/>
+    </p>
+  </div>
+</footer>
   </body>
 </html>

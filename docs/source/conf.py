@@ -14,10 +14,10 @@
 
 import os
 import sys
-sys.path.insert(0, os.path.abspath('../'))
+# sys.path.insert(0, os.path.abspath('../'))
 sys.path.insert(0, os.path.abspath('../../'))
 
-sys.path.append(os.path.join(os.path.dirname(__name__), '..'))
+# sys.path.append(os.path.join(os.path.dirname(__name__), '..'))
 # sys.path.insert(0, os.path.abspath('.'))
 print(sys.path)
 # try:
@@ -30,7 +30,8 @@ print(sys.path)
 #     from pip._internal import main as pipmain
 #     failed = pipmain(["install", 'sphinx_bootstrap_theme'])
 #     import sphinx_bootstrap_theme
-import cloud_sptheme
+
+# import cloud_sptheme
 import sphinx_bootstrap_theme
 import recommonmark
 from recommonmark.transform import AutoStructify
@@ -103,11 +104,11 @@ pygments_style = None
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-# html_theme = 'bootstrap'
+html_theme = 'bootstrap'
 # html_theme = 'sphinx_rtd_theme'
-# html_theme_path = sphinx_bootstrap_theme.get_html_theme_path()
-html_theme = 'cloud'
-html_theme_path = [cloud_sptheme.get_theme_dir()]
+html_theme_path = sphinx_bootstrap_theme.get_html_theme_path()
+# html_theme = 'cloud'
+# html_theme_path = [cloud_sptheme.get_theme_dir()]
 # def setup(app):
 #     app.add_stylesheet('bootstrap.min.css')
 #     app.add_javascript('jquery-1.11.0.min.js')
