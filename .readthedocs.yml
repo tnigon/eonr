@@ -9,12 +9,24 @@ version: 2
 sphinx:
   configuration: docs/conf.py
 
-# Build documentation with MkDocs
-#mkdocs:
-#  configuration: mkdocs.yml
-
 # Optionally build your docs in additional formats such as PDF and ePub
 formats: all
+
+channels:
+  conda-forge
+
+dependencies:
+  python>=3
+  sphinx>=1.8
+  pandoc
+  nbconvert!=5.4
+  ipykernel
+  numpy
+  matplotlib
+  pandas
+  sphinxcontrib-bitex
+  pip:
+    cloud_sptheme
 
 # Optionally set the version of Python and requirements required to build your docs
 python:
