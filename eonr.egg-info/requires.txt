@@ -1,0 +1,8 @@
+nbsphinx
+matplotlib
+numpy
+pandas
+scikits.bootstrap
+scipy
+seaborn
+uncertainties
