@@ -1,7 +1,7 @@
 nbsphinx
 matplotlib
 pandas
-sphinxcontrib-bitex
+sphinxcontrib-bibtex
 
 cloud_sptheme
 sphinx_bootstrap_theme

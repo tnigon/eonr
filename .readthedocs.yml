@@ -24,7 +24,7 @@ dependencies:
   numpy
   matplotlib
   pandas
-  sphinxcontrib-bitex
+  sphinxcontrib-bibtex
   pip:
     cloud_sptheme
 
