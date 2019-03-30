@@ -4,7 +4,7 @@ numpy
 pandas
 scikits.bootstrap
 scipy
-seaborn,
+seaborn
 uncertainties
 
 sphinx>=1.8
