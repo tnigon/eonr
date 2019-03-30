@@ -14,8 +14,8 @@
 
 import os
 import sys
-sys.path.insert(0, os.path.abspath('../'))
-# sys.path.insert(0, os.path.abspath('.'))
+# sys.path.insert(0, os.path.abspath('../'))
+sys.path.insert(0, os.path.abspath('.'))
 # print(sys.path)
 # try:
 #     import sphinx_bootstrap_theme
@@ -88,7 +88,7 @@ language = 'python'
 # This pattern also affects html_static_path and html_extra_path.
 # Keeps sphinx from reading files in this folder. This does not affect
 # sphinx-apidoc (must add it again when creating docs)
-exclude_patterns = ['_build', '**.ipynb_checkpoints']
+exclude_patterns = ['**.ipynb_checkpoints']
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = None
