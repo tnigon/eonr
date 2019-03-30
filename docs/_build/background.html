@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="python">
+  <head>
+    <meta charset="utf-8" />
+    <title>4. Background &#8212; eonr 0.1.2 documentation</title>
+    <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"extensions": ["tex2jax.js"], "jax": ["input/TeX", "output/HTML-CSS"], "tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    <script type="text/javascript" src="_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="5. API" href="my_eonr.html" />
+    <link rel="prev" title="3. Advanced Tutorial" href="advanced_tutorial.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="index.html">
+          EONR</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.1.2</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="https://github.com/tnigon/eonr">Github</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="index.html">Contents <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Home</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">1. Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">2. Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced_tutorial.html">3. Advanced Tutorial</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">4. Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="my_eonr.html">5. API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">6. License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">7. Change log</a></li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+  <li>
+    <a href="advanced_tutorial.html" title="Previous Chapter: 3. Advanced Tutorial"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; 3. Advanced Tutorial</span>
+    </a>
+  </li>
+  <li>
+    <a href="my_eonr.html" title="Next Chapter: 5. API"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">5. API &raquo;</span>
+    </a>
+  </li>
+              
+            
+            
+            
+            
+              <li class="hidden-sm">
+<div id="sourcelink">
+  <a href="_sources/background.ipynb.txt"
+     rel="nofollow">Source</a>
+</div></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary"><ul>
+<li><a class="reference internal" href="#">4. Background</a><ul>
+<li><a class="reference internal" href="#Nitrogen-fertilizer-recommendations">4.1. Nitrogen fertilizer recommendations</a><ul>
+<li><a class="reference internal" href="#Why-nitrogen-and-not-other-nutrients?">4.1.1. Why <em>nitrogen</em> and not other nutrients?</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#EONR?-MRTN?-..what?">4.2. EONR? MRTN? ..what?</a></li>
+<li><a class="reference internal" href="#The-quadratic-plateau-model">4.3. The quadratic-plateau model</a></li>
+<li><a class="reference internal" href="#Confidence-intervals">4.4. Confidence intervals</a></li>
+<li><a class="reference internal" href="#The-social-cost-of-nitrogen">4.5. The social cost of nitrogen</a></li>
+</ul>
+</li>
+</ul>
+
+<form action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+        </div>
+      </div>
+    <div class="col-md-9 content">
+      
+  <div class="section" id="Background">
+<h1>4. Background<a class="headerlink" href="#Background" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="Nitrogen-fertilizer-recommendations">
+<h2>4.1. Nitrogen fertilizer recommendations<a class="headerlink" href="#Nitrogen-fertilizer-recommendations" title="Permalink to this headline">¶</a></h2>
+<p>The concept behind the <strong>Economic Optimum Nitrogen Rate</strong> approach (also referred to as the <strong>Maximum Return to Nitrogen</strong> approach) is to make the most favorable nitrogen fertilizer recommendation considering three variables:</p>
+<ul class="simple">
+<li><p>Grain price ($ per kg)</p></li>
+<li><p>Fertilizer cost ($ per kg)</p></li>
+<li><p>Grain yield response to nitrogen fertilizer (modeled from input data)</p></li>
+</ul>
+<div class="section" id="Why-nitrogen-and-not-other-nutrients?">
+<h3>4.1.1. Why <em>nitrogen</em> and not other nutrients?<a class="headerlink" href="#Why-nitrogen-and-not-other-nutrients?" title="Permalink to this headline">¶</a></h3>
+<p>Many crops, (e.g., corn, wheat, potatoes) depend on nitrogen fertilizer to achieve profitable yields. Although the same is true for other nutrients (e.g., phosphorus, potassium, sulfur, etc.), many would probably agree that nitrogen deserves special attention because it is usually required in high quantities, it can cause environmental harm, and it tends to be more difficult to manage because of its elusive behavior in the soil. A diagram describing the fundamental pathways among the different
+pools in the nitrogen cycle illustrates its complexity (<strong>Figure 1</strong>). When nitrogen is introduced to agricultural soils, either naturally or synthetically, it is immediately vulnerable to be lost. Some losses may be temporary, while others are permanent. When nitrogen is lost, it can contribute to environmental pollution and cause other damages related to health and quality of living. Nitrogen pollution can be present in both water (including groundwater, lakes, rivers, etc.) and in the air (as
+particulate matter or as nitrous oxides, which are strong greenhouse gases).</p>
+<p><strong>Figure 1</strong>: The nitrogen cycle</p>
+<p><img alt="The nitrogen cycle" src="_images/background_n_cycle.png" /></p>
+<p><strong>It is no wonder why farmers care so much about the nitrogen they apply to their crops. The</strong> <code class="docutils literal notranslate"><span class="pre">EONR</span></code> <strong>tool is an attempt to support them, through economics-driven research.</strong></p>
+</div>
+</div>
+<div class="section" id="EONR?-MRTN?-..what?">
+<h2>4.2. EONR? MRTN? ..what?<a class="headerlink" href="#EONR?-MRTN?-..what?" title="Permalink to this headline">¶</a></h2>
+<p>As its name suggests, the <strong>Maximum Return to Nitrogen</strong> (MRTN) is the maximum achievable profit expected after accounting for the cost of nitrogen fertilizer. The economic optimum nitrogen rate (EONR) is the nitrogen rate where the MRTN is reached. In statistical terms, the EONR is the point where the monetary return from yield is equal to the cost of the increase in nitrogen fertilizer input. The approach uses a best-fit statistical model that utilizes input data from replicated field trials
+with several nitrogen rate treatments. <strong>Figure 2</strong> is a typical nitrogen rate response curve - the blue points are observed experimental data plotted as nitrogen rate (x-axis) and return to nitrogen (y-axis). A quadratic-plateau model is fit to the experimental data to Differences among replications from these trials can contribute to uncertainty in estimating the EONR, but the estimated EONR can be used as the baseline for which nitrogen fertilizer recommendations are made for a given location
+or soil.</p>
+<p><strong>Figure 2:</strong> Plot generated from the <code class="docutils literal notranslate"><span class="pre">EONR</span></code> package. The plotted results - blue points are experimental data (yield value in USD as a function of nitrogen rate), the blue line is the best-fit quadratic-plateau model representing gross return to nitrogen, the red line is the cost of nitrogen fertilizer, and the green line is the difference between the two and represents the net return to nitrogen.</p>
+<p><img alt="image0" src="_images/quick_start_eonr_2012_mn.png" /></p>
+<p><strong>Figure 3:</strong> Aerial photo of a nitrogen rate response experiment for corn (photo captured in July when the crop is about shoulder-high). The plot boundaries were rendered over the photo to visualize the individual plots more easily. This particular experiment had nine (9) nitrogen rates applied at three (3) different times during the season, and was replicated four (4) times.</p>
+<p><img alt="image1" src="_images/background_mn_corn.png" /></p>
+</div>
+<div class="section" id="The-quadratic-plateau-model">
+<h2>4.3. The quadratic-plateau model<a class="headerlink" href="#The-quadratic-plateau-model" title="Permalink to this headline">¶</a></h2>
+<p>The quadratic-plateau model is often identified as the most appropriate model for nitrogen response in corn. It is a piecewise function that can be described as:</p>
+<p><span class="math">\begin{equation}
+y_i =\begin{cases}\beta_0 + \beta_1x_i + \beta_2x_i^2 + \epsilon_i & if\ x_i < \frac{-\beta_1}{2\beta_2}
+\\{\beta_0} - \frac{{\beta_1^2}}{4{\beta_2}} + \epsilon_i & if\ x_i \geq \frac{-\beta_1}{2\beta_2}\end{cases}
+\label{qp}
+\end{equation}</span></p>
+<p>where <span class="math notranslate nohighlight">\(y_{i}\)</span> can represent grain yield (kg ha-1) or monetary return ($ ha-1) from grain yield, <span class="math notranslate nohighlight">\(x_{i}\)</span> represents quantity of nitrogen fertilizer applied, and <span class="math notranslate nohighlight">\(\beta_{0}\)</span>, <span class="math notranslate nohighlight">\(\beta_{1}\)</span>, and <span class="math notranslate nohighlight">\(\beta_{2}\)</span> are the coefficients estimated from the experimental data assuming identically and independently distributed errors, <span class="math notranslate nohighlight">\(\epsilon_{i}\)</span>.</p>
+<p>The point on the x-axis where the net return curve (green) reaches the maximum return is the <strong>EONR/MRTN</strong>. The profile-likelihood 90% CIs are illustrated as a transparent grey box surrounding the EONR/MRTN point.</p>
+</div>
+<div class="section" id="Confidence-intervals">
+<h2>4.4. Confidence intervals<a class="headerlink" href="#Confidence-intervals" title="Permalink to this headline">¶</a></h2>
+<p>One of the major novelties of the <code class="docutils literal notranslate"><span class="pre">EONR</span></code> package is that it calculates profile-likelihood CIs (as well as Wald and bootstrap CIs) from data fit with a quadratic-plateau model.</p>
+<p>Quadratic models tend to be most popular in the literature, at least for describing how to calculate confidence intervals (CIs) for the EONR (<a class="reference external" href="https://dl.sciencesocieties.org/publications/aj/abstracts/100/5/1221">Hernandez &amp; Mulla, 2008</a>; <a class="reference external" href="https://dl.sciencesocieties.org/publications/jeq/abstracts/46/2/311">Sela et al., 2017</a>). Even in cases where a quadratic model happens to fit the observed data best, <a class="reference external" href="https://www.agronomy.org/publications/aj/abstracts/82/1/AJ0820010138">Cerrato &amp; Blackmer
+(1990)</a> imply that the idea of using the quadratic model is absurd because it predicts rapid decreases in yields when fertilizer is applied at higher than optimal rates, a trend that is not generally supported by evidence for maize. Furthermore, the quadratic model produces a systematic bias of overestimated maximum grain yield and optimum nitrogen fertilizer rate <a class="reference external" href="https://www.agronomy.org/publications/aj/abstracts/86/1/AJ0860010191">(Bullock &amp; Bullock,
+1994)</a>.</p>
+<p>From a scientific perspective, it is widely recognized that large uncertainties exist around the estimated EONR computed from yield data and that it is essential to report CIs. Still, few examples exist in the agronomic literature where CIs are actually estimated (<a class="reference external" href="https://www.researchgate.net/publication/225680100_A_conceptual_framework_for_judging_the_precision_agriculture_hypothesis_with_regard_to_site-specific_nitrogen_application">Bachmaier &amp; Gandorfer, 2009</a>; <a class="reference external" href="https://dl.sciencesocieties.org/publications/aj/abstracts/100/5/1221">Hernandez &amp; Mulla,
+2008</a>; <a class="reference external" href="https://link.springer.com/article/10.1007/s11119-010-9168-3">Jaynes, 2011</a>; <a class="reference external" href="https://dl.sciencesocieties.org/publications/jeq/abstracts/46/2/311">Sela et al., 2017</a>). Of these examples, only Jaynes (2011) calculated CIs for the quadratic-plateau response function (which has generally been recognized as the most appropriate model for describing yield response to nitrogen in corn). <a class="reference external" href="https://dl.sciencesocieties.org/publications/aj/abstracts/100/5/1221">Hernandez &amp; Mulla,
+2008</a> describe three general methods that can be used for estimating CIs about the EONR:</p>
+<ul class="simple">
+<li><p>the Wald CI</p></li>
+<li><p>the profile-likelihood based CI</p></li>
+<li><p>a bootstrap-derived CI</p></li>
+</ul>
+</div>
+<div class="section" id="The-social-cost-of-nitrogen">
+<h2>4.5. The social cost of nitrogen<a class="headerlink" href="#The-social-cost-of-nitrogen" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">EONR</span></code> package also allows the user to define a <strong>social cost of nitrogen</strong>, which is then used in the optimum nitrogen rate calculations based on residual soil nitrogen (nitrogen fertilizer not taken up by the crop at the end of the season).</p>
+<p>The traditional approach for calculating the EONR considers only the cost of the nitrogen fertilizer product, and does not consider other unintended costs of nitrogen application. The social cost of nitrogen, defined as the present value of monetary damages caused by an incremental increase in nitrogen, has been suggested as a method to place a value on pollution and other damages (e.g., health, quality of living, etc.) caused by nitrogen fertilizer application (<a class="reference external" href="http://stacks.iop.org/1748-9326/9/i=7/a=074002?key=crossref.75a91c07d59a4043a07280d01299d0d8">Keeler et al.,
+2016</a>). Because of the complexity of the nitrogen cycle and the spatial and temporal variability associated with it, the social cost of nitrogen is extremely difficult to quantify and is fraught with uncertainty. Additionally, the basis for what might be considered a healthy environment or an acceptable quality of living is highly subjective and may change abruptly depending on many factors. The
+social cost of nitrogen is a straightforward concept, however, and it can be a useful method to assess the value of economic gain versus damages from agricultural production.</p>
+<p>When total nitrogen uptake is measured in field experiments, there is an opportunity to calculate the quantity of nitrogen that we know was not utilized by the crop (residual nitrogen). <code class="docutils literal notranslate"><span class="pre">EONR</span></code> uses crop nitrogen uptake (and optionally, nitrogen in the soil at the beginning of the season) to model end-of-season residual nitrogen as a function of crop-available nitrogen at the beginning of the season (including nitrogen applied as fertilizer). This residual nitrogen value can be multiplied by a
+social cost (per unit residual nitrogen) to determine the monetary damages that a given experimental treatment might be contributing to pollution or other damages caused by nitrogen fertilizer application. <code class="docutils literal notranslate"><span class="pre">EONR</span></code> then adjusts the optimum nitrogen rate after also considering these social costs derived from experimental data. This is meaningful because it provides a basis for analyzing the costs of pollution and other damages caused by nitrogen fertilizer at the field scale. Although analysis at
+the regional scale is worthwhile, results oftentimes to not translate to the field scale.</p>
+<p>Depending on the economic scenario defined by the user <code class="docutils literal notranslate"><span class="pre">EONR</span></code> will calculate one of the following:</p>
+<ol class="arabic simple">
+<li><p><strong>Agronomic Optimum Nitrogen Rate</strong> <em>(AONR)</em>: both the cost of nitrogen fertilizer and social cost of nitrogen are ignored</p></li>
+<li><p><strong>Economic Optimum Nitrogen Rate</strong> <em>(EONR)</em>: cost of nitrogen fertilizer is considered but social cost is ignored</p></li>
+<li><p><strong>Socially Optimum Nitrogen Rate</strong> <em>(SONR)</em>: both cost of nitrogen fertilizer and social cost of nitrogen are considered</p></li>
+</ol>
+<p>The <code class="docutils literal notranslate"><span class="pre">EONR</span></code> package is able to calculate the <strong>AONR</strong>, <strong>EONR</strong>, or <strong>SONR</strong> for your dataset by simply adjusting the economic scenario (i.e., by adjusting <code class="docutils literal notranslate"><span class="pre">price_grain</span></code>, <code class="docutils literal notranslate"><span class="pre">cost_n_fert</span></code>, and <code class="docutils literal notranslate"><span class="pre">cost_n_social</span></code>).</p>
+</div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2019, Tyler J Nigon.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.0.0.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

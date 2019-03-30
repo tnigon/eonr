@@ -56,7 +56,7 @@ test_requirements = [
 ]
 
 setuptools.setup(name='eonr',
-                 version='0.1.1',
+                 version='0.1.2',
                  description='A tool for calculating economic optimum nitrogen rates',
                  long_description=readme(),
                  long_description_content_type="text/markdown",
@@ -73,6 +73,8 @@ setuptools.setup(name='eonr',
                          'Operating System :: Microsoft :: Windows',
                          'Programming Language :: Python :: 3',
                          ],
+                package_data={'eonr': ['examples/*.py', 'examples/*.ipynb',
+                                       'examples/data/*.csv']},
                 include_package_data=True,
                 install_requires=requirements,
                 test_suite='tests',

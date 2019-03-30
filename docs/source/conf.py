@@ -50,9 +50,9 @@ copyright = '2019, Tyler J Nigon'
 author = 'Tyler J Nigon'
 
 # The short X.Y version
-version = '0.1.1'
+version = '0.1.2'
 # The full version, including alpha/beta/rc tags
-release = '0.1.1'
+release = '0.1.2'
 
 # -- General configuration ---------------------------------------------------
 # If your documentation needs a minimal Sphinx version, state it here.
@@ -84,7 +84,7 @@ templates_path = ['_templates']
 # The suffix(es) of source filenames.
 # You can specify multiple suffix as a list of string:
 #
-source_suffix = ['.rst']
+source_suffix = ['.rst', '.md']
 
 # The master toctree document.
 master_doc = 'index'

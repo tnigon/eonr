@@ -42,6 +42,7 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+.pypirc
 
 # Python Unittest tool `py.test`
 .pytest_cache/*

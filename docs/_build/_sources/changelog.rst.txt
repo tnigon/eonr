@@ -1,0 +1,6 @@
+Change log
+=============
+
+*Changes to each release will be added here*
+
+.. include:: ../../CHANGELOG.rst
