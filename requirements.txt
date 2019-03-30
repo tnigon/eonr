@@ -1,3 +1,2 @@
-sphinx<1.8
-ipykernel
+sphinx>=1.4
 nbsphinx
