@@ -1,0 +1,12 @@
+nbsphinx
+
+sphinx>=1.8
+nbconvert!=5.4
+ipykernel
+numpy
+matplotlib
+pandas
+sphinxcontrib-bibtex
+
+cloud_sptheme
+sphinx_bootstrap_theme
