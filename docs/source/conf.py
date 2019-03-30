@@ -128,8 +128,8 @@ html_theme_options = {
     'navbar_pagenav': False,  # sidebar is doing this
     # 'navbar_pagenav_name': "Page Menu",
     'navbar_fixed_top': "true",
-    'bootswatch_theme': "Flatly",
-    # 'bootswatch_theme': "Sandstone",
+    'bootswatch_theme': "flatly",
+    # 'bootswatch_theme': "Spacelab",
     'bootstrap_version': "3",
     }
 
