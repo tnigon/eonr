@@ -1,12 +1,5 @@
 nbsphinx
-matplotlib
-numpy
-pandas
-scikits.bootstrap
-scipy
-seaborn
-uncertainties
-
+sphinx_bootstrap_theme
 
 sphinx>=1.8
 ipykernel
