@@ -617,7 +617,9 @@ class Plotting_tools(object):
                               horizontalalignment='right',
                               verticalalignment='center',
                               color='#7b7b7b')
-            elif len(tau_list) - idx <= 5:
+            # skips 0.7 CI
+            elif len(tau_list) - idx <= 6 and len(tau_list) - idx != 5:
+#            elif len(tau_list) - idx <= 5:
                 g.ax.annotate(label,
                               xy=(x_pos, tau_pair[0]),
                               xycoords='data',

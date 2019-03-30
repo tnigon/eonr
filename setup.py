@@ -56,7 +56,7 @@ test_requirements = [
 ]
 
 setuptools.setup(name='eonr',
-                 version='0.0.1',
+                 version='0.1.1',
                  description='A tool for calculating economic optimum nitrogen rates',
                  long_description=readme(),
                  long_description_content_type="text/markdown",

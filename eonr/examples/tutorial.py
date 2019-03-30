@@ -110,7 +110,7 @@ my_eonr = eonr.EONR(cost_n_fert=cost_n_fert,
 my_eonr.calculate_eonr(df_data)
 
 
-# It may take several seconds to run - this is because it computes the profile-likelihood and bootstrap confidence intervals by default (and as described in the [Background section](#background) this is the real novelty of `EONR` package).
+# It may take several seconds to run - this is because it computes the profile-likelihood and bootstrap confidence intervals by default (and as described in the [Background section](background.html#Confidence-intervals) this is the real novelty of `EONR` package).
 
 # And that's it! The economic optimum for this dataset and economic scenario was **162 kg nitrogen per ha** (with 90% confidence bounds at **131** and **208 kg per ha**) and resulted in a maximum net return of nearly **$770 per ha**.
 # 
@@ -124,16 +124,16 @@ my_eonr.calculate_eonr(df_data)
 my_eonr.plot_eonr(x_min=-5, x_max=300, y_min=-100, y_max=1400)
 
 
-# * The blue points are _**experimental data**_ (yield value in \\$ per ha as a function of nitrogen rate)
-# * The blue line is the best-fit quadratic-plateau model representing _**gross return to nitrogen**_
-# * The red line is the _**cost of nitrogen fertilizer**_
-# * The green line is the difference between the two and represents the _**net return to nitrogen**_
-# * The green point is the _**Economic Optimum Nitrogen Rate (EONR)**_
-# * The transparent grey box surrounding the EONR/MRTN (green point) illustrates the _**90\% confidence intervals**_
+# * The blue points are **experimental data** (yield value in \\$ per ha as a function of nitrogen rate)
+# * The blue line is the best-fit quadratic-plateau model representing **gross return to nitrogen**
+# * The red line is the **cost of nitrogen fertilizer**
+# * The green line is the difference between the two and represents the **net return to nitrogen**
+# * The green point is the **Economic Optimum Nitrogen Rate (EONR)**
+# * The transparent grey box surrounding the EONR/MRTN (green point) illustrates the **90\% confidence intervals**
 # 
 # The EONR is the point on the x-axis where the net return curve (green) reaches the maximum return. The return to nitrogen at the EONR is the **Maximum Return to Nitrogen (MRTN)**, indicating the profit that is earned at the economic optimum nitrogen rate.
 # 
-# *Notice the economic scenario (i.e., grain price, nitrogen fertilizer cost, etc.) and the "Base zero" values in the upper right corner describing the assumptions of EONR calculatioon. "Base zero" refers to the initial y-intercept of the gross return model (this setting can be turned on/off by setting* `EONR.base_zero` *to* `True` or `False`. See the *[Advanced tutorial](advanced_tutorial.html#Turn-base_zero-off)* and the [API](my_eonr.html#module-eonr.eonr) for more information.
+# *Notice the economic scenario (i.e., grain price, nitrogen fertilizer cost, etc.) and the "Base zero" values in the upper right corner describing the assumptions of EONR calculatioon. "Base zero" refers to the initial y-intercept of the gross return model (this setting can be turned on/off by setting* `EONR.base_zero` *to* `True` or `False`. See the [Advanced tutorial](advanced_tutorial.html#Turn-base_zero-off) and the [API](my_eonr.html#module-eonr.eonr) for more information.
 # 
 # - - -
 # ### Accesing complete results
@@ -145,11 +145,11 @@ my_eonr.plot_eonr(x_min=-5, x_max=300, y_min=-100, y_max=1400)
 my_eonr.df_results
 
 
-# See the *[Advanced tutorial](advanced_tutorial.html#View-results)* for a description of every column.
+# See the [Advanced tutorial](advanced_tutorial.html#View-results) for a description of every column.
 
 # - - -
 # ### Visualizing all confidence intervals
-# By default, the confidence intervals (CIs) are calculated at many alpha levels. Noting that $\text{CI} = 1-\alpha$, let's plot the _**Wald**_ CIs, _**profile-likelihood**_ CIs, and _**bootstrap**_ CIs for a range of $\alpha$ values.
+# By default, the confidence intervals (CIs) are calculated at many alpha levels. Noting that $\text{CI} = 1-\alpha$, let's plot the **Wald** CIs, **profile-likelihood** CIs, and **bootstrap** CIs for a range of $\alpha$ values.
 
 # In[10]:
 
@@ -190,7 +190,7 @@ my_eonr.update_econ(cost_n_fert=cost_n_fert)
 
 # - - -
 # ### Environmental observations
-# You'll notice above that we can pass the `cost_n_social` variable to `EONR.update_econ()`. This is becuase `EONR` will calculate the  _**Socially Optimum Nitrogen Rate (SONR)**_ if certain environmental data are available. For more information about the _**SONR**_, refer to the [Background chapter](background.html#The-social-cost-of-nitrogen).
+# You'll notice above that we can pass the `cost_n_social` variable to `EONR.update_econ()`. This is becuase `EONR` will calculate the  **Socially Optimum Nitrogen Rate (SONR)** if certain environmental data are available. For more information about the **SONR**, refer to the [Background chapter](background.html#The-social-cost-of-nitrogen).
 # 
 # In the same way that `cost_n_fert` was adjusted in the previous code, `cost_n_social` will be set (for the first time):
 
@@ -203,7 +203,7 @@ my_eonr.update_econ(cost_n_social=cost_n_social)
 
 # - - -
 # ### Set column names *(post-init)*
-# You may have noticed that [the loaded data](quick_start.html#Load-the-data) for this tutorial contains columns for nitrogen uptake ("nup_total_kgha") and available nitrogen ("soil_plus_fert_n_kgha"). This data can be used to calculate the _**SONR**_ as long as the column names are correctly set. 
+# You may have noticed that [the loaded data](tutorial.html#Load-the-data) for this tutorial contains columns for nitrogen uptake ("nup_total_kgha") and available nitrogen ("soil_plus_fert_n_kgha"). This data can be used to calculate the **SONR** as long as the column names are correctly set. 
 # 
 # The column names were set for nitrogen fertilizer rate (`col_n_app`) and grain yield (`col_yld`) during the initialization of `EONR`, but they haven't been set for the nitrogen uptake or available nitrogen columns. This can be done (even after initilization of `EONR`) using `EONR.set_column_names()`:
 
@@ -217,11 +217,11 @@ my_eonr.set_column_names(col_crop_nup=col_crop_nup,
                          col_n_avail=col_n_avail)
 
 
-# `EONR` simply subtracts *end of season total nitrogen uptake* from *available nitrogen* to get _**net crop nitrogen use**_, which is subsequently used to calculate the _**SONR**_.
+# `EONR` simply subtracts *end of season total nitrogen uptake* from *available nitrogen* to get **net crop nitrogen use**, which is subsequently used to calculate the **SONR**.
 # 
 # - - -
 # ### Run `EONR` for the socially optimum rate
-# Then simply run `EONR.calculate_eonr()` again to calculate the _**SONR**_ for the updated economic scenario:
+# Then simply run `EONR.calculate_eonr()` again to calculate the **SONR** for the updated economic scenario:
 
 # In[15]:
 
@@ -247,12 +247,12 @@ my_eonr.plot_tau()
 
 
 # Notice the added data in the nitrogen response plot:
-# * The gold points represent _**net crop nitrogen use**_ (expressed as a \\$ amount based on the value set for `cost_n_social`)
-# * The gold line is the best-fit exponential model representing _**net crop nitrogen use**_ (`EONR` fits both a linear and exponential model for this, then uses whichever has a higher $\text{r}^2$)
+# * The gold points represent **net crop nitrogen use** (expressed as a \\$ amount based on the value set for `cost_n_social`)
+# * The gold line is the best-fit exponential model representing **net crop nitrogen use** (`EONR` fits both a linear and exponential model for this, then uses whichever has a higher $\text{r}^2$)
 # 
 # - - -
 # ### Saving the data
-# The results generated by `EONR` can be saved to the `EONR.base_dir` using the `Pandas` `df.to_csv()` function. A folder will be created in the base_dir whose name is determined by the _**current economic scenario**_ of `my_eonr` (in this case "social_154_1100", corresponding to `cost_n_social > 0`, `price_ratio = 15.4`, and `cost_n_social = 1.10` for "social", "154", and "1100" in the folder name, respectively):
+# The results generated by `EONR` can be saved to the `EONR.base_dir` using the `Pandas` `df.to_csv()` function. A folder will be created in the base_dir whose name is determined by the **current economic scenario** of `my_eonr` (in this case "social_154_1100", corresponding to `cost_n_social > 0`, `price_ratio = 15.4`, and `cost_n_social = 1.10` for "social", "154", and "1100" in the folder name, respectively):
 
 # In[18]:
 

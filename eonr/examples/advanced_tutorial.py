@@ -6,7 +6,7 @@
 # 
 # Code for all the examples is located in your `PYTHONPATH/Lib/site-packages/eonr/examples` folder. With that said, you should be able to make use of `EONR` by following and executing the commands in this tutorial using either the sample data provided or substituting in your own data.
 # 
-# *You will find the following code included in the* `advanced_tutorial.py` *or* `advanced_tutorial.ipynb` *(for [Jupyter notebooks](https://jupyter.org/)) files in your* `PYTHONPATH/Lib/site-packages/eonr/examples` *folder - feel free to load that into your Python IDE to follow along.*
+# *You will find the following code included in the* `advanced_tutorial.py` *or* `advanced_tutorial.ipynb` *(for* [Jupyter notebooks](https://jupyter.org/)*) files in your* `PYTHONPATH/Lib/site-packages/eonr/examples` *folder - feel free to load that into your Python IDE to follow along.*
 # 
 # - - -
 # ### Calculate `EONR` for several economic scenarios 
@@ -36,9 +36,9 @@ df_data
 
 # - - -
 # ### Set column names and units
-# *The table containing the experimental data **must** have a minimum of two columns:*
-# * *Nitrogen fertilizer rate*
-# * *Grain yield*
+# *The table containing the experimental data* **must** *have a minimum of two columns:*
+# * Nitrogen fertilizer rate
+# * Grain yield
 # 
 # We'll also set *nitrogen uptake* and *available nitrogen* columns right away for calculating the socially optimum nitrogen rate.
 # 
@@ -100,7 +100,7 @@ my_eonr = eonr.EONR(cost_n_fert=0,
 
 # - - -
 # ### Calculate the *AONR*
-# You may be wondering why `cost_n_fert` was set to 0. Well, setting our nitrogen fertilizer cost to \\$0 essentially allows us to calculate the optimum nitrogen rate ignoring the cost of the fertilizer input. This is known as the *Agronomic Optimum Nitrogen Rate (AONR)*. The AONR provides insight into the maximum achievable grain yield. Notice `price_grain` was set to `1.0` - this effectively calculates the AONR so that the maximum return to nitrogen (MRTN), which will be expressed as \\$ per ha when ploting via `EONR.plot_eonr()`, is similar to units of kg per ha (the units we are using for grain yield).
+# You may be wondering why `cost_n_fert` was set to 0. Well, setting our nitrogen fertilizer cost to \$0 essentially allows us to calculate the optimum nitrogen rate ignoring the cost of the fertilizer input. This is known as the *Agronomic Optimum Nitrogen Rate (AONR)*. The AONR provides insight into the maximum achievable grain yield. Notice `price_grain` was set to `1.0` - this effectively calculates the AONR so that the maximum return to nitrogen (MRTN), which will be expressed as \$ per ha when ploting via `EONR.plot_eonr()`, is similar to units of kg per ha (the units we are using for grain yield).
 # 
 # Let's calculate the AONR and plot it (adjusting `y_max` so it is greater than our maximum grain yield):
 
@@ -111,20 +111,22 @@ my_eonr.calculate_eonr(df_data)
 my_eonr.plot_eonr(x_min=-5, x_max=300, y_min=-100, y_max=18000)
 
 
-# We see that the _**agronomic**_ optimum nitrogen rate was calculated as **177** kg per ha, and the MRTN is **13.579 Mg per ha** (yes, it says $13,579, but because `price_grain` was set to \\$1, the values are equivalent and the units can be substituted.
+# We see that the **agronomic** optimum nitrogen rate was calculated as **177** kg per ha, and the MRTN is **13.579 Mg per ha** (yes, it says $13,579, but because `price_grain` was set to \\$1, the values are equivalent and the units can be substituted.
 # 
 # If you've gone through the [first tutorial](tutorial.md), you'll notice there are a few major differences in the look of this plot:
 # 
 # **The red line representing nitrogen fertilizer cost is on the bottom of the plot**
+# 
 # *This happened because* `cost_n_fert` *was set to zero, and nitrogen fertilizer cost is simply being plotted as a flat horizontal line at* $\text{y}=0$
 # 
 # 
 # **The blue line is missing?**
-# *The gross return to nitrogen (GRTN) line representing the best-fit of the quadratic-plateau model (blue line) is there, but it is actually being covered up by the green line (net return to nitrogen; NRTN). This is the case because `cost_n_fert` was set to zero.
+# 
+# *The gross return to nitrogen (GRTN) line representing the best-fit of the quadratic-plateau model (blue line) is there, but it is actually being covered up by the green line (net return to nitrogen; NRTN). This is the case because* `cost_n_fert` *was set to zero.
 # 
 # **The GRTN/NRTN lines do not pass through the y-intercept at** $\text{y}=0$**?**
 # 
-# *Because* `base_zero` *was set to* `False`, *the observed data (blue points) were not standardized as to *force* the best-fit quadratic-plateau model from passing through at* $\text{y}=0$.
+# *Because* `base_zero` *was set to* `False`*, the observed data (blue points) were not standardized as to "force" the best-fit quadratic-plateau model from passing through at* $\text{y}=0$.
 
 # - - -
 # ### Loop through several economic conditions
@@ -218,7 +220,7 @@ my_eonr.df_results
 
 # - - -
 # ### Save the data
-# The results generated by `EONR` can be saved to the `EONR.base_dir` using the `Pandas` `df.to_csv()` function. A folder will be created in the base_dir whose name is determined by the _**current economic scenario**_ of `my_eonr` (in this case "social_336_4400", corresponding to `cost_n_social > 0`, `price_ratio == 33.6`, and `cost_n_social == 4.40` for "social", "336", and "4400" in the folder name, respectively):
+# The results generated by `EONR` can be saved to the `EONR.base_dir` using the `Pandas` `df.to_csv()` function. A folder will be created in the base_dir whose name is determined by the **current economic scenario** of `my_eonr` (in this case "social_336_4400", corresponding to `cost_n_social > 0`, `price_ratio == 33.6`, and `cost_n_social == 4.40` for "social", "336", and "4400" in the folder name, respectively):
 
 # In[10]:
 

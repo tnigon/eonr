@@ -8,5 +8,4 @@ matplotlib
 pandas
 sphinxcontrib-bibtex
 
-cloud_sptheme
 sphinx_bootstrap_theme

@@ -19,7 +19,7 @@ sys.path.insert(0, os.path.abspath('../../'))
 
 # sys.path.append(os.path.join(os.path.dirname(__name__), '..'))
 # sys.path.insert(0, os.path.abspath('.'))
-print(sys.path)
+# print(sys.path)
 # try:
 #     import sphinx_bootstrap_theme
 # except ModuleNotFoundError:
@@ -38,7 +38,10 @@ from recommonmark.transform import AutoStructify
 
 
 
-autodoc_default_options = ['members']
+autodoc_default_options = {
+    'members': True
+}
+
 autosummary_generate = True
 
 # -- Project information -----------------------------------------------------
@@ -47,9 +50,9 @@ copyright = '2019, Tyler J Nigon'
 author = 'Tyler J Nigon'
 
 # The short X.Y version
-version = '0.0.1'
+version = '0.1.1'
 # The full version, including alpha/beta/rc tags
-release = '0.0.1'
+release = '0.1.1'
 
 # -- General configuration ---------------------------------------------------
 # If your documentation needs a minimal Sphinx version, state it here.
@@ -128,8 +131,8 @@ html_theme_options = {
     'navbar_pagenav': False,  # sidebar is doing this
     # 'navbar_pagenav_name': "Page Menu",
     'navbar_fixed_top': "true",
-    'bootswatch_theme': "flatly",
-    # 'bootswatch_theme': "Spacelab",
+    'bootswatch_theme': "flatly",  # DO NOT CAPTIALIZE
+    # 'bootswatch_theme': "spacelab",
     'bootstrap_version': "3",
     }
 
