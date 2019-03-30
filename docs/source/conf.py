@@ -39,7 +39,7 @@ from recommonmark.transform import AutoStructify
 
 
 autodoc_default_options = {
-    'members': True
+    'members': None
 }
 
 autosummary_generate = True
