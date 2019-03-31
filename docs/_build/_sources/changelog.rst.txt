@@ -1,4 +1,4 @@
-Change log
+Change Log
 =============
 
 *Changes to each release will be added here*

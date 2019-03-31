@@ -158,7 +158,7 @@ class EONR(object):
                                                 'unit_cost_n',
                                                 'location', 'year', 'time_n',
                                                 'base_zero', 'eonr',
-                                                'eonr_error', 'ci_level',
+                                                'eonr_bias', 'ci_level',
                                                 'ci_wald_l', 'ci_wald_u',
                                                 'ci_pl_l', 'ci_pl_u',
                                                 'ci_boot_l', 'ci_boot_u',
@@ -339,7 +339,6 @@ class EONR(object):
         popt = None
         info = ('func = {0}\ncol_x = {1}\ncol_y = {2}\n'
                 ''.format('_best_fit_exp() -> _f_exp', col_x, col_y))
-        self.models.update_eonr(self)
         try:
             popt, pcov = self._curve_fit_opt(self.models.exp, x, y,
                                              p0=(guess_a, guess_b, guess_c),
@@ -489,7 +488,6 @@ class EONR(object):
         df_data = self.df_data.copy()
         x = df_data[col_x].values
         y = df_data[col_y].values
-        self.R = 0
         if self.cost_n_social > 0 and self.eonr is not None:
             b2 = self.coefs_grtn['b2'].n
             b = self.coefs_grtn['b1'].n
@@ -497,7 +495,6 @@ class EONR(object):
             self.models.update_eonr(self)
             guess = (self.coefs_grtn['b0'].n,
                      self.eonr,
-#                     self.coefs_grtn['crit_x'],
                      self.coefs_grtn['b2'].n)
             popt, pcov = self._curve_fit_runtime(self.models.qp_theta2, x,
                                                  y, guess, maxfev=800)
@@ -522,6 +519,7 @@ class EONR(object):
                     self.R -= step_size
                     step_size *= 0.1  # change step_size
                     self.R += step_size
+                self.models.update_eonr(self)
                 popt, pcov = self._curve_fit_runtime(self.models.qp_theta2,
                                                      x, y, guess, maxfev=800)
                 dif = abs(popt[1] - self.eonr)
@@ -553,14 +551,13 @@ class EONR(object):
                                               theta2,
                                               popt[0]]
             self.coefs_nrtn['ss_res_social'] = ss_res
-            self.coefs_nrtn['eonr_error'] = theta2 - self.eonr
+            self.coefs_nrtn['eonr_bias'] = theta2 - self.eonr
 
         elif self.cost_n_social == 0:
             self.R = self.price_ratio * self.price_grain
         else:
             assert self.eonr is not None, 'Please compute EONR'
-        R = self.R
-        return R
+        self.models.update_eonr(self)
 
     def _get_rsq(self, func, x, y, popt):
         '''
@@ -658,6 +655,7 @@ class EONR(object):
             else:
                 raise NotImplementedError('{0} model not implemented'
                                           ''.format(model))
+        self.models.update_eonr(self)
 
     def _calc_nrtn(self, col_x, col_y):
         '''
@@ -683,8 +681,6 @@ class EONR(object):
         info = ('func = {0}\ncol_x = {1}\ncol_y = {2}\n'
                 ''.format('_calc_nrtn() -> _f_qp_theta2',
                           col_x, col_y))
-        self.models.update_eonr(self)
-
         popt, pcov = self._curve_fit_opt(self.models.qp_theta2, x, y,
                                          p0=guess, maxfev=1000, info=info)
         res = y - self.models.qp_theta2(x, *popt)
@@ -785,7 +781,6 @@ class EONR(object):
         info = ('func = {0}\ncol_x = {1}\ncol_y = {2}\n'
                 ''.format('_quad_plateau() -> _f_quad_plateau', col_x, col_y))
         guess = self._get_guess_qp(rerun=rerun)
-        self.models.update_eonr(self)
         #  TODO: Add a try/except to catch a bad guess.. or at least warn the
         # user that the guess is *extremely* sensitive
         popt, pcov = self._curve_fit_opt(self.models.quad_plateau, x, y,
@@ -829,7 +824,7 @@ class EONR(object):
                     'popt': None,
                     'pcov': None,
                     'ss_res': None,
-                    'eonr_error': None,
+                    'eonr_bias': None,
                     'theta2_social': None,
                     'popt_social': None,
                     'ss_res_social': None
@@ -916,7 +911,6 @@ class EONR(object):
         '''
         Uses scipy.optimize to find the maximum value of the return curve
         '''
-        self.models.update_eonr(self)
         f_eonr1 = np.poly1d([self.coefs_nrtn['b2'].n,
                             self.coefs_nrtn['theta2'].n,
                             self.coefs_nrtn['b0'].n])
@@ -957,10 +951,9 @@ class EONR(object):
         guess = (self.coefs_grtn['b0'].n,
                  self.eonr,
                  self.coefs_grtn['b2'].n)
-        self.models.update_eonr(self)
         popt, pcov = self._curve_fit_opt(self.models.qp_theta2, x, y, p0=guess,
                                          maxfev=800)
-        self.coefs_nrtn['eonr_error'] = popt[1] - self.eonr
+        self.coefs_nrtn['eonr_bias'] = popt[1] - self.eonr
 
     #  Following are functions used in calculating confidence intervals
     def _bs_statfunction(self, x, y):
@@ -970,7 +963,6 @@ class EONR(object):
         b0 = self.coefs_grtn['b0'].n
         b2 = self.coefs_grtn['b2'].n
         guess = (b0, self.eonr, b2)
-        self.models.update_eonr(self)
 #        y = self.models.quad_plateau(x, a, b, c) + res
 #        try_n = 0
         popt = [None, None, None]
@@ -1026,7 +1018,6 @@ class EONR(object):
         info = ('func = {0}\ncol_x = {1}\ncol_y = {2}\n'
                 ''.format('_calc_sse_full() -> _f_qp_theta2',
                           col_x, col_y))
-        self.models.update_eonr(self)
         popt, pcov = self._curve_fit_opt(self.models.qp_theta2, x, y, p0=guess,
                                          info=info)
         res = y - self.models.qp_theta2(x, *popt)
@@ -1145,7 +1136,6 @@ class EONR(object):
         info = ('func = {0}\ncol_x = {1}\ncol_y = {2}\n'
                 ''.format('_compute_residuals() -> _f_quad_plateau',
                           col_x, col_y))
-        self.models.update_eonr(self)
         if self.base_zero is False:
             popt, pcov = self._curve_fit_opt(self.models.quad_plateau, x, y,
                                              p0=(600, 3, -0.01), info=info)
@@ -1473,7 +1463,6 @@ class EONR(object):
         self.str_func = '_get_likelihood() -> _f_qp_theta2'
         info = ('func = {0}\ncol_x = {1}\ncol_y = {2}\n'
                 ''.format(self.str_func, col_x, col_y))
-        self.models.update_eonr(self)
         # Second, minimize the difference between tau and the test statistic
         # call, anything in _get_likelihood_init() using li.<variable>
         # e.g., li.tau will get you the <tau> variable
@@ -1518,7 +1507,7 @@ class EONR(object):
 #        popt, pcov = self._curve_fit_opt(self._f_qp_theta2, x, y, p0=guess, maxfev=800, info=info)
         wald_l, wald_u = self._compute_wald(n, p, alpha)
         pl_guess = (wald_u - self.eonr)  # Adjust +/- init guess based on Wald
-        theta2_bias = self.coefs_nrtn['eonr_error']
+        theta2_bias = self.coefs_nrtn['eonr_bias']
         theta2_opt = self.eonr + theta2_bias  # check if this should add the 2
 
         # Lower CI: uses the Nelder-Mead algorithm
@@ -1758,7 +1747,7 @@ class EONR(object):
                                    col_y='social_cost_n')
         self._calc_nrtn(col_x=self.col_n_app, col_y='grtn')
         self._solve_eonr()
-        self._compute_R(col_x=self.col_n_app, col_y='grtn')
+        self._compute_R(col_x=self.col_n_app, col_y='grtn')  # models.update_eonr
         self._theta2_error()
         if self.eonr > self.df_data[self.col_n_app].max():
             print('\n{0} is past the point of available data, so confidence '
@@ -1786,7 +1775,7 @@ class EONR(object):
                     self.price_ratio, unit_price_grain, unit_cost_n,
                     self.location, self.year, self.time_n,
                     base_zero, self.eonr,
-                    self.coefs_nrtn['eonr_error'],
+                    self.coefs_nrtn['eonr_bias'],
                     self.ci_level, self.df_ci_temp['wald_l'].item(),
                     self.df_ci_temp['wald_u'].item(),
                     self.df_ci_temp['pl_l'].item(),

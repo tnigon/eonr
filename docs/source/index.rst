@@ -5,7 +5,7 @@ EONR Documentation
 
 *A Python tool for computing the optimum nitrogen rate and its confidence intervals from agricultural research data*
 
-.. |version_current| replace:: 0.1.2
+.. |version_current| replace:: 0.1.3
 Current version: |version_current|
 
 ##################
@@ -27,7 +27,6 @@ Table of Contents
    my_eonr
    license
    changelog
-   ../CHANGELOG.rst
 
 
 ##################

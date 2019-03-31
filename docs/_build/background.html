@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="python">
   <head>
     <meta charset="utf-8" />
-    <title>4. Background &#8212; eonr 0.1.2 documentation</title>
+    <title>4. Background &#8212; eonr 0.1.3 documentation</title>
     <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -39,7 +39,7 @@
         </button>
         <a class="navbar-brand" href="index.html">
           EONR</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.1.2</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.1.3</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -64,7 +64,7 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">4. Background</a></li>
 <li class="toctree-l1"><a class="reference internal" href="my_eonr.html">5. API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="license.html">6. License</a></li>
-<li class="toctree-l1"><a class="reference internal" href="changelog.html">7. Change log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">7. Change Log</a></li>
 </ul>
 </ul>
 </li>
@@ -159,12 +159,15 @@ particulate matter or as nitrous oxides, which are strong greenhouse gases).</p>
 <div class="section" id="EONR?-MRTN?-..what?">
 <h2>4.2. EONR? MRTN? ..what?<a class="headerlink" href="#EONR?-MRTN?-..what?" title="Permalink to this headline">¶</a></h2>
 <p>As its name suggests, the <strong>Maximum Return to Nitrogen</strong> (MRTN) is the maximum achievable profit expected after accounting for the cost of nitrogen fertilizer. The economic optimum nitrogen rate (EONR) is the nitrogen rate where the MRTN is reached. In statistical terms, the EONR is the point where the monetary return from yield is equal to the cost of the increase in nitrogen fertilizer input. The approach uses a best-fit statistical model that utilizes input data from replicated field trials
-with several nitrogen rate treatments. <strong>Figure 2</strong> is a typical nitrogen rate response curve - the blue points are observed experimental data plotted as nitrogen rate (x-axis) and return to nitrogen (y-axis). A quadratic-plateau model is fit to the experimental data to Differences among replications from these trials can contribute to uncertainty in estimating the EONR, but the estimated EONR can be used as the baseline for which nitrogen fertilizer recommendations are made for a given location
-or soil.</p>
-<p><strong>Figure 2:</strong> Plot generated from the <code class="docutils literal notranslate"><span class="pre">EONR</span></code> package. The plotted results - blue points are experimental data (yield value in USD as a function of nitrogen rate), the blue line is the best-fit quadratic-plateau model representing gross return to nitrogen, the red line is the cost of nitrogen fertilizer, and the green line is the difference between the two and represents the net return to nitrogen.</p>
-<p><img alt="image0" src="_images/quick_start_eonr_2012_mn.png" /></p>
-<p><strong>Figure 3:</strong> Aerial photo of a nitrogen rate response experiment for corn (photo captured in July when the crop is about shoulder-high). The plot boundaries were rendered over the photo to visualize the individual plots more easily. This particular experiment had nine (9) nitrogen rates applied at three (3) different times during the season, and was replicated four (4) times.</p>
+with several nitrogen rate treatments. <strong>Figure 2</strong> is a typical nitrogen rate response curve for corn.</p>
+<p><strong>Figure 2:</strong> Plot generated from the <code class="docutils literal notranslate"><span class="pre">EONR</span></code> package. The blue points are observed experimental data (nitrogen rate vs yield return to nitrogen). Yield is expressed as monetary return, and is simply the grain price multiplied by grain yield. The blue line is the best-fit quadratic-plateau model representing gross return to nitrogen, the red line is the cost of nitrogen fertilizer, and the green line is the difference between the two and represents the net return to nitrogen.</p>
+<p><img alt="image0" src="_images/background_eonr_nonstandardized.png" /></p>
+<p>A quadratic-plateau model is fit to the experimental data to describe the return to nitrogen for <em>each</em> particular dataset. Differences among replications from these trials can contribute to uncertainty in estimating the EONR, and this is illustrated by the rather wide confidence intervals on either side of the 162 kg ha<span class="math notranslate nohighlight">\(^{-1}\)</span> estimated EONR value (90% confidence bounds are 130 kg ha<span class="math notranslate nohighlight">\(^{-1}\)</span> and 208<span class="math notranslate nohighlight">\(^{-1}\)</span>). Although there is perhaps a lot of uncertainty in the EONR
+estimate, it is a good baseline for making nitrogen fertilizer recommendations for a given location or soil.</p>
+<p>To generate an EONR/MRTN plot as in <strong>Figure 2</strong>, it is necessary to conduct a nitrogen response field experiment (<strong>Figure 3</strong>). Experiments can be “small-plot”, where it is more feasible to include more nitrogen rates and replications, or experiments can be “strip trials”, where experiments are generally easier to establish.</p>
+<p><strong>Figure 3:</strong> Aerial photo of a nitrogen rate response experiment for corn (photo captured in July when the crop is about shoulder-high).</p>
 <p><img alt="image1" src="_images/background_mn_corn.png" /></p>
+<p>Nitrogen deficiencies are visible in the small-plot experiment in <strong>Figure 3</strong> (plot boundaries were rendered over the photo to visualize the individual plots more easily). The experiment in this photo had nine (9) nitrogen rates applied at three (3) different times during the season, and was replicated four (4) times.</p>
 </div>
 <div class="section" id="The-quadratic-plateau-model">
 <h2>4.3. The quadratic-plateau model<a class="headerlink" href="#The-quadratic-plateau-model" title="Permalink to this headline">¶</a></h2>
@@ -174,7 +177,7 @@ y_i =\begin{cases}\beta_0 + \beta_1x_i + \beta_2x_i^2 + \epsilon_i & if\ x_i < \
 \\{\beta_0} - \frac{{\beta_1^2}}{4{\beta_2}} + \epsilon_i & if\ x_i \geq \frac{-\beta_1}{2\beta_2}\end{cases}
 \label{qp}
 \end{equation}</span></p>
-<p>where <span class="math notranslate nohighlight">\(y_{i}\)</span> can represent grain yield (kg ha-1) or monetary return ($ ha-1) from grain yield, <span class="math notranslate nohighlight">\(x_{i}\)</span> represents quantity of nitrogen fertilizer applied, and <span class="math notranslate nohighlight">\(\beta_{0}\)</span>, <span class="math notranslate nohighlight">\(\beta_{1}\)</span>, and <span class="math notranslate nohighlight">\(\beta_{2}\)</span> are the coefficients estimated from the experimental data assuming identically and independently distributed errors, <span class="math notranslate nohighlight">\(\epsilon_{i}\)</span>.</p>
+<p>where <span class="math notranslate nohighlight">\(y_{i}\)</span> can represent grain yield (kg ha<span class="math notranslate nohighlight">\(^{-1}\)</span>) or monetary return ($ ha<span class="math notranslate nohighlight">\(^{-1}\)</span>) from grain yield, <span class="math notranslate nohighlight">\(x_{i}\)</span> represents quantity of nitrogen fertilizer applied, and <span class="math notranslate nohighlight">\(\beta_{0}\)</span>, <span class="math notranslate nohighlight">\(\beta_{1}\)</span>, and <span class="math notranslate nohighlight">\(\beta_{2}\)</span> are the coefficients estimated from the experimental data assuming identically and independently distributed errors, <span class="math notranslate nohighlight">\(\epsilon_{i}\)</span>.</p>
 <p>The point on the x-axis where the net return curve (green) reaches the maximum return is the <strong>EONR/MRTN</strong>. The profile-likelihood 90% CIs are illustrated as a transparent grey box surrounding the EONR/MRTN point.</p>
 </div>
 <div class="section" id="Confidence-intervals">
