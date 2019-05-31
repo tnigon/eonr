@@ -8,6 +8,11 @@ EONR Documentation
 .. |version_current| replace:: 0.1.4
 Current version: |version_current|
 
+.. image:: _images/eonr_logo.png
+   :width: 600
+   :align: center
+   :alt: EONR Python package
+
 ##################
 Table of Contents
 ##################
