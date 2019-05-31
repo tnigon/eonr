@@ -25,8 +25,8 @@ dependencies:
   matplotlib
   pandas
   sphinxcontrib-bibtex
-  # pip:
-  #   sphinx_bootstrap_theme
+  pip:
+    sphinx_bootstrap_theme
     # cloud_sptheme
 
 # Optionally set the version of Python and requirements required to build your docs
