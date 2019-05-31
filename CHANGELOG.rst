@@ -1,3 +1,21 @@
+Release: 0.1.4
+***************
+**Date**: 2019 May 31
+
+**Description**: Several feature additions and enhancements
+
+* Added feature to use custom plot title (e.g., ``EONR.plot_modify_title("My New Title")``)
+* Added feature to plot only the NRTN and cost_n_fert line if cost_n_fert is not zero
+* Assert that user has EONR.price_grain > 0 before calculating EONR
+* Added feature to compute the difference from the t-statistic (as a function of theta2/N rate) when calculating profile-likelihood CIs for EONR
+* Added feature to plot the difference from the t-statistic as a function of theta2/N rate (e.g., ``EONR.plot_delta_tstat``)
+* Included "R*" and "costs_at_onr" to ``EONR.df_results``.
+* Taking precaution to be sure optimization of profile-likelihood CIs aren't caught at a local miniumum.
+* Moving all "linspace" arrays to a new dataframe (``EONR.df_linspace``)
+* Calculating the derivative of the net return to nitrogen curve (``EONR.coefs_nrtn``)
+* Added basic plotting for a zoomed in look at the net return curve (``EONR.plot_derivative``)
+* Added vertical line to represent ONR to ``EONR.fig_tau``
+
 Release: 0.1.3
 ***************
 **Date**: 2019 March 31

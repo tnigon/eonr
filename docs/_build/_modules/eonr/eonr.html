@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="python">
   <head>
     <meta charset="utf-8" />
-    <title>eonr.eonr &#8212; eonr 0.1.3 documentation</title>
+    <title>eonr.eonr &#8212; eonr 0.1.4 documentation</title>
     <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -37,7 +37,7 @@
         </button>
         <a class="navbar-brand" href="../../index.html">
           EONR</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.1.3</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.1.4</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -218,7 +218,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">cost_n_fert</span> <span class="o">=</span> <span class="n">cost_n_fert</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cost_n_social</span> <span class="o">=</span> <span class="n">cost_n_social</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">price_grain</span> <span class="o">=</span> <span class="n">price_grain</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">price_ratio</span> <span class="o">=</span> <span class="nb">round</span><span class="p">((</span><span class="n">cost_n_fert</span><span class="o">+</span><span class="n">cost_n_social</span><span class="p">)</span> <span class="o">/</span> <span class="n">price_grain</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">price_ratio</span> <span class="o">=</span> <span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">cost_n_fert</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">cost_n_social</span><span class="p">)</span> <span class="o">/</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">price_grain</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">col_n_app</span> <span class="o">=</span> <span class="n">col_n_app</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">col_yld</span> <span class="o">=</span> <span class="n">col_yld</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">col_crop_nup</span> <span class="o">=</span> <span class="n">col_crop_nup</span>
@@ -252,14 +253,17 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">mrtn</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">eonr</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">costs_at_onr</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">df_ci</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">df_ci_pdf</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">df_delta_tstat</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">df_der</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">df_linspace</span> <span class="o">=</span> <span class="kc">None</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">fig_delta_tstat</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fig_derivative</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fig_eonr</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fig_tau</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">linspace_cost_n_fert</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">linspace_cost_n_social</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">linspace_qp</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">linspace_rtn</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">df_ci_temp</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ci_list</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.667</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span>
                         <span class="mf">0.95</span><span class="p">,</span> <span class="mf">0.99</span><span class="p">]</span>
@@ -270,7 +274,8 @@
                                                 <span class="s1">&#39;unit_cost_n&#39;</span><span class="p">,</span>
                                                 <span class="s1">&#39;location&#39;</span><span class="p">,</span> <span class="s1">&#39;year&#39;</span><span class="p">,</span> <span class="s1">&#39;time_n&#39;</span><span class="p">,</span>
                                                 <span class="s1">&#39;base_zero&#39;</span><span class="p">,</span> <span class="s1">&#39;eonr&#39;</span><span class="p">,</span>
-                                                <span class="s1">&#39;eonr_bias&#39;</span><span class="p">,</span> <span class="s1">&#39;ci_level&#39;</span><span class="p">,</span>
+                                                <span class="s1">&#39;eonr_bias&#39;</span><span class="p">,</span> <span class="s1">&#39;R*&#39;</span><span class="p">,</span>
+                                                <span class="s1">&#39;costs_at_onr&#39;</span><span class="p">,</span> <span class="s1">&#39;ci_level&#39;</span><span class="p">,</span>
                                                 <span class="s1">&#39;ci_wald_l&#39;</span><span class="p">,</span> <span class="s1">&#39;ci_wald_u&#39;</span><span class="p">,</span>
                                                 <span class="s1">&#39;ci_pl_l&#39;</span><span class="p">,</span> <span class="s1">&#39;ci_pl_u&#39;</span><span class="p">,</span>
                                                 <span class="s1">&#39;ci_boot_l&#39;</span><span class="p">,</span> <span class="s1">&#39;ci_boot_u&#39;</span><span class="p">,</span>
@@ -476,23 +481,23 @@
         <span class="k">if</span> <span class="n">popt</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">popt</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">):</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">print_out</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Couldn&#39;t fit data to an exponential function..</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">coefs_social</span><span class="p">[</span><span class="s1">&#39;exp_a&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">coefs_social</span><span class="p">[</span><span class="s1">&#39;exp_b&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">coefs_social</span><span class="p">[</span><span class="s1">&#39;exp_c&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">coefs_social</span><span class="p">[</span><span class="s1">&#39;exp_gamma0&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">coefs_social</span><span class="p">[</span><span class="s1">&#39;exp_gamma1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">coefs_social</span><span class="p">[</span><span class="s1">&#39;exp_gamma2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">coefs_social</span><span class="p">[</span><span class="s1">&#39;exp_r2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">coefs_social</span><span class="p">[</span><span class="s1">&#39;exp_rmse&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">exp_r2</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">exp_rmse</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_rsq</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">exp</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span>
                                                       <span class="n">popt</span><span class="p">)</span>
-            <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="n">popt</span>
+            <span class="n">gamma0</span><span class="p">,</span> <span class="n">gamma1</span><span class="p">,</span> <span class="n">gamma2</span> <span class="o">=</span> <span class="n">popt</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">print_out</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;y = </span><span class="si">{0:.5}</span><span class="s1"> * exp(</span><span class="si">{1:.5}</span><span class="s1">x) + </span><span class="si">{2:.5}</span><span class="s1"> &#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">))</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;y = </span><span class="si">{0:.5}</span><span class="s1"> * exp(</span><span class="si">{1:.5}</span><span class="s1">x) + </span><span class="si">{2:.5}</span><span class="s1"> &#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">gamma0</span><span class="p">,</span> <span class="n">gamma1</span><span class="p">,</span> <span class="n">gamma2</span><span class="p">))</span>
                 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;exp_r2 = </span><span class="si">{0:.3}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">exp_r2</span><span class="p">))</span>
                 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;RMSE = </span><span class="si">{0:.1f}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">exp_rmse</span><span class="p">))</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">coefs_social</span><span class="p">[</span><span class="s1">&#39;exp_a&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">coefs_social</span><span class="p">[</span><span class="s1">&#39;exp_b&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">b</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">coefs_social</span><span class="p">[</span><span class="s1">&#39;exp_c&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">c</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">coefs_social</span><span class="p">[</span><span class="s1">&#39;exp_gamma0&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gamma0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">coefs_social</span><span class="p">[</span><span class="s1">&#39;exp_gamma1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gamma1</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">coefs_social</span><span class="p">[</span><span class="s1">&#39;exp_gamma2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gamma2</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">coefs_social</span><span class="p">[</span><span class="s1">&#39;exp_r2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">exp_r2</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">coefs_social</span><span class="p">[</span><span class="s1">&#39;exp_rmse&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">exp_rmse</span>
 
@@ -602,8 +607,8 @@
         <span class="n">y</span> <span class="o">=</span> <span class="n">df_data</span><span class="p">[</span><span class="n">col_y</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cost_n_social</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">eonr</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">b2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coefs_grtn</span><span class="p">[</span><span class="s1">&#39;b2&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">n</span>
-            <span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coefs_grtn</span><span class="p">[</span><span class="s1">&#39;b1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">n</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">R</span> <span class="o">=</span> <span class="n">b</span> <span class="o">+</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">b2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">eonr</span><span class="p">)</span>  <span class="c1"># as a starting point</span>
+            <span class="n">b1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coefs_grtn</span><span class="p">[</span><span class="s1">&#39;b1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">n</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">R</span> <span class="o">=</span> <span class="n">b1</span> <span class="o">+</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">b2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">eonr</span><span class="p">)</span>  <span class="c1"># as a starting point</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">update_eonr</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
             <span class="n">guess</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coefs_grtn</span><span class="p">[</span><span class="s1">&#39;b0&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">n</span><span class="p">,</span>
                      <span class="bp">self</span><span class="o">.</span><span class="n">eonr</span><span class="p">,</span>
@@ -613,6 +618,7 @@
             <span class="n">dif</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">popt</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">eonr</span><span class="p">)</span>
             <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="k">while</span> <span class="n">dif</span> <span class="o">&gt;</span> <span class="n">epsilon</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Using the optimize_R() algorithm&#39;</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">count</span> <span class="o">==</span> <span class="mi">10</span><span class="p">:</span>
                     <span class="n">epsilon</span> <span class="o">*=</span> <span class="mi">10</span>
                 <span class="k">elif</span> <span class="n">count</span> <span class="o">&gt;=</span> <span class="mi">100</span><span class="p">:</span>
@@ -689,19 +695,28 @@
         <span class="k">return</span> <span class="n">r2</span><span class="p">,</span> <span class="n">r2_adj</span><span class="p">,</span> <span class="n">ss_res</span><span class="p">,</span> <span class="n">ss_tot</span><span class="p">,</span> <span class="n">rmse</span>
 
     <span class="c1">#  Following are higher level functions</span>
-    <span class="k">def</span> <span class="nf">_build_mrtn_lines</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_steps</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_build_mrtn_lines</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_steps</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Builds the Net Return to N (MRTN) line for plotting</span>
-<span class="sd">        col_n_app    --&gt; column heading for N applied (``str``)</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">        n_steps (``int``): Number of nitrogen rates to be calculated to</span>
+<span class="sd">            represent the GRTN curve (default: None - set dynamically as two</span>
+<span class="sd">            steps per unit N).</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_data</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">x_min</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">col_n_app</span><span class="p">]]</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
         <span class="n">x_max</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">col_n_app</span><span class="p">]]</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">n_steps</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">n_steps</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">x_max</span> <span class="o">-</span> <span class="n">x_min</span><span class="p">)</span><span class="o">*</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">eonr_social_n</span> <span class="o">=</span> <span class="mi">0</span>
 
         <span class="n">x1</span><span class="p">,</span> <span class="n">y_fert_n</span><span class="p">,</span> <span class="n">x1a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_setup_ncost_curve</span><span class="p">(</span><span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span><span class="p">,</span> <span class="n">n_steps</span><span class="p">)</span>
+        <span class="n">eonr_fert_n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eonr</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">cost_n_fert</span>
         <span class="n">y_grtn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_setup_grtn_curve</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x1a</span><span class="p">,</span> <span class="n">n_steps</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cost_n_social</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">y_social_n</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_social_curve</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">fixed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">y_social_n</span><span class="p">,</span> <span class="n">eonr_social_n</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_social_curve</span><span class="p">(</span>
+                    <span class="n">x1</span><span class="p">,</span> <span class="n">fixed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
             <span class="n">rtn</span> <span class="o">=</span> <span class="n">y_grtn</span> <span class="o">-</span> <span class="p">(</span><span class="n">y_fert_n</span> <span class="o">+</span> <span class="n">y_social_n</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">linspace_cost_n_social</span> <span class="o">=</span> <span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">y_social_n</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -712,31 +727,115 @@
                 <span class="n">y_grtn</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">y_grtn</span><span class="p">,</span> <span class="n">y_grtn</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">y_grtn</span> <span class="o">=</span> <span class="n">y_grtn</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">rtn_der</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">rtn</span><span class="p">)),</span> <span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+        <span class="n">rtn_der2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">rtn_der</span><span class="p">)),</span> <span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+        <span class="n">df_linspace</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="n">x1</span><span class="p">,</span>
+                                    <span class="s1">&#39;cost_n_fert&#39;</span><span class="p">:</span> <span class="n">y_fert_n</span><span class="p">,</span>
+                                    <span class="s1">&#39;quad_plat&#39;</span><span class="p">:</span> <span class="n">y_grtn</span><span class="p">,</span>
+                                    <span class="s1">&#39;rtn&#39;</span><span class="p">:</span> <span class="n">rtn</span><span class="p">,</span>
+                                    <span class="s1">&#39;rtn_der&#39;</span><span class="p">:</span> <span class="n">rtn_der</span><span class="p">,</span>
+                                    <span class="s1">&#39;rtn_der2&#39;</span><span class="p">:</span> <span class="n">rtn_der2</span><span class="p">})</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cost_n_social</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">df_linspace</span><span class="p">[</span><span class="s1">&#39;cost_n_social&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">y_social_n</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">df_linspace</span> <span class="o">=</span> <span class="n">df_linspace</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">costs_at_onr</span> <span class="o">=</span> <span class="n">eonr_fert_n</span> <span class="o">+</span> <span class="n">eonr_social_n</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">linspace_cost_n_fert</span> <span class="o">=</span> <span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">y_fert_n</span><span class="p">)</span>  <span class="c1"># N cost</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">linspace_qp</span> <span class="o">=</span> <span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">y_grtn</span><span class="p">)</span>  <span class="c1"># quadratic plateau</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">linspace_rtn</span> <span class="o">=</span> <span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">rtn</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_ci_pdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">run_n</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n_steps</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Calculates the probability density function across all calculatd</span>
+<span class="sd">        confidence interval levels</span>
 
-    <span class="k">def</span> <span class="nf">_build_social_curve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">fixed</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="sd">        Parameters:</span>
+<span class="sd">            run_n (``int``): (default: ``None``)</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="n">run_n</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">df_ci</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_ci</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">df_ci</span><span class="p">[</span><span class="s1">&#39;run_n&#39;</span><span class="p">]</span> <span class="o">==</span>
+                               <span class="bp">self</span><span class="o">.</span><span class="n">df_ci</span><span class="p">[</span><span class="s1">&#39;run_n&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">df_ci</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_ci</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">df_ci</span><span class="p">[</span><span class="s1">&#39;run_n&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">run_n</span><span class="p">]</span>
+        <span class="n">val_min</span> <span class="o">=</span> <span class="n">df_ci</span><span class="p">[</span><span class="n">df_ci</span><span class="p">[</span><span class="s1">&#39;level&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mf">0.99</span><span class="p">][</span><span class="s1">&#39;pl_l&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+        <span class="n">val_max</span> <span class="o">=</span> <span class="n">df_ci</span><span class="p">[</span><span class="n">df_ci</span><span class="p">[</span><span class="s1">&#39;level&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mf">0.99</span><span class="p">][</span><span class="s1">&#39;pl_u&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+        <span class="n">x_all</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">val_min</span><span class="p">,</span> <span class="n">val_max</span><span class="p">,</span> <span class="n">n_steps</span><span class="p">)</span>
+
+        <span class="n">level_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">df_ci</span><span class="p">[</span><span class="s1">&#39;level&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">())</span>
+        <span class="n">weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">x_all</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">level</span> <span class="ow">in</span> <span class="n">level_list</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">level</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">pl_l</span> <span class="o">=</span> <span class="n">df_ci</span><span class="p">[</span><span class="n">df_ci</span><span class="p">[</span><span class="s1">&#39;level&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">level</span><span class="p">][</span><span class="s1">&#39;pl_l&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+                <span class="n">pl_u</span> <span class="o">=</span> <span class="n">df_ci</span><span class="p">[</span><span class="n">df_ci</span><span class="p">[</span><span class="s1">&#39;level&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">level</span><span class="p">][</span><span class="s1">&#39;pl_u&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+                <span class="n">weight_in</span> <span class="o">=</span> <span class="p">(</span><span class="n">level</span><span class="o">*</span><span class="mi">100</span><span class="p">)</span>
+                <span class="n">weight_out</span> <span class="o">=</span> <span class="mi">100</span><span class="o">-</span><span class="n">weight_in</span>  <span class="c1"># 99 because 0 CI is excluded</span>
+<span class="c1">#                idx_l = (np.abs(x_all - pl_l)).argmin()  # find nearest index</span>
+<span class="c1">#                idx_u = (np.abs(x_all - pl_u)).argmin()</span>
+                <span class="n">dif_l</span> <span class="o">=</span> <span class="p">(</span><span class="n">x_all</span> <span class="o">-</span> <span class="n">pl_l</span><span class="p">)</span>  <span class="c1"># find index above</span>
+                <span class="n">dif_u</span> <span class="o">=</span> <span class="p">(</span><span class="n">pl_u</span> <span class="o">-</span> <span class="n">x_all</span><span class="p">)</span>  <span class="c1"># find index below</span>
+                <span class="n">idx_l</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">dif_l</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">,</span> <span class="n">dif_l</span><span class="p">,</span> <span class="n">dif_l</span><span class="o">.</span><span class="n">max</span><span class="p">())</span><span class="o">.</span><span class="n">argmin</span><span class="p">()</span>
+                <span class="n">idx_u</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">dif_u</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">,</span> <span class="n">dif_u</span><span class="p">,</span> <span class="n">dif_u</span><span class="o">.</span><span class="n">max</span><span class="p">())</span><span class="o">.</span><span class="n">argmin</span><span class="p">()</span>
+
+                <span class="n">unit_weight_in</span> <span class="o">=</span> <span class="n">weight_in</span> <span class="o">/</span> <span class="p">(</span><span class="n">idx_u</span> <span class="o">-</span> <span class="n">idx_l</span><span class="p">)</span>
+                <span class="n">unit_weight_out</span> <span class="o">=</span> <span class="n">weight_out</span> <span class="o">/</span> <span class="p">((</span><span class="n">idx_l</span> <span class="o">-</span> <span class="n">x_all</span><span class="o">.</span><span class="n">argmin</span><span class="p">())</span> <span class="o">+</span> <span class="p">(</span><span class="n">n_steps</span> <span class="o">-</span> <span class="n">idx_u</span><span class="p">))</span>
+                <span class="n">weights</span><span class="p">[:</span><span class="n">idx_l</span><span class="p">]</span> <span class="o">+=</span> <span class="n">unit_weight_out</span>  <span class="c1"># add to weights</span>
+                <span class="n">weights</span><span class="p">[</span><span class="n">idx_u</span><span class="p">:]</span> <span class="o">+=</span> <span class="n">unit_weight_out</span>
+                <span class="n">weights</span><span class="p">[</span><span class="n">idx_l</span><span class="p">:</span><span class="n">idx_u</span><span class="p">]</span> <span class="o">+=</span> <span class="n">unit_weight_in</span>
+        <span class="n">df_ci_pdf</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;rate_n&#39;</span><span class="p">:</span> <span class="n">x_all</span><span class="p">,</span>
+                                  <span class="s1">&#39;weights&#39;</span><span class="p">:</span> <span class="n">weights</span><span class="p">})</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">df_ci_pdf</span> <span class="o">=</span> <span class="n">df_ci_pdf</span>
+
+    <span class="k">def</span> <span class="nf">_rtn_derivative</span><span class="p">(</span><span class="bp">self</span><span class="p">,):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Calcuales the first derivative of the return to N curve</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">            run_n (``int``): (default: ``None``)</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">df_ci</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_ci</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">df_ci</span><span class="p">[</span><span class="s1">&#39;run_n&#39;</span><span class="p">]</span> <span class="o">==</span>
+                              <span class="bp">self</span><span class="o">.</span><span class="n">df_ci</span><span class="p">[</span><span class="s1">&#39;run_n&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">pl_l</span> <span class="o">=</span> <span class="n">df_ci</span><span class="p">[</span><span class="n">df_ci</span><span class="p">[</span><span class="s1">&#39;level&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">ci_level</span><span class="p">][</span><span class="s1">&#39;pl_l&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+        <span class="n">pl_u</span> <span class="o">=</span> <span class="n">df_ci</span><span class="p">[</span><span class="n">df_ci</span><span class="p">[</span><span class="s1">&#39;level&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">ci_level</span><span class="p">][</span><span class="s1">&#39;pl_u&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_linspace</span><span class="p">[[</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;rtn_der&#39;</span><span class="p">,</span> <span class="s1">&#39;rtn_der2&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">df_trim</span> <span class="o">=</span> <span class="n">df</span><span class="p">[(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">pl_l</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">pl_u</span><span class="p">)]</span>
+        <span class="n">df_trim</span> <span class="o">=</span> <span class="n">df_trim</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="o">~</span><span class="p">(</span><span class="n">df_trim</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)]</span>
+        <span class="n">der_max</span> <span class="o">=</span> <span class="n">df_trim</span><span class="p">[</span><span class="s1">&#39;rtn_der&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="o">-</span><span class="mi">10</span><span class="p">:]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+        <span class="n">df_trim</span> <span class="o">=</span> <span class="n">df_trim</span><span class="p">[(</span><span class="n">df_trim</span><span class="p">[</span><span class="s1">&#39;rtn_der&#39;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">der_max</span><span class="p">)</span> <span class="o">&amp;</span>
+                          <span class="p">(</span><span class="n">df_trim</span><span class="p">[</span><span class="s1">&#39;rtn_der2&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">0.001</span><span class="p">)]</span>
+        <span class="n">df_der_left</span> <span class="o">=</span> <span class="n">df_trim</span><span class="p">[</span><span class="n">df_trim</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">eonr</span><span class="p">]</span>
+        <span class="n">df_der_right</span> <span class="o">=</span> <span class="n">df_trim</span><span class="p">[</span><span class="n">df_trim</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">eonr</span><span class="p">]</span>
+        <span class="n">slope_coef</span> <span class="o">=</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">df_trim</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">])</span> <span class="o">/</span>
+                      <span class="p">(</span><span class="n">df_trim</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">-</span> <span class="n">df_trim</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()))</span>
+        <span class="n">slope_l</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">linregress</span><span class="p">(</span><span class="n">df_der_left</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">],</span>
+                                               <span class="n">df_der_left</span><span class="p">[</span><span class="s1">&#39;rtn_der&#39;</span><span class="p">])</span>
+        <span class="n">slope_u</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">linregress</span><span class="p">(</span><span class="n">df_der_right</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">],</span>
+                                               <span class="n">df_der_right</span><span class="p">[</span><span class="s1">&#39;rtn_der&#39;</span><span class="p">])</span>
+<span class="c1">#        slope_l, slope_u = abs(slope_l), abs(slope_u)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">coefs_nrtn</span><span class="p">[</span><span class="s1">&#39;der_slope_lower&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">slope_l</span> <span class="o">*</span> <span class="n">slope_coef</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">coefs_nrtn</span><span class="p">[</span><span class="s1">&#39;der_slope_upper&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">slope_u</span> <span class="o">*</span> <span class="n">slope_coef</span>
+
+    <span class="k">def</span> <span class="nf">_build_social_curve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">fixed</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Generates an array for the Social cost of N curve</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">ci_l</span><span class="p">,</span> <span class="n">ci_u</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="n">fixed</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
             <span class="n">y_social_n</span> <span class="o">=</span> <span class="n">x1</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">cost_n_social</span>
+            <span class="n">eonr_social_n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eonr</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">cost_n_social</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">coefs_social</span><span class="p">[</span><span class="s1">&#39;lin_r2&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">coefs_social</span><span class="p">[</span><span class="s1">&#39;exp_r2&#39;</span><span class="p">]:</span>
                 <span class="n">y_social_n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coefs_social</span><span class="p">[</span><span class="s1">&#39;lin_b&#39;</span><span class="p">]</span> <span class="o">+</span>\
                         <span class="p">(</span><span class="n">x1</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">coefs_social</span><span class="p">[</span><span class="s1">&#39;lin_mx&#39;</span><span class="p">])</span>
+                <span class="n">eonr_social_n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coefs_social</span><span class="p">[</span><span class="s1">&#39;lin_b&#39;</span><span class="p">]</span> <span class="o">+</span>\
+                        <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">eonr</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">coefs_social</span><span class="p">[</span><span class="s1">&#39;lin_mx&#39;</span><span class="p">])</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">x1_exp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coefs_social</span><span class="p">[</span><span class="s1">&#39;exp_a&#39;</span><span class="p">]</span> <span class="o">*</span>\
-                        <span class="n">unp</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coefs_social</span><span class="p">[</span><span class="s1">&#39;exp_b&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">x1</span><span class="p">)</span> <span class="o">+</span>\
-                        <span class="bp">self</span><span class="o">.</span><span class="n">coefs_social</span><span class="p">[</span><span class="s1">&#39;exp_c&#39;</span><span class="p">]</span>
+                <span class="n">x1_exp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coefs_social</span><span class="p">[</span><span class="s1">&#39;exp_gamma0&#39;</span><span class="p">]</span> <span class="o">*</span>\
+                        <span class="n">unp</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coefs_social</span><span class="p">[</span><span class="s1">&#39;exp_gamma1&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">x1</span><span class="p">)</span> <span class="o">+</span>\
+                        <span class="bp">self</span><span class="o">.</span><span class="n">coefs_social</span><span class="p">[</span><span class="s1">&#39;exp_gamma2&#39;</span><span class="p">]</span>
                 <span class="n">y_social_n</span> <span class="o">=</span> <span class="n">unp</span><span class="o">.</span><span class="n">nominal_values</span><span class="p">(</span><span class="n">x1_exp</span><span class="p">)</span>
+                <span class="n">eonr_social_n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coefs_social</span><span class="p">[</span><span class="s1">&#39;exp_gamma0&#39;</span><span class="p">]</span> <span class="o">*</span>\
+                        <span class="n">unp</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coefs_social</span><span class="p">[</span><span class="s1">&#39;exp_gamma1&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">eonr</span><span class="p">)</span> <span class="o">+</span>\
+                        <span class="bp">self</span><span class="o">.</span><span class="n">coefs_social</span><span class="p">[</span><span class="s1">&#39;exp_gamma2&#39;</span><span class="p">]</span>
                 <span class="n">std</span> <span class="o">=</span> <span class="n">unp</span><span class="o">.</span><span class="n">std_devs</span><span class="p">(</span><span class="n">x1_exp</span><span class="p">)</span>
                 <span class="n">ci_l</span> <span class="o">=</span> <span class="p">(</span><span class="n">y_social_n</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">std</span><span class="p">)</span>
                 <span class="n">ci_u</span> <span class="o">=</span> <span class="p">(</span><span class="n">y_social_n</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">std</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">y_social_n</span><span class="p">,</span> <span class="n">ci_l</span><span class="p">,</span> <span class="n">ci_u</span>
+        <span class="k">return</span> <span class="n">y_social_n</span><span class="p">,</span> <span class="n">eonr_social_n</span><span class="p">,</span> <span class="n">ci_l</span><span class="p">,</span> <span class="n">ci_u</span>
 
     <span class="k">def</span> <span class="nf">_calc_grtn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="s1">&#39;quad_plateau&#39;</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
@@ -855,6 +954,10 @@
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Prints results of Economic Optimum N Rate calculation</span>
 <span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">df_ci</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_ci</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">df_ci</span><span class="p">[</span><span class="s1">&#39;run_n&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_ci</span><span class="p">[</span><span class="s1">&#39;run_n&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()]</span>
+        <span class="n">fert_l</span> <span class="o">=</span> <span class="n">df_ci</span><span class="p">[</span><span class="n">df_ci</span><span class="p">[</span><span class="s1">&#39;level&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mf">0.5</span><span class="p">][</span><span class="s1">&#39;pl_l&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+        <span class="n">fert_u</span> <span class="o">=</span> <span class="n">df_ci</span><span class="p">[</span><span class="n">df_ci</span><span class="p">[</span><span class="s1">&#39;level&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mf">0.5</span><span class="p">][</span><span class="s1">&#39;pl_u&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+
         <span class="k">try</span><span class="p">:</span>
             <span class="n">pl_l</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_ci_temp</span><span class="p">[</span><span class="s1">&#39;pl_l&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
             <span class="n">pl_u</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_ci_temp</span><span class="p">[</span><span class="s1">&#39;pl_u&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
@@ -867,10 +970,14 @@
             <span class="nb">print</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> optimum N rate (</span><span class="si">{1}</span><span class="s1">): </span><span class="si">{2:.1f}</span><span class="s1"> </span><span class="si">{3}</span><span class="s1"> [</span><span class="si">{4:.1f}</span><span class="s1">, &#39;</span>
               <span class="s1">&#39;</span><span class="si">{5:.1f}</span><span class="s1">] (</span><span class="si">{6:.1f}% c</span><span class="s1">onfidence)&#39;</span>
-              <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">onr_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">onr_acr</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">eonr</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unit_nrate</span><span class="p">,</span> <span class="n">pl_l</span><span class="p">,</span>
-                        <span class="n">pl_u</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ci_level</span><span class="o">*</span><span class="mi">100</span><span class="p">))</span>
+              <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">onr_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">onr_acr</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">eonr</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">unit_nrate</span><span class="p">,</span> <span class="n">pl_l</span><span class="p">,</span> <span class="n">pl_u</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ci_level</span><span class="o">*</span><span class="mi">100</span><span class="p">))</span>
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Maximum return to N (MRTN): </span><span class="si">{0}{1:.2f}</span><span class="s1"> per </span><span class="si">{2}</span><span class="s1">&#39;</span>
               <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">unit_currency</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mrtn</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unit_area</span><span class="p">))</span>
+<span class="c1">#        print(&#39;Acceptable range in recommended fertilizer rate for {0} {1} &#39;</span>
+<span class="c1">#              &#39;{2}: {3:.0f} to {4:.0f} {5}\n&#39;</span>
+<span class="c1">#              &#39;&#39;.format(self.location, self.year, self.time_n, fert_l, fert_u,</span>
+<span class="c1">#                        self.unit_nrate))</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">print_out</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Profile likelihood confidence bounds (90%): [</span><span class="si">{0:.1f}</span><span class="s1">, &#39;</span>
@@ -1105,15 +1212,15 @@
                                     <span class="bp">self</span><span class="o">.</span><span class="n">cost_n_fert</span><span class="p">,</span>
                                     <span class="bp">self</span><span class="o">.</span><span class="n">cost_n_social</span><span class="p">,</span>
                                     <span class="bp">self</span><span class="o">.</span><span class="n">price_ratio</span><span class="p">,</span>
-                                    <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">eonr</span><span class="p">,</span>
-                                    <span class="bp">self</span><span class="o">.</span><span class="n">eonr</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">eonr</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">eonr</span><span class="p">,</span>
+                                    <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
+                                    <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
                                     <span class="s1">&#39;N/A&#39;</span><span class="p">,</span> <span class="s1">&#39;N/A&#39;</span><span class="p">]],</span>
                              <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;location&#39;</span><span class="p">,</span> <span class="s1">&#39;year&#39;</span><span class="p">,</span> <span class="s1">&#39;time_n&#39;</span><span class="p">,</span>
                                       <span class="s1">&#39;price_grain&#39;</span><span class="p">,</span>
                                       <span class="s1">&#39;cost_n_fert&#39;</span><span class="p">,</span> <span class="s1">&#39;cost_n_social&#39;</span><span class="p">,</span>
                                       <span class="s1">&#39;price_ratio&#39;</span><span class="p">,</span> <span class="s1">&#39;f_stat&#39;</span><span class="p">,</span> <span class="s1">&#39;t_stat&#39;</span><span class="p">,</span>
                                       <span class="s1">&#39;level&#39;</span><span class="p">,</span> <span class="s1">&#39;wald_l&#39;</span><span class="p">,</span> <span class="s1">&#39;wald_u&#39;</span><span class="p">,</span>
-                                      <span class="s1">&#39;pl_l&#39;</span><span class="p">,</span> <span class="s1">&#39;pl_u&#39;</span><span class="p">,</span>
+                                      <span class="s1">&#39;pl_l&#39;</span><span class="p">,</span> <span class="s1">&#39;pl_u&#39;</span><span class="p">,</span> <span class="s1">&#39;boot_l&#39;</span><span class="p">,</span> <span class="s1">&#39;boot_u&#39;</span><span class="p">,</span>
                                       <span class="s1">&#39;opt_method_l&#39;</span><span class="p">,</span> <span class="s1">&#39;opt_method_u&#39;</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">df_ci</span>
 
@@ -1172,7 +1279,7 @@
             <span class="c1"># else keep step size the same</span>
         <span class="k">return</span> <span class="n">step_size</span><span class="p">,</span> <span class="n">tau_delta_flag</span>
 
-    <span class="k">def</span> <span class="nf">_compute_bootstrap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">n_samples</span><span class="o">=</span><span class="mi">9999</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_compute_bootstrap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">samples_boot</span><span class="o">=</span><span class="mi">9999</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Uses bootstrapping to estimate EONR based on the sampling distribution</span>
 <span class="sd">        0) Initialize vector x with residuals - mean</span>
@@ -1186,7 +1293,7 @@
         <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_data</span><span class="p">[</span><span class="s1">&#39;grtn&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">boot_ci</span> <span class="o">=</span> <span class="n">bootstrap</span><span class="o">.</span><span class="n">ci</span><span class="p">((</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span> <span class="n">statfunction</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_bs_statfunction</span><span class="p">,</span>
-                                   <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">,</span> <span class="n">n_samples</span><span class="o">=</span><span class="n">n_samples</span><span class="p">,</span>
+                                   <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">,</span> <span class="n">n_samples</span><span class="o">=</span><span class="n">samples_boot</span><span class="p">,</span>
                                    <span class="n">method</span><span class="o">=</span><span class="s1">&#39;bca&#39;</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">alpha</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
@@ -1194,19 +1301,50 @@
                       <span class="s1">&#39;alpha = </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">alpha</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">boot_ci</span>
 
-    <span class="k">def</span> <span class="nf">_compute_cis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">col_x</span><span class="p">,</span> <span class="n">col_y</span><span class="p">,</span> <span class="n">bootstrap_ci</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_compute_cis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">col_x</span><span class="p">,</span> <span class="n">col_y</span><span class="p">,</span> <span class="n">bootstrap_ci</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                     <span class="n">delta_tstat</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">samples_boot</span><span class="o">=</span><span class="mi">9999</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Computes Wald, Profile Likelihood, and Bootstrap confidence intervals.</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">alpha_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha_list</span>
         <span class="n">df_ci</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_df_ci</span><span class="p">()</span>
         <span class="n">cols</span> <span class="o">=</span> <span class="n">df_ci</span><span class="o">.</span><span class="n">columns</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">df_delta_tstat</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># reset from any previous datasets</span>
+
+        <span class="k">if</span> <span class="n">bootstrap_ci</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+<span class="c1">#            df_ci = self._run_bootstrap(df_ci, alpha_list, n_samples=9999)</span>
+            <span class="n">pctle_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_alpha_list</span><span class="p">(</span><span class="n">alpha_list</span><span class="p">)</span>
+            <span class="n">boot_ci</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_bootstrap</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="n">pctle_list</span><span class="p">,</span>
+                                              <span class="n">samples_boot</span><span class="o">=</span><span class="n">samples_boot</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">boot_ci</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">alpha_list</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span><span class="p">))</span>
+<span class="c1">#        else:</span>
+<span class="c1">#            boot_ci = np.insert(boot_ci, [0], [np.nan, np.nan])</span>
+        <span class="k">if</span> <span class="n">boot_ci</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">df_boot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_boot_ci</span><span class="p">(</span><span class="n">boot_ci</span><span class="p">)</span>
+
         <span class="k">for</span> <span class="n">alpha</span> <span class="ow">in</span> <span class="n">alpha_list</span><span class="p">:</span>
-            <span class="n">pl_l</span><span class="p">,</span> <span class="n">pl_u</span><span class="p">,</span> <span class="n">wald_l</span><span class="p">,</span> <span class="n">wald_u</span><span class="p">,</span> <span class="n">opt_method_l</span><span class="p">,</span> <span class="n">opt_method_u</span> <span class="o">=</span>\
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_get_likelihood</span><span class="p">(</span><span class="n">alpha</span><span class="p">,</span> <span class="n">col_x</span><span class="p">,</span> <span class="n">col_y</span><span class="p">,</span> <span class="n">stat</span><span class="o">=</span><span class="s1">&#39;t&#39;</span><span class="p">)</span>
             <span class="n">level</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">alpha</span>
             <span class="n">f_stat</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">alpha</span><span class="p">,</span> <span class="n">dfn</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dfd</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df_data</span><span class="p">)</span><span class="o">-</span><span class="mi">3</span><span class="p">)</span>
             <span class="n">t_stat</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">alpha</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df_data</span><span class="p">)</span><span class="o">-</span><span class="mi">3</span><span class="p">)</span>
+<span class="c1">#            if level == self.ci_level:</span>
+            <span class="n">pl_l</span><span class="p">,</span> <span class="n">pl_u</span><span class="p">,</span> <span class="n">wald_l</span><span class="p">,</span> <span class="n">wald_u</span><span class="p">,</span> <span class="n">opt_method_l</span><span class="p">,</span> <span class="n">opt_method_u</span> <span class="o">=</span>\
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_get_likelihood</span><span class="p">(</span><span class="n">alpha</span><span class="p">,</span> <span class="n">col_x</span><span class="p">,</span> <span class="n">col_y</span><span class="p">,</span> <span class="n">stat</span><span class="o">=</span><span class="s1">&#39;t&#39;</span><span class="p">,</span>
+                                         <span class="n">delta_tstat</span><span class="o">=</span><span class="n">delta_tstat</span><span class="p">)</span>
+<span class="c1">#            else:</span>
+<span class="c1">#                pl_l, pl_u, wald_l, wald_u, opt_method_l, opt_method_u =\</span>
+<span class="c1">#                        self._get_likelihood(alpha, col_x, col_y, stat=&#39;t&#39;,</span>
+<span class="c1">#                                             delta_tstat=False)</span>
+            <span class="k">if</span> <span class="n">bootstrap_ci</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">boot_ci</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">pctle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_alpha_list</span><span class="p">(</span><span class="n">alpha</span><span class="p">)</span>
+                    <span class="n">boot_l</span><span class="p">,</span> <span class="n">boot_u</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_bootstrap</span><span class="p">(</span>
+                            <span class="n">alpha</span><span class="o">=</span><span class="n">pctle</span><span class="p">,</span> <span class="n">samples_boot</span><span class="o">=</span><span class="n">samples_boot</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">boot_l</span> <span class="o">=</span> <span class="n">df_boot</span><span class="p">[</span><span class="n">df_boot</span><span class="p">[</span><span class="s1">&#39;alpha&#39;</span><span class="p">]</span><span class="o">==</span><span class="n">alpha</span><span class="p">][</span><span class="s1">&#39;boot_l&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+                    <span class="n">boot_u</span> <span class="o">=</span> <span class="n">df_boot</span><span class="p">[</span><span class="n">df_boot</span><span class="p">[</span><span class="s1">&#39;alpha&#39;</span><span class="p">]</span><span class="o">==</span><span class="n">alpha</span><span class="p">][</span><span class="s1">&#39;boot_u&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">boot_l</span><span class="p">,</span> <span class="n">boot_u</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
             <span class="n">df_row</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([[</span><span class="bp">self</span><span class="o">.</span><span class="n">df_data</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;location&#39;</span><span class="p">],</span>
                                     <span class="bp">self</span><span class="o">.</span><span class="n">df_data</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;year&#39;</span><span class="p">],</span>
                                     <span class="bp">self</span><span class="o">.</span><span class="n">df_data</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;time_n&#39;</span><span class="p">],</span>
@@ -1216,14 +1354,21 @@
                                     <span class="bp">self</span><span class="o">.</span><span class="n">price_ratio</span><span class="p">,</span>
                                     <span class="n">f_stat</span><span class="p">,</span> <span class="n">t_stat</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span>
                                     <span class="n">wald_l</span><span class="p">,</span> <span class="n">wald_u</span><span class="p">,</span>
-                                    <span class="n">pl_l</span><span class="p">,</span> <span class="n">pl_u</span><span class="p">,</span>
+                                    <span class="n">pl_l</span><span class="p">,</span> <span class="n">pl_u</span><span class="p">,</span> <span class="n">boot_l</span><span class="p">,</span> <span class="n">boot_u</span><span class="p">,</span>
                                     <span class="n">opt_method_l</span><span class="p">,</span> <span class="n">opt_method_u</span><span class="p">]],</span>
                                   <span class="n">columns</span><span class="o">=</span><span class="n">cols</span><span class="p">)</span>
             <span class="n">df_ci</span> <span class="o">=</span> <span class="n">df_ci</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">df_row</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">df_row</span><span class="p">[</span><span class="s1">&#39;level&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">()</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">ci_level</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">df_ci_temp</span> <span class="o">=</span> <span class="n">df_row</span>
-        <span class="k">if</span> <span class="n">bootstrap_ci</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-            <span class="n">df_ci</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_run_bootstrap</span><span class="p">(</span><span class="n">df_ci</span><span class="p">,</span> <span class="n">alpha_list</span><span class="p">,</span> <span class="n">n_samples</span><span class="o">=</span><span class="mi">9999</span><span class="p">)</span>
+
+
+<span class="c1">#            if df_row[&#39;level&#39;].item() == self.ci_level:</span>
+<span class="c1">#                self.df_ci_temp = df_row</span>
+<span class="c1">#        if bootstrap_ci is True:</span>
+<span class="c1">##            df_ci = self._run_bootstrap(df_ci, alpha_list, n_samples=9999)</span>
+<span class="c1">#            pctle_list = self._parse_alpha_list(alpha_list)</span>
+<span class="c1">#            df_boot = self._run_bootstrap(pctle_list, n_samples=9999)</span>
+<span class="c1">#            df_ci = pd.concat([df_ci, df_boot], axis=1)</span>
+
+
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_ci</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">df_ci</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="s1">&#39;run_n&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">df_ci</span> <span class="o">=</span> <span class="n">df_ci</span>
@@ -1298,17 +1443,11 @@
             <span class="n">guess</span> <span class="o">=</span> <span class="p">(</span><span class="mi">600</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.01</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">rerun</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">metric</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
             <span class="n">guess</span> <span class="o">=</span> <span class="p">(</span><span class="mi">900</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.03</span><span class="p">)</span>
-<span class="c1">#        # if rerun is True, use eonr.coefs_grtn[&#39;coef_b&#39;]</span>
-<span class="c1">#        elif rerun is True:</span>
-<span class="c1">#            guess = (0, round(self.coefs_grtn[&#39;coef_b&#39;].n, 0),</span>
-<span class="c1">#                     round(self.coefs_grtn[&#39;coef_c&#39;].n, 0))</span>
-        <span class="k">elif</span> <span class="n">rerun</span> <span class="ow">is</span> <span class="kc">True</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">metric</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
-            <span class="n">guess</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.01</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">rerun</span> <span class="ow">is</span> <span class="kc">True</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">metric</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-            <span class="n">guess</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.03</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;&lt;rerun&gt; and eonr.metric should be set to &#39;</span>
-                             <span class="s1">&#39;True/False.&#39;</span><span class="p">)</span>
+        <span class="c1"># if rerun is True, don&#39;t we already know the beta1 and beta2 params?</span>
+        <span class="k">elif</span> <span class="n">rerun</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">b1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coefs_grtn</span><span class="p">[</span><span class="s1">&#39;b1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">n</span>
+            <span class="n">b2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coefs_grtn</span><span class="p">[</span><span class="s1">&#39;b2&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">n</span>
+            <span class="n">guess</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">b1</span><span class="p">,</span> <span class="n">b2</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">guess</span>
 
     <span class="k">class</span> <span class="nc">_pl_steps_init</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -1478,7 +1617,8 @@
             <span class="k">pass</span>  <span class="c1"># stop trying to compute profile-likelihood</span>
 <span class="c1">#         if CI is moving faster than epsilon</span>
         <span class="k">elif</span> <span class="nb">abs</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;theta&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;theta&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span> <span class="o">&gt;</span> <span class="n">epsilon</span><span class="p">:</span>
-        <span class="c1"># Can&#39;t stop when within x of epsilon because cometimes convergence isn&#39;t reached</span>
+        <span class="c1"># Can&#39;t stop when within x of epsilon because sometimes convergence</span>
+        <span class="c1"># isn&#39;t reached</span>
 <span class="c1">#        elif abs(tau_temp - crit_stat) &gt; epsilon:</span>
             <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
             <span class="c1"># At this point, we could get stuck in a loop if we never make any</span>
@@ -1547,7 +1687,7 @@
         <span class="k">return</span> <span class="n">pl_out</span>
 
     <span class="k">def</span> <span class="nf">_get_likelihood</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">col_x</span><span class="p">,</span> <span class="n">col_y</span><span class="p">,</span> <span class="n">stat</span><span class="o">=</span><span class="s1">&#39;t&#39;</span><span class="p">,</span>
-                        <span class="n">last_ci</span><span class="o">=</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]):</span>
+                        <span class="n">last_ci</span><span class="o">=</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">delta_tstat</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Computes the profile liklihood confidence values using the sum of</span>
 <span class="sd">        squares (see Gallant (1987), p. 107)</span>
@@ -1616,6 +1756,67 @@
                 <span class="n">dif</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="k">return</span> <span class="n">dif</span>
 
+        <span class="k">def</span> <span class="nf">_delta_tstat</span><span class="p">(</span><span class="n">theta2_opt</span><span class="p">,</span> <span class="n">pl_l</span><span class="p">,</span> <span class="n">pl_u</span><span class="p">,</span> <span class="n">alpha</span><span class="p">):</span>
+            <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">            Executes _f_like_opt() for a range of N rates/theta2 values</span>
+<span class="sd">            &#39;&#39;&#39;</span>
+            <span class="k">if</span> <span class="n">pl_l</span> <span class="ow">is</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">:</span>
+                <span class="n">theta2_l</span> <span class="o">=</span> <span class="n">theta2_opt</span><span class="o">-</span><span class="mi">100</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">theta2_l</span> <span class="o">=</span> <span class="n">theta2_opt</span> <span class="o">-</span> <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">theta2_opt</span><span class="o">-</span><span class="n">pl_l</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1.1</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">pl_u</span> <span class="ow">is</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">:</span>
+                <span class="n">theta2_u</span> <span class="o">=</span> <span class="n">theta2_opt</span><span class="o">+</span><span class="mi">100</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">theta2_u</span> <span class="o">=</span> <span class="n">theta2_opt</span> <span class="o">+</span> <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">theta2_opt</span><span class="o">-</span><span class="n">pl_u</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1.1</span><span class="p">)</span>
+            <span class="n">theta2_hats</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">theta2_l</span><span class="p">,</span> <span class="n">theta2_u</span><span class="p">,</span> <span class="mi">400</span><span class="p">)</span>
+            <span class="n">dif_list</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="c1">#            level_list = []</span>
+            <span class="k">for</span> <span class="n">theta2_hat</span> <span class="ow">in</span> <span class="n">theta2_hats</span><span class="p">:</span>
+                <span class="n">dif_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_f_like_opt</span><span class="p">(</span><span class="n">theta2_hat</span><span class="p">))</span>
+<span class="c1">#                level_list.append(1-alpha)</span>
+
+            <span class="n">df_delta_tstat</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;rate_n&#39;</span><span class="p">:</span> <span class="n">theta2_hats</span><span class="p">,</span>
+                                                <span class="s1">&#39;delta_tstat&#39;</span><span class="p">:</span> <span class="n">dif_list</span><span class="p">,</span>
+                                                <span class="s1">&#39;level&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="o">-</span><span class="n">alpha</span><span class="p">})</span>
+            <span class="k">return</span> <span class="n">df_delta_tstat</span>
+
+        <span class="k">def</span> <span class="nf">_check_convergence</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">theta2_opt</span><span class="p">,</span> <span class="n">pl_guess</span><span class="p">,</span> <span class="n">pl_l</span><span class="p">,</span> <span class="n">pl_u</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span>
+                               <span class="n">thresh</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;Nelder-Mead&#39;</span><span class="p">):</span>
+            <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">            Check initial guess to see if delta_tau is close to zero - if not,</span>
+<span class="sd">            redo with another intitial guess.</span>
+
+<span class="sd">            Parameters</span>
+<span class="sd">            thresh (float): tau(theta_2) threshold; anything greater than this</span>
+<span class="sd">                is considered a poor fit, probably due to finding a local</span>
+<span class="sd">                minimum.</span>
+<span class="sd">            &#39;&#39;&#39;</span>
+            <span class="k">if</span> <span class="n">f</span><span class="p">(</span><span class="n">pl_l</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">thresh</span><span class="p">:</span>
+                <span class="n">guess_l</span> <span class="o">=</span> <span class="n">theta2_opt</span> <span class="o">-</span> <span class="p">(</span><span class="n">pl_guess</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+                <span class="n">pl_l_reduced</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">guess_l</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">)</span>
+                <span class="n">guess_l</span> <span class="o">=</span> <span class="n">theta2_opt</span> <span class="o">-</span> <span class="p">(</span><span class="n">pl_guess</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span>
+                <span class="n">pl_l_increased</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">guess_l</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">f</span><span class="p">(</span><span class="n">pl_l_reduced</span><span class="o">.</span><span class="n">x</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">f</span><span class="p">(</span><span class="n">pl_l</span><span class="p">):</span>
+                    <span class="n">pl_l</span> <span class="o">=</span> <span class="n">pl_l_reduced</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">elif</span> <span class="n">f</span><span class="p">(</span><span class="n">pl_l_increased</span><span class="o">.</span><span class="n">x</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">f</span><span class="p">(</span><span class="n">pl_l</span><span class="p">):</span>
+                    <span class="n">pl_l</span> <span class="o">=</span> <span class="n">pl_l_increased</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Lower </span><span class="si">{0:.2f}</span><span class="s1"> profile-likelihood CI may not have &#39;</span>
+                          <span class="s1">&#39;optimized..&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">alpha</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">f</span><span class="p">(</span><span class="n">pl_u</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">thresh</span><span class="p">:</span>
+                <span class="n">guess_u</span> <span class="o">=</span> <span class="n">theta2_opt</span> <span class="o">+</span> <span class="p">(</span><span class="n">pl_guess</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+                <span class="n">pl_u_reduced</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">guess_u</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">)</span>
+                <span class="n">guess_u</span> <span class="o">=</span> <span class="n">theta2_opt</span> <span class="o">+</span> <span class="p">(</span><span class="n">pl_guess</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span>
+                <span class="n">pl_u_increased</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">guess_u</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">f</span><span class="p">(</span><span class="n">pl_u_reduced</span><span class="o">.</span><span class="n">x</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">f</span><span class="p">(</span><span class="n">pl_u</span><span class="p">):</span>
+                    <span class="n">pl_u</span> <span class="o">=</span> <span class="n">pl_u_reduced</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">elif</span> <span class="n">f</span><span class="p">(</span><span class="n">pl_u_increased</span><span class="o">.</span><span class="n">x</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">f</span><span class="p">(</span><span class="n">pl_u</span><span class="p">):</span>
+                    <span class="n">pl_u</span> <span class="o">=</span> <span class="n">pl_u_increased</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Upper </span><span class="si">{0:.2f}</span><span class="s1"> profile-likelihood CI may not have &#39;</span>
+                          <span class="s1">&#39;optimized..&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">alpha</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">pl_l</span><span class="p">,</span> <span class="n">pl_u</span>
+
 <span class="c1">#        popt, pcov = self._curve_fit_opt(self._f_qp_theta2, x, y, p0=guess, maxfev=800, info=info)</span>
         <span class="n">wald_l</span><span class="p">,</span> <span class="n">wald_u</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_wald</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">alpha</span><span class="p">)</span>
         <span class="n">pl_guess</span> <span class="o">=</span> <span class="p">(</span><span class="n">wald_u</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">eonr</span><span class="p">)</span>  <span class="c1"># Adjust +/- init guess based on Wald</span>
@@ -1628,7 +1829,9 @@
                                      <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">,</span> <span class="n">side</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">)</span>
         <span class="n">pl_u</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_run_minimize_pl</span><span class="p">(</span><span class="n">_f_like_opt</span><span class="p">,</span> <span class="n">theta2_opt</span><span class="p">,</span> <span class="n">pl_guess</span><span class="p">,</span>
                                      <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">,</span> <span class="n">side</span><span class="o">=</span><span class="s1">&#39;upper&#39;</span><span class="p">)</span>
-
+        <span class="n">pl_l</span><span class="p">,</span> <span class="n">pl_u</span> <span class="o">=</span> <span class="n">_check_convergence</span><span class="p">(</span><span class="n">_f_like_opt</span><span class="p">,</span> <span class="n">theta2_opt</span><span class="p">,</span> <span class="n">pl_guess</span><span class="p">,</span>
+                                        <span class="n">pl_l</span><span class="p">,</span> <span class="n">pl_u</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">thresh</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+                                        <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">pl_l</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">pl_l</span> <span class="o">+=</span> <span class="n">theta2_bias</span>
         <span class="k">if</span> <span class="n">pl_u</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -1643,6 +1846,12 @@
             <span class="c1">#  add this to theta2_bias for subsequent calculations. It seems</span>
             <span class="c1">#  as if theta2_bias changed from when it was set in coefs_nrtn:</span>
             <span class="c1">#  perhaps it should be recalculated</span>
+        <span class="k">if</span> <span class="n">delta_tstat</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">df_temp</span> <span class="o">=</span> <span class="n">_delta_tstat</span><span class="p">(</span><span class="n">theta2_opt</span><span class="p">,</span> <span class="n">pl_l</span><span class="p">,</span> <span class="n">pl_u</span><span class="p">,</span> <span class="n">alpha</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_delta_tstat</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">df_delta_tstat</span> <span class="o">=</span> <span class="n">df_temp</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">df_delta_tstat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_delta_tstat</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">df_temp</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">pl_l</span><span class="p">,</span> <span class="n">pl_u</span><span class="p">,</span> <span class="n">wald_l</span><span class="p">,</span> <span class="n">wald_u</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">method</span>
 
     <span class="k">def</span> <span class="nf">_handle_no_ci</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1670,13 +1879,13 @@
                                     <span class="bp">self</span><span class="o">.</span><span class="n">price_ratio</span><span class="p">,</span>
                                     <span class="n">f_stat</span><span class="p">,</span> <span class="n">t_stat</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span>
                                     <span class="n">wald_l</span><span class="p">,</span> <span class="n">wald_u</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
-                                    <span class="s1">&#39;N/A&#39;</span><span class="p">,</span> <span class="s1">&#39;N/A&#39;</span><span class="p">]],</span>
+                                    <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="s1">&#39;N/A&#39;</span><span class="p">,</span> <span class="s1">&#39;N/A&#39;</span><span class="p">]],</span>
                                   <span class="n">columns</span><span class="o">=</span><span class="n">df_ci</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
             <span class="n">df_ci</span> <span class="o">=</span> <span class="n">df_ci</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">df_row</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="n">boot_ci</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ci_list</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span><span class="p">))</span>
-        <span class="n">boot_ci</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">eonr</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">eonr</span><span class="p">]</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">boot_ci</span><span class="p">)</span>
-        <span class="n">df_boot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_boot_ci</span><span class="p">(</span><span class="n">boot_ci</span><span class="p">)</span>
-        <span class="n">df_ci</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">df_ci</span><span class="p">,</span> <span class="n">df_boot</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="c1">#        boot_ci = [None] * ((len(self.ci_list) * 2))</span>
+<span class="c1">#        boot_ci = [self.eonr, self.eonr] + list(boot_ci)</span>
+<span class="c1">#        df_boot = self._parse_boot_ci(boot_ci)</span>
+<span class="c1">#        df_ci = pd.concat([df_ci, df_boot], axis=1)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_ci</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">df_ci</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="s1">&#39;run_n&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">df_ci</span> <span class="o">=</span> <span class="n">df_ci</span>
@@ -1685,7 +1894,7 @@
             <span class="n">df_ci</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="s1">&#39;run_n&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">last_run_n</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">df_ci</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_ci</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">df_ci</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">last_run_n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_ci</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:][</span><span class="s1">&#39;run_n&#39;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">df_ci_temp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_ci</span><span class="p">[(</span><span class="bp">self</span><span class="o">.</span><span class="n">df_ci</span><span class="p">[</span><span class="s1">&#39;run_n&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">last_run_n</span><span class="p">)</span> <span class="o">&amp;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">df_ci_last</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_ci</span><span class="p">[(</span><span class="bp">self</span><span class="o">.</span><span class="n">df_ci</span><span class="p">[</span><span class="s1">&#39;run_n&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">last_run_n</span><span class="p">)</span> <span class="o">&amp;</span>
                                      <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df_ci</span><span class="p">[</span><span class="s1">&#39;level&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">ci_level</span><span class="p">)]</span>
 
     <span class="k">def</span> <span class="nf">_modify_poly1d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="n">new_val</span><span class="p">):</span>
@@ -1701,18 +1910,23 @@
             <span class="n">f_new</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">poly1d</span><span class="p">([</span><span class="n">f</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>  <span class="n">f</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">new_val</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">f_new</span>
 
-    <span class="k">def</span> <span class="nf">_parse_alpha_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">alpha_list</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_parse_alpha_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">alpha</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Creates a lower and upper percentile from a list of alpha values. The</span>
 <span class="sd">        lower is (alpha / 2) and upper is (1 - (alpha / 2)). Required for</span>
 <span class="sd">        scikits-bootstrap</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="n">alpha_list_pctle</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">alpha</span> <span class="ow">in</span> <span class="n">alpha_list</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">alpha</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">alpha_pctle</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">alpha</span><span class="p">:</span>
+                <span class="n">pctle_l</span> <span class="o">=</span> <span class="n">item</span> <span class="o">/</span> <span class="mi">2</span>
+                <span class="n">pctle_u</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="n">item</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+                <span class="n">alpha_pctle</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">pctle_l</span><span class="p">,</span> <span class="n">pctle_u</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
             <span class="n">pctle_l</span> <span class="o">=</span> <span class="n">alpha</span> <span class="o">/</span> <span class="mi">2</span>
             <span class="n">pctle_u</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="n">alpha</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
-            <span class="n">alpha_list_pctle</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">pctle_l</span><span class="p">,</span> <span class="n">pctle_u</span><span class="p">])</span>
-        <span class="k">return</span> <span class="n">alpha_list_pctle</span>
+            <span class="n">alpha_pctle</span> <span class="o">=</span> <span class="p">[</span><span class="n">pctle_l</span><span class="p">,</span> <span class="n">pctle_u</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">alpha_pctle</span>
 
     <span class="k">def</span> <span class="nf">_parse_boot_ci</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">boot_ci</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
@@ -1728,29 +1942,30 @@
         <span class="k">for</span> <span class="n">lower</span><span class="p">,</span> <span class="n">upper</span> <span class="ow">in</span> <span class="n">grouped</span><span class="p">(</span><span class="n">boot_ci</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
             <span class="n">boot_l</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lower</span><span class="p">)</span>
             <span class="n">boot_u</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">upper</span><span class="p">)</span>
-        <span class="n">df_boot</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;boot_l&#39;</span><span class="p">:</span> <span class="n">boot_l</span><span class="p">,</span>
+        <span class="n">df_boot</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;alpha&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha_list</span><span class="p">,</span>
+                                <span class="s1">&#39;boot_l&#39;</span><span class="p">:</span> <span class="n">boot_l</span><span class="p">,</span>
                                 <span class="s1">&#39;boot_u&#39;</span><span class="p">:</span> <span class="n">boot_u</span><span class="p">})</span>
         <span class="k">return</span> <span class="n">df_boot</span>
 
-    <span class="k">def</span> <span class="nf">_run_bootstrap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df_ci</span><span class="p">,</span> <span class="n">alpha_list</span><span class="p">,</span> <span class="n">n_samples</span><span class="o">=</span><span class="mi">9999</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Calls the _compute_bootstrap() function.</span>
-<span class="sd">        &#39;&#39;&#39;</span>
-        <span class="n">pctle_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_alpha_list</span><span class="p">(</span><span class="n">alpha_list</span><span class="p">)</span>
-        <span class="n">boot_ci</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_bootstrap</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="n">pctle_list</span><span class="p">,</span>
-                                          <span class="n">n_samples</span><span class="o">=</span><span class="n">n_samples</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">boot_ci</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">boot_ci</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">for</span> <span class="n">pctle</span> <span class="ow">in</span> <span class="n">pctle_list</span><span class="p">:</span>
-                <span class="n">boot_ci_temp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_bootstrap</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="n">pctle</span><span class="p">,</span>
-                                                       <span class="n">n_samples</span><span class="o">=</span><span class="n">n_samples</span><span class="p">)</span>
-                <span class="n">boot_ci</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">boot_ci_temp</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">boot_ci</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">boot_ci</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ci_list</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)</span>
-        <span class="n">boot_ci</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">eonr</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">eonr</span><span class="p">]</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">boot_ci</span><span class="p">)</span>
-        <span class="n">df_boot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_boot_ci</span><span class="p">(</span><span class="n">boot_ci</span><span class="p">)</span>
-        <span class="n">df_ci</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">df_ci</span><span class="p">,</span> <span class="n">df_boot</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">df_ci</span>
+<span class="c1">#    def _run_bootstrap(self, alpha, n_samples=9999):</span>
+<span class="c1">#        &#39;&#39;&#39;</span>
+<span class="c1">#        Calls the _compute_bootstrap() function.</span>
+<span class="c1">#        &#39;&#39;&#39;</span>
+<span class="c1">#        pctle = self._parse_alpha_list(alpha)</span>
+<span class="c1">#        boot_ci = self._compute_bootstrap(alpha=pctle,</span>
+<span class="c1">#                                          n_samples=n_samples)</span>
+<span class="c1">##        if boot_ci is None:</span>
+<span class="c1">##            boot_ci = []</span>
+<span class="c1">##            for item in pctle_list:</span>
+<span class="c1">##                boot_ci_temp = self._compute_bootstrap(alpha=item,</span>
+<span class="c1">##                                                       n_samples=n_samples)</span>
+<span class="c1">##                boot_ci.append(boot_ci_temp)</span>
+<span class="c1">##        if boot_ci is None:</span>
+<span class="c1">##            boot_ci = [None] * ((len(self.ci_list) * 2) + 2)</span>
+<span class="c1">##        boot_ci = [self.eonr, self.eonr] + list(boot_ci)</span>
+<span class="c1">##        df_boot = self._parse_boot_ci(boot_ci)</span>
+<span class="c1">##        df_ci = pd.concat([df_ci, df_boot], axis=1)</span>
+<span class="c1">#        return boot_ci</span>
 
 <div class="viewcode-block" id="EONR.calc_delta"><a class="viewcode-back" href="../../my_eonr.html#eonr.eonr.EONR.calc_delta">[docs]</a>    <span class="k">def</span> <span class="nf">calc_delta</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df_results</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Calculates the change in EONR among economic scenarios</span>
@@ -1797,7 +2012,8 @@
 <div class="viewcode-block" id="EONR.calculate_eonr"><a class="viewcode-back" href="../../my_eonr.html#eonr.eonr.EONR.calculate_eonr">[docs]</a>    <span class="k">def</span> <span class="nf">calculate_eonr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">col_n_app</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">col_yld</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                        <span class="n">col_crop_nup</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">col_n_avail</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                        <span class="n">col_year</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">col_location</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">col_time_n</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                       <span class="n">bootstrap_ci</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+                       <span class="n">bootstrap_ci</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">samples_boot</span><span class="o">=</span><span class="mi">9999</span><span class="p">,</span>
+                       <span class="n">delta_tstat</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Calculates the EONR and its confidence intervals</span>
 
 <span class="sd">        Parameters:</span>
@@ -1823,7 +2039,14 @@
 <span class="sd">                confidence intervals are to be computed. If calculating the</span>
 <span class="sd">                EONR for many sites and/or economic scenarios, it may be</span>
 <span class="sd">                desirable to set to ``False`` because the bootstrap confidence</span>
-<span class="sd">                intervals take the most time to compute (default: True).</span>
+<span class="sd">                intervals take the most time to compute (default: False).</span>
+<span class="sd">            samples_boot (``int``, optional): Number of samples in the</span>
+<span class="sd">                bootstrap computation (default: 9999).</span>
+<span class="sd">            delta_tstat (``bool``, optional): Indicates whether the</span>
+<span class="sd">                difference from the t-statistic will be computed (as a function</span>
+<span class="sd">                of theta2/N rate). May be useful to observe what optimization</span>
+<span class="sd">                method is best suited to reach convergence when computing the</span>
+<span class="sd">                profile-likelihood CIs (default: False).</span>
 
 <span class="sd">        Note:</span>
 <span class="sd">            ``col_n_app`` and ``col_yld`` are required by ``EONR``, but not</span>
@@ -1841,6 +2064,8 @@
 <span class="sd">            optional. They only affect the titles and axes labels of the plots.</span>
 
 <span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;Please set EONR.price_grain &gt; 0.&#39;</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">price_grain</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="n">msg</span>
         <span class="k">if</span> <span class="n">col_n_app</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">col_n_app</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">col_n_app</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">col_yld</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -1868,8 +2093,13 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_compute_residuals</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_compute_cis</span><span class="p">(</span><span class="n">col_x</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">col_n_app</span><span class="p">,</span> <span class="n">col_y</span><span class="o">=</span><span class="s1">&#39;grtn&#39;</span><span class="p">,</span>
-                              <span class="n">bootstrap_ci</span><span class="o">=</span><span class="n">bootstrap_ci</span><span class="p">)</span>
+                              <span class="n">bootstrap_ci</span><span class="o">=</span><span class="n">bootstrap_ci</span><span class="p">,</span>
+                              <span class="n">samples_boot</span><span class="o">=</span><span class="n">samples_boot</span><span class="p">,</span>
+                              <span class="n">delta_tstat</span><span class="o">=</span><span class="n">delta_tstat</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_build_mrtn_lines</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">costs_at_onr</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_rtn_derivative</span><span class="p">()</span>
+<span class="c1">#        self._ci_pdf()</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">print_out</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_print_grtn</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_print_results</span><span class="p">()</span>
@@ -1883,11 +2113,13 @@
         <span class="n">unit_price_grain</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">unit_rtn</span>
         <span class="n">unit_cost_n</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> per </span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">unit_currency</span><span class="p">,</span>
                                            <span class="bp">self</span><span class="o">.</span><span class="n">unit_fert</span><span class="p">)</span>
+        <span class="n">df_ci_level</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_ci</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">df_ci</span><span class="p">[</span><span class="s1">&#39;level&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">ci_level</span><span class="p">]</span>
         <span class="n">results</span> <span class="o">=</span> <span class="p">[[</span><span class="bp">self</span><span class="o">.</span><span class="n">price_grain</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cost_n_fert</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cost_n_social</span><span class="p">,</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">price_ratio</span><span class="p">,</span> <span class="n">unit_price_grain</span><span class="p">,</span> <span class="n">unit_cost_n</span><span class="p">,</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">location</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">year</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_n</span><span class="p">,</span>
                     <span class="n">base_zero</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">eonr</span><span class="p">,</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">coefs_nrtn</span><span class="p">[</span><span class="s1">&#39;eonr_bias&#39;</span><span class="p">],</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">costs_at_onr</span><span class="p">,</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">ci_level</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_ci_temp</span><span class="p">[</span><span class="s1">&#39;wald_l&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">(),</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">df_ci_temp</span><span class="p">[</span><span class="s1">&#39;wald_u&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">(),</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">df_ci_temp</span><span class="p">[</span><span class="s1">&#39;pl_l&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">(),</span>
@@ -1954,6 +2186,37 @@
                                       <span class="n">y_min</span><span class="o">=</span><span class="n">y_min</span><span class="p">,</span> <span class="n">y_max</span><span class="o">=</span><span class="n">y_max</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fig_eonr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plotting_tools</span><span class="o">.</span><span class="n">fig_eonr</span></div>
 
+<div class="viewcode-block" id="EONR.plot_modify_size"><a class="viewcode-back" href="../../my_eonr.html#eonr.eonr.EONR.plot_modify_size">[docs]</a>    <span class="k">def</span> <span class="nf">plot_modify_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fig</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">plotsize_x</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">plotsize_y</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+                         <span class="n">labelsize</span><span class="o">=</span><span class="mi">11</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Modifies the size of the last plot generated</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">            fig (``Matplotlib Figure``, optional): Matplotlib figure to modify</span>
+<span class="sd">                (default: None)</span>
+<span class="sd">            plotsize_x (``float``, optional): Sets x size of plot in inches</span>
+<span class="sd">                (default: 7)</span>
+<span class="sd">            plotsize_y (``float``, optional): Sets y size of plot in inches</span>
+<span class="sd">                (default: 4)</span>
+<span class="sd">            labelsize (``float``, optional): Sets tick and label</span>
+<span class="sd">                (defaulat: 11)</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plotting_tools</span><span class="o">.</span><span class="n">modify_size</span><span class="p">(</span><span class="n">fig</span><span class="o">=</span><span class="n">fig</span><span class="p">,</span> <span class="n">plotsize_x</span><span class="o">=</span><span class="n">plotsize_x</span><span class="p">,</span>
+                                        <span class="n">plotsize_y</span><span class="o">=</span><span class="n">plotsize_y</span><span class="p">,</span>
+                                        <span class="n">labelsize</span><span class="o">=</span><span class="n">labelsize</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="EONR.plot_modify_title"><a class="viewcode-back" href="../../my_eonr.html#eonr.eonr.EONR.plot_modify_title">[docs]</a>    <span class="k">def</span> <span class="nf">plot_modify_title</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title_text</span><span class="p">,</span> <span class="n">g</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">size_font</span><span class="o">=</span><span class="mi">12</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Allows user to replace the title text</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">            title_text (``str``): New title text</span>
+<span class="sd">            g (``matplotlib.figure``): Matplotlib figure object to modify</span>
+<span class="sd">                (default: None)</span>
+<span class="sd">            size_font (``float``): Font size to use (default: 12)</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plotting_tools</span><span class="o">.</span><span class="n">modify_title</span><span class="p">(</span><span class="n">title_text</span><span class="p">,</span> <span class="n">g</span><span class="o">=</span><span class="n">g</span><span class="p">,</span> <span class="n">size_font</span><span class="o">=</span><span class="n">size_font</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="EONR.plot_save"><a class="viewcode-back" href="../../my_eonr.html#eonr.eonr.EONR.plot_save">[docs]</a>    <span class="k">def</span> <span class="nf">plot_save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">base_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fig</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Saves a generated matplotlib figure to file</span>
 
@@ -1970,8 +2233,52 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">plotting_tools</span><span class="o">.</span><span class="n">plot_save</span><span class="p">(</span><span class="n">fname</span><span class="o">=</span><span class="n">fname</span><span class="p">,</span> <span class="n">base_dir</span><span class="o">=</span><span class="n">base_dir</span><span class="p">,</span> <span class="n">fig</span><span class="o">=</span><span class="n">fig</span><span class="p">,</span>
                                       <span class="n">dpi</span><span class="o">=</span><span class="n">dpi</span><span class="p">)</span></div>
 
+<div class="viewcode-block" id="EONR.plot_delta_tstat"><a class="viewcode-back" href="../../my_eonr.html#eonr.eonr.EONR.plot_delta_tstat">[docs]</a>    <span class="k">def</span> <span class="nf">plot_delta_tstat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">level_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s1">&#39;ggplot&#39;</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Plots the test statistic as a function nitrogen rate</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">            level_list (``list``): The confidence levels to plot; should be a</span>
+<span class="sd">                subset of items in EONR.ci_list (default: None).</span>
+<span class="sd">            style (``str``, optional): The style of the plolt; can be any of</span>
+<span class="sd">                the options supported by ``matplotlib``</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">plotting_tools</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">plotting_tools</span> <span class="o">=</span> <span class="n">Plotting_tools</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">plotting_tools</span><span class="o">.</span><span class="n">update_eonr</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plotting_tools</span><span class="o">.</span><span class="n">plot_delta_tstat</span><span class="p">(</span><span class="n">level_list</span><span class="o">=</span><span class="n">level_list</span><span class="p">,</span>
+                                             <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fig_delta_tstat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plotting_tools</span><span class="o">.</span><span class="n">fig_delta_tstat</span></div>
+
+<div class="viewcode-block" id="EONR.plot_derivative"><a class="viewcode-back" href="../../my_eonr.html#eonr.eonr.EONR.plot_derivative">[docs]</a>    <span class="k">def</span> <span class="nf">plot_derivative</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ci_type</span><span class="o">=</span><span class="s1">&#39;profile-likelihood&#39;</span><span class="p">,</span> <span class="n">ci_level</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                        <span class="n">style</span><span class="o">=</span><span class="s1">&#39;ggplot&#39;</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Plots a zoomed up view of the ONR and the derivative</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">            ci_type (str): Indicates which confidence interval type should be</span>
+<span class="sd">                plotted. Options are &#39;wald&#39;, to plot the Wald</span>
+<span class="sd">                CIs; &#39;profile-likelihood&#39;, to plot the profile-likelihood</span>
+<span class="sd">                CIs; or &#39;bootstrap&#39;, to plot the bootstrap CIs (default:</span>
+<span class="sd">                &#39;profile-likelihood&#39;).</span>
+<span class="sd">            ci_level (float): The confidence interval level to be plotted, and</span>
+<span class="sd">                must be one of the values in EONR.ci_list. If None, uses the</span>
+<span class="sd">                EONR.ci_level (default: None).</span>
+<span class="sd">            level (``float``): The confidence levels to plot; should be a</span>
+<span class="sd">                value from EONR.ci_list (default: 0.90).</span>
+<span class="sd">            style (``str``, optional): The style of the plolt; can be any of</span>
+<span class="sd">                the options supported by ``matplotlib``</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">plotting_tools</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">plotting_tools</span> <span class="o">=</span> <span class="n">Plotting_tools</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">plotting_tools</span><span class="o">.</span><span class="n">update_eonr</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plotting_tools</span><span class="o">.</span><span class="n">plot_derivative</span><span class="p">(</span><span class="n">ci_type</span><span class="o">=</span><span class="n">ci_type</span><span class="p">,</span> <span class="n">ci_level</span><span class="o">=</span><span class="n">ci_level</span><span class="p">,</span>
+                                            <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fig_derivative</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plotting_tools</span><span class="o">.</span><span class="n">fig_derivative</span></div>
+
 <div class="viewcode-block" id="EONR.plot_tau"><a class="viewcode-back" href="../../my_eonr.html#eonr.eonr.EONR.plot_tau">[docs]</a>    <span class="k">def</span> <span class="nf">plot_tau</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y_axis</span><span class="o">=</span><span class="s1">&#39;t_stat&#39;</span><span class="p">,</span> <span class="n">emphasis</span><span class="o">=</span><span class="s1">&#39;profile-likelihood&#39;</span><span class="p">,</span>
-                 <span class="n">run_n</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                 <span class="n">run_n</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s1">&#39;ggplot&#39;</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Plots the test statistic as a function nitrogen rate</span>
 
 <span class="sd">        Parameters:</span>
@@ -1988,14 +2295,15 @@
 <span class="sd">            run_n (``int``, optional): The run number to plot, as indicated in</span>
 <span class="sd">                ``EONR.df_ci``; if ``None``, uses the most recent, or maximum,</span>
 <span class="sd">                run_n in ``EONR.df_ci`` (default: None).</span>
-
+<span class="sd">            style (``str``, optional): The style of the plolt; can be any of</span>
+<span class="sd">                the options supported by ``matplotlib``</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">plotting_tools</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">plotting_tools</span> <span class="o">=</span> <span class="n">Plotting_tools</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">plotting_tools</span><span class="o">.</span><span class="n">update_eonr</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">plotting_tools</span><span class="o">.</span><span class="n">plot_tau</span><span class="p">(</span><span class="n">y_axis</span><span class="o">=</span><span class="n">y_axis</span><span class="p">,</span> <span class="n">emphasis</span><span class="o">=</span><span class="n">emphasis</span><span class="p">,</span>
-                                     <span class="n">run_n</span><span class="o">=</span><span class="n">run_n</span><span class="p">)</span>
+                                     <span class="n">run_n</span><span class="o">=</span><span class="n">run_n</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fig_tau</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plotting_tools</span><span class="o">.</span><span class="n">fig_tau</span></div>
 
 <div class="viewcode-block" id="EONR.print_results"><a class="viewcode-back" href="../../my_eonr.html#eonr.eonr.EONR.print_results">[docs]</a>    <span class="k">def</span> <span class="nf">print_results</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

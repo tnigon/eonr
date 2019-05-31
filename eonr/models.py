@@ -136,9 +136,9 @@ class Models(object):
             lin_mx = self.coefs_social['lin_mx']
             social_cost = self.poly(x, c=lin_b, b=lin_mx)
         else:
-            exp_a = self.coefs_social['exp_a']
-            exp_b = self.coefs_social['exp_b']
-            exp_c = self.coefs_social['exp_c']
+            exp_a = self.coefs_social['exp_gamma0']
+            exp_b = self.coefs_social['exp_gamma1']
+            exp_c = self.coefs_social['exp_gamma2']
             social_cost = self.exp(x, a=exp_a, b=exp_b, c=exp_c)
         result = gross_rtn - fert_cost - social_cost
         return -result

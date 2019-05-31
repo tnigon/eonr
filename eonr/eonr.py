@@ -106,7 +106,8 @@ class EONR(object):
         self.cost_n_fert = cost_n_fert
         self.cost_n_social = cost_n_social
         self.price_grain = price_grain
-        self.price_ratio = round((cost_n_fert+cost_n_social) / price_grain, 3)
+        self.price_ratio = ((self.cost_n_fert + self.cost_n_social) /
+                            self.price_grain)
         self.col_n_app = col_n_app
         self.col_yld = col_yld
         self.col_crop_nup = col_crop_nup
@@ -140,14 +141,17 @@ class EONR(object):
 
         self.mrtn = None
         self.eonr = None
+        self.costs_at_onr = None
         self.df_ci = None
+        self.df_ci_pdf = None
+        self.df_delta_tstat = None
+        self.df_der = None
+        self.df_linspace = None
 
+        self.fig_delta_tstat = None
+        self.fig_derivative = None
         self.fig_eonr = None
         self.fig_tau = None
-        self.linspace_cost_n_fert = None
-        self.linspace_cost_n_social = None
-        self.linspace_qp = None
-        self.linspace_rtn = None
         self.df_ci_temp = None
         self.ci_list = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.667, 0.7, 0.8, 0.9,
                         0.95, 0.99]
@@ -158,7 +162,8 @@ class EONR(object):
                                                 'unit_cost_n',
                                                 'location', 'year', 'time_n',
                                                 'base_zero', 'eonr',
-                                                'eonr_bias', 'ci_level',
+                                                'eonr_bias', 'R*',
+                                                'costs_at_onr', 'ci_level',
                                                 'ci_wald_l', 'ci_wald_u',
                                                 'ci_pl_l', 'ci_pl_u',
                                                 'ci_boot_l', 'ci_boot_u',
@@ -364,23 +369,23 @@ class EONR(object):
         if popt is None or np.any(popt == np.inf):
             if self.print_out is True:
                 print("Couldn't fit data to an exponential function..\n")
-            self.coefs_social['exp_a'] = None
-            self.coefs_social['exp_b'] = None
-            self.coefs_social['exp_c'] = None
+            self.coefs_social['exp_gamma0'] = None
+            self.coefs_social['exp_gamma1'] = None
+            self.coefs_social['exp_gamma2'] = None
             self.coefs_social['exp_r2'] = 0
             self.coefs_social['exp_rmse'] = None
         else:
             exp_r2, _, _, _, exp_rmse = self._get_rsq(self.models.exp, x, y,
                                                       popt)
-            a, b, c = popt
+            gamma0, gamma1, gamma2 = popt
             if self.print_out is True:
-                print('y = {0:.5} * exp({1:.5}x) + {2:.5} '.format(a, b, c))
+                print('y = {0:.5} * exp({1:.5}x) + {2:.5} '.format(gamma0, gamma1, gamma2))
                 print('exp_r2 = {0:.3}'.format(exp_r2))
                 print('RMSE = {0:.1f}\n'.format(exp_rmse))
 
-            self.coefs_social['exp_a'] = a
-            self.coefs_social['exp_b'] = b
-            self.coefs_social['exp_c'] = c
+            self.coefs_social['exp_gamma0'] = gamma0
+            self.coefs_social['exp_gamma1'] = gamma1
+            self.coefs_social['exp_gamma2'] = gamma2
             self.coefs_social['exp_r2'] = exp_r2
             self.coefs_social['exp_rmse'] = exp_rmse
 
@@ -490,8 +495,8 @@ class EONR(object):
         y = df_data[col_y].values
         if self.cost_n_social > 0 and self.eonr is not None:
             b2 = self.coefs_grtn['b2'].n
-            b = self.coefs_grtn['b1'].n
-            self.R = b + (2 * b2 * self.eonr)  # as a starting point
+            b1 = self.coefs_grtn['b1'].n
+            self.R = b1 + (2 * b2 * self.eonr)  # as a starting point
             self.models.update_eonr(self)
             guess = (self.coefs_grtn['b0'].n,
                      self.eonr,
@@ -501,6 +506,7 @@ class EONR(object):
             dif = abs(popt[1] - self.eonr)
             count = 0
             while dif > epsilon:
+                print('Using the optimize_R() algorithm')
                 if count == 10:
                     epsilon *= 10
                 elif count >= 100:
@@ -577,19 +583,28 @@ class EONR(object):
         return r2, r2_adj, ss_res, ss_tot, rmse
 
     #  Following are higher level functions
-    def _build_mrtn_lines(self, n_steps=100):
+    def _build_mrtn_lines(self, n_steps=None):
         '''
         Builds the Net Return to N (MRTN) line for plotting
-        col_n_app    --> column heading for N applied (``str``)
+
+        Parameters:
+        n_steps (``int``): Number of nitrogen rates to be calculated to
+            represent the GRTN curve (default: None - set dynamically as two
+            steps per unit N).
         '''
         df = self.df_data.copy()
         x_min = float(df.loc[:, [self.col_n_app]].min(axis=0))
         x_max = float(df.loc[:, [self.col_n_app]].max(axis=0))
+        if n_steps is None:
+            n_steps = int((x_max - x_min)*2)
+        eonr_social_n = 0
 
         x1, y_fert_n, x1a = self._setup_ncost_curve(x_min, x_max, n_steps)
+        eonr_fert_n = self.eonr * self.cost_n_fert
         y_grtn = self._setup_grtn_curve(x1, x1a, n_steps)
         if self.cost_n_social > 0:
-            y_social_n, _, _ = self._build_social_curve(x1, fixed=False)
+            y_social_n, eonr_social_n, _, _ = self._build_social_curve(
+                    x1, fixed=False)
             rtn = y_grtn - (y_fert_n + y_social_n)
             self.linspace_cost_n_social = (x1, y_social_n)
         else:
@@ -600,31 +615,115 @@ class EONR(object):
                 y_grtn = np.append(y_grtn, y_grtn[-1])
             else:
                 y_grtn = y_grtn[:-1]
+        rtn_der = np.insert(abs(np.diff(rtn)), 0, np.nan)
+        rtn_der2 = np.insert(abs(np.diff(rtn_der)), 0, np.nan)
+        df_linspace = pd.DataFrame({'x': x1,
+                                    'cost_n_fert': y_fert_n,
+                                    'quad_plat': y_grtn,
+                                    'rtn': rtn,
+                                    'rtn_der': rtn_der,
+                                    'rtn_der2': rtn_der2})
+        if self.cost_n_social > 0:
+            df_linspace['cost_n_social'] = y_social_n
+        self.df_linspace = df_linspace
+        self.costs_at_onr = eonr_fert_n + eonr_social_n
 
-        self.linspace_cost_n_fert = (x1, y_fert_n)  # N cost
-        self.linspace_qp = (x1, y_grtn)  # quadratic plateau
-        self.linspace_rtn = (x1, rtn)
+    def _ci_pdf(self, run_n=None, n_steps=1000):
+        '''
+        Calculates the probability density function across all calculatd
+        confidence interval levels
 
-    def _build_social_curve(self, x1, fixed=True):
+        Parameters:
+            run_n (``int``): (default: ``None``)
+        '''
+        if run_n is None:
+            df_ci = self.df_ci[self.df_ci['run_n'] ==
+                               self.df_ci['run_n'].max()]
+        else:
+            df_ci = self.df_ci[self.df_ci['run_n'] == run_n]
+        val_min = df_ci[df_ci['level'] == 0.99]['pl_l'].item()
+        val_max = df_ci[df_ci['level'] == 0.99]['pl_u'].item()
+        x_all = np.linspace(val_min, val_max, n_steps)
+
+        level_list = list(df_ci['level'].unique())
+        weights = np.zeros(x_all.shape)
+        for level in level_list:
+            if level != 0:
+                pl_l = df_ci[df_ci['level'] == level]['pl_l'].item()
+                pl_u = df_ci[df_ci['level'] == level]['pl_u'].item()
+                weight_in = (level*100)
+                weight_out = 100-weight_in  # 99 because 0 CI is excluded
+#                idx_l = (np.abs(x_all - pl_l)).argmin()  # find nearest index
+#                idx_u = (np.abs(x_all - pl_u)).argmin()
+                dif_l = (x_all - pl_l)  # find index above
+                dif_u = (pl_u - x_all)  # find index below
+                idx_l = np.where(dif_l>0, dif_l, dif_l.max()).argmin()
+                idx_u = np.where(dif_u>0, dif_u, dif_u.max()).argmin()
+
+                unit_weight_in = weight_in / (idx_u - idx_l)
+                unit_weight_out = weight_out / ((idx_l - x_all.argmin()) + (n_steps - idx_u))
+                weights[:idx_l] += unit_weight_out  # add to weights
+                weights[idx_u:] += unit_weight_out
+                weights[idx_l:idx_u] += unit_weight_in
+        df_ci_pdf = pd.DataFrame({'rate_n': x_all,
+                                  'weights': weights})
+        self.df_ci_pdf = df_ci_pdf
+
+    def _rtn_derivative(self,):
+        '''
+        Calcuales the first derivative of the return to N curve
+
+        Parameters:
+            run_n (``int``): (default: ``None``)
+        '''
+        df_ci = self.df_ci[self.df_ci['run_n'] ==
+                              self.df_ci['run_n'].max()].copy()
+        pl_l = df_ci[df_ci['level'] == self.ci_level]['pl_l'].item()
+        pl_u = df_ci[df_ci['level'] == self.ci_level]['pl_u'].item()
+        df = self.df_linspace[['x', 'rtn_der', 'rtn_der2']].copy()
+        df_trim = df[(df['x'] >= pl_l) & (df['x'] <= pl_u)]
+        df_trim = df_trim.loc[~(df_trim == 0).any(axis=1)]
+        der_max = df_trim['rtn_der'].iloc[-10:].max()
+        df_trim = df_trim[(df_trim['rtn_der'] <= der_max) &
+                          (df_trim['rtn_der2'] > 0.001)]
+        df_der_left = df_trim[df_trim['x'] < self.eonr]
+        df_der_right = df_trim[df_trim['x'] > self.eonr]
+        slope_coef = (len(df_trim['x']) /
+                      (df_trim['x'].max() - df_trim['x'].min()))
+        slope_l, _, _, _, _ = stats.linregress(df_der_left['x'],
+                                               df_der_left['rtn_der'])
+        slope_u, _, _, _, _ = stats.linregress(df_der_right['x'],
+                                               df_der_right['rtn_der'])
+#        slope_l, slope_u = abs(slope_l), abs(slope_u)
+        self.coefs_nrtn['der_slope_lower'] = slope_l * slope_coef
+        self.coefs_nrtn['der_slope_upper'] = slope_u * slope_coef
+
+    def _build_social_curve(self, x1, fixed=False):
         '''
         Generates an array for the Social cost of N curve
         '''
         ci_l, ci_u = None, None
         if fixed is True:
             y_social_n = x1 * self.cost_n_social
+            eonr_social_n = self.eonr * self.cost_n_social
         else:
             if self.coefs_social['lin_r2'] > self.coefs_social['exp_r2']:
                 y_social_n = self.coefs_social['lin_b'] +\
                         (x1 * self.coefs_social['lin_mx'])
+                eonr_social_n = self.coefs_social['lin_b'] +\
+                        (self.eonr * self.coefs_social['lin_mx'])
             else:
-                x1_exp = self.coefs_social['exp_a'] *\
-                        unp.exp(self.coefs_social['exp_b'] * x1) +\
-                        self.coefs_social['exp_c']
+                x1_exp = self.coefs_social['exp_gamma0'] *\
+                        unp.exp(self.coefs_social['exp_gamma1'] * x1) +\
+                        self.coefs_social['exp_gamma2']
                 y_social_n = unp.nominal_values(x1_exp)
+                eonr_social_n = self.coefs_social['exp_gamma0'] *\
+                        unp.exp(self.coefs_social['exp_gamma1'] * self.eonr) +\
+                        self.coefs_social['exp_gamma2']
                 std = unp.std_devs(x1_exp)
                 ci_l = (y_social_n - 2 * std)
                 ci_u = (y_social_n - 2 * std)
-        return y_social_n, ci_l, ci_u
+        return y_social_n, eonr_social_n, ci_l, ci_u
 
     def _calc_grtn(self, model='quad_plateau'):
         '''
@@ -743,6 +842,10 @@ class EONR(object):
         '''
         Prints results of Economic Optimum N Rate calculation
         '''
+        df_ci = self.df_ci[self.df_ci['run_n'] == self.df_ci['run_n'].max()]
+        fert_l = df_ci[df_ci['level'] == 0.5]['pl_l'].item()
+        fert_u = df_ci[df_ci['level'] == 0.5]['pl_u'].item()
+
         try:
             pl_l = self.df_ci_temp['pl_l'].item()
             pl_u = self.df_ci_temp['pl_u'].item()
@@ -755,10 +858,14 @@ class EONR(object):
             print(err)
         print('{0} optimum N rate ({1}): {2:.1f} {3} [{4:.1f}, '
               '{5:.1f}] ({6:.1f}% confidence)'
-              ''.format(self.onr_name, self.onr_acr, self.eonr, self.unit_nrate, pl_l,
-                        pl_u, self.ci_level*100))
+              ''.format(self.onr_name, self.onr_acr, self.eonr,
+                        self.unit_nrate, pl_l, pl_u, self.ci_level*100))
         print('Maximum return to N (MRTN): {0}{1:.2f} per {2}'
               ''.format(self.unit_currency, self.mrtn, self.unit_area))
+#        print('Acceptable range in recommended fertilizer rate for {0} {1} '
+#              '{2}: {3:.0f} to {4:.0f} {5}\n'
+#              ''.format(self.location, self.year, self.time_n, fert_l, fert_u,
+#                        self.unit_nrate))
 
         if self.print_out is True:
             print('Profile likelihood confidence bounds (90%): [{0:.1f}, '
@@ -993,15 +1100,15 @@ class EONR(object):
                                     self.cost_n_fert,
                                     self.cost_n_social,
                                     self.price_ratio,
-                                    0, 0, 0, self.eonr,
-                                    self.eonr, self.eonr, self.eonr,
+                                    0, 0, 0, np.nan, np.nan, np.nan, np.nan,
+                                    np.nan, np.nan,
                                     'N/A', 'N/A']],
                              columns=['location', 'year', 'time_n',
                                       'price_grain',
                                       'cost_n_fert', 'cost_n_social',
                                       'price_ratio', 'f_stat', 't_stat',
                                       'level', 'wald_l', 'wald_u',
-                                      'pl_l', 'pl_u',
+                                      'pl_l', 'pl_u', 'boot_l', 'boot_u',
                                       'opt_method_l', 'opt_method_u'])
         return df_ci
 
@@ -1060,7 +1167,7 @@ class EONR(object):
             # else keep step size the same
         return step_size, tau_delta_flag
 
-    def _compute_bootstrap(self, alpha=0.1, n_samples=9999):
+    def _compute_bootstrap(self, alpha=0.1, samples_boot=9999):
         '''
         Uses bootstrapping to estimate EONR based on the sampling distribution
         0) Initialize vector x with residuals - mean
@@ -1074,7 +1181,7 @@ class EONR(object):
         y = self.df_data['grtn'].values
         try:
             boot_ci = bootstrap.ci((x, y), statfunction=self._bs_statfunction,
-                                   alpha=alpha, n_samples=n_samples,
+                                   alpha=alpha, n_samples=samples_boot,
                                    method='bca')
         except TypeError:
             if not isinstance(alpha, list):
@@ -1082,19 +1189,50 @@ class EONR(object):
                       'alpha = {0}'.format(alpha))
         return boot_ci
 
-    def _compute_cis(self, col_x, col_y, bootstrap_ci=True):
+    def _compute_cis(self, col_x, col_y, bootstrap_ci=True,
+                     delta_tstat=False, samples_boot=9999):
         '''
         Computes Wald, Profile Likelihood, and Bootstrap confidence intervals.
         '''
         alpha_list = self.alpha_list
         df_ci = self._build_df_ci()
         cols = df_ci.columns
+        self.df_delta_tstat = None  # reset from any previous datasets
+
+        if bootstrap_ci is True:
+#            df_ci = self._run_bootstrap(df_ci, alpha_list, n_samples=9999)
+            pctle_list = self._parse_alpha_list(alpha_list)
+            boot_ci = self._compute_bootstrap(alpha=pctle_list,
+                                              samples_boot=samples_boot)
+        else:
+            boot_ci = [None] * ((len(self.alpha_list) * 2))
+#        else:
+#            boot_ci = np.insert(boot_ci, [0], [np.nan, np.nan])
+        if boot_ci is not None:
+            df_boot = self._parse_boot_ci(boot_ci)
+
         for alpha in alpha_list:
-            pl_l, pl_u, wald_l, wald_u, opt_method_l, opt_method_u =\
-                    self._get_likelihood(alpha, col_x, col_y, stat='t')
             level = 1 - alpha
             f_stat = stats.f.ppf(1-alpha, dfn=1, dfd=len(self.df_data)-3)
             t_stat = stats.t.ppf(1-alpha/2, len(self.df_data)-3)
+#            if level == self.ci_level:
+            pl_l, pl_u, wald_l, wald_u, opt_method_l, opt_method_u =\
+                    self._get_likelihood(alpha, col_x, col_y, stat='t',
+                                         delta_tstat=delta_tstat)
+#            else:
+#                pl_l, pl_u, wald_l, wald_u, opt_method_l, opt_method_u =\
+#                        self._get_likelihood(alpha, col_x, col_y, stat='t',
+#                                             delta_tstat=False)
+            if bootstrap_ci is True:
+                if boot_ci is None:
+                    pctle = self._parse_alpha_list(alpha)
+                    boot_l, boot_u = self._compute_bootstrap(
+                            alpha=pctle, samples_boot=samples_boot)
+                else:
+                    boot_l = df_boot[df_boot['alpha']==alpha]['boot_l'].item()
+                    boot_u = df_boot[df_boot['alpha']==alpha]['boot_u'].item()
+            else:
+                boot_l, boot_u = np.nan, np.nan
             df_row = pd.DataFrame([[self.df_data.iloc[0]['location'],
                                     self.df_data.iloc[0]['year'],
                                     self.df_data.iloc[0]['time_n'],
@@ -1104,14 +1242,21 @@ class EONR(object):
                                     self.price_ratio,
                                     f_stat, t_stat, level,
                                     wald_l, wald_u,
-                                    pl_l, pl_u,
+                                    pl_l, pl_u, boot_l, boot_u,
                                     opt_method_l, opt_method_u]],
                                   columns=cols)
             df_ci = df_ci.append(df_row, ignore_index=True)
-            if df_row['level'].item() == self.ci_level:
-                self.df_ci_temp = df_row
-        if bootstrap_ci is True:
-            df_ci = self._run_bootstrap(df_ci, alpha_list, n_samples=9999)
+
+
+#            if df_row['level'].item() == self.ci_level:
+#                self.df_ci_temp = df_row
+#        if bootstrap_ci is True:
+##            df_ci = self._run_bootstrap(df_ci, alpha_list, n_samples=9999)
+#            pctle_list = self._parse_alpha_list(alpha_list)
+#            df_boot = self._run_bootstrap(pctle_list, n_samples=9999)
+#            df_ci = pd.concat([df_ci, df_boot], axis=1)
+
+
         if self.df_ci is None:
             df_ci.insert(loc=0, column='run_n', value=1)
             self.df_ci = df_ci
@@ -1186,17 +1331,11 @@ class EONR(object):
             guess = (600, 3, -0.01)
         elif rerun is False and self.metric is True:
             guess = (900, 10, -0.03)
-#        # if rerun is True, use eonr.coefs_grtn['coef_b']
-#        elif rerun is True:
-#            guess = (0, round(self.coefs_grtn['coef_b'].n, 0),
-#                     round(self.coefs_grtn['coef_c'].n, 0))
-        elif rerun is True and self.metric is False:
-            guess = (0, 3, -0.01)
-        elif rerun is True and self.metric is True:
-            guess = (0, 10, -0.03)
-        else:
-            raise ValueError('<rerun> and eonr.metric should be set to '
-                             'True/False.')
+        # if rerun is True, don't we already know the beta1 and beta2 params?
+        elif rerun is True:
+            b1 = self.coefs_grtn['b1'].n
+            b2 = self.coefs_grtn['b2'].n
+            guess = (0, b1, b2)
         return guess
 
     class _pl_steps_init(object):
@@ -1366,7 +1505,8 @@ class EONR(object):
             pass  # stop trying to compute profile-likelihood
 #         if CI is moving faster than epsilon
         elif abs(df['theta'].iloc[-1] - df['theta'].iloc[-2]) > epsilon:
-        # Can't stop when within x of epsilon because cometimes convergence isn't reached
+        # Can't stop when within x of epsilon because sometimes convergence
+        # isn't reached
 #        elif abs(tau_temp - crit_stat) > epsilon:
             df = df[:-1]
             # At this point, we could get stuck in a loop if we never make any
@@ -1435,7 +1575,7 @@ class EONR(object):
         return pl_out
 
     def _get_likelihood(self, alpha, col_x, col_y, stat='t',
-                        last_ci=[None, None]):
+                        last_ci=[None, None], delta_tstat=False):
         '''
         Computes the profile liklihood confidence values using the sum of
         squares (see Gallant (1987), p. 107)
@@ -1504,6 +1644,67 @@ class EONR(object):
                 dif = None
             return dif
 
+        def _delta_tstat(theta2_opt, pl_l, pl_u, alpha):
+            '''
+            Executes _f_like_opt() for a range of N rates/theta2 values
+            '''
+            if pl_l is np.nan:
+                theta2_l = theta2_opt-100
+            else:
+                theta2_l = theta2_opt - (abs(theta2_opt-pl_l) * 1.1)
+            if pl_u is np.nan:
+                theta2_u = theta2_opt+100
+            else:
+                theta2_u = theta2_opt + (abs(theta2_opt-pl_u) * 1.1)
+            theta2_hats = np.linspace(theta2_l, theta2_u, 400)
+            dif_list = []
+#            level_list = []
+            for theta2_hat in theta2_hats:
+                dif_list.append(_f_like_opt(theta2_hat))
+#                level_list.append(1-alpha)
+
+            df_delta_tstat = pd.DataFrame(data={'rate_n': theta2_hats,
+                                                'delta_tstat': dif_list,
+                                                'level': 1-alpha})
+            return df_delta_tstat
+
+        def _check_convergence(f, theta2_opt, pl_guess, pl_l, pl_u, alpha,
+                               thresh=0.5, method='Nelder-Mead'):
+            '''
+            Check initial guess to see if delta_tau is close to zero - if not,
+            redo with another intitial guess.
+
+            Parameters
+            thresh (float): tau(theta_2) threshold; anything greater than this
+                is considered a poor fit, probably due to finding a local
+                minimum.
+            '''
+            if f(pl_l) > thresh:
+                guess_l = theta2_opt - (pl_guess / 2)
+                pl_l_reduced = minimize(f, guess_l, method=method)
+                guess_l = theta2_opt - (pl_guess * 2)
+                pl_l_increased = minimize(f, guess_l, method=method)
+                if f(pl_l_reduced.x) < f(pl_l):
+                    pl_l = pl_l_reduced.x[0]
+                elif f(pl_l_increased.x) < f(pl_l):
+                    pl_l = pl_l_increased.x[0]
+                else:
+                    print('\nLower {0:.2f} profile-likelihood CI may not have '
+                          'optimized..'.format(alpha))
+            if f(pl_u) > thresh:
+                guess_u = theta2_opt + (pl_guess / 2)
+                pl_u_reduced = minimize(f, guess_u, method=method)
+                guess_u = theta2_opt + (pl_guess * 2)
+                pl_u_increased = minimize(f, guess_u, method=method)
+                if f(pl_u_reduced.x) < f(pl_u):
+                    pl_u = pl_u_reduced.x[0]
+                elif f(pl_u_increased.x) < f(pl_u):
+                    pl_u = pl_u_increased.x[0]
+                else:
+                    print('\nUpper {0:.2f} profile-likelihood CI may not have '
+                          'optimized..'.format(alpha))
+            return pl_l, pl_u
+
 #        popt, pcov = self._curve_fit_opt(self._f_qp_theta2, x, y, p0=guess, maxfev=800, info=info)
         wald_l, wald_u = self._compute_wald(n, p, alpha)
         pl_guess = (wald_u - self.eonr)  # Adjust +/- init guess based on Wald
@@ -1516,7 +1717,9 @@ class EONR(object):
                                      method=method, side='lower')
         pl_u = self._run_minimize_pl(_f_like_opt, theta2_opt, pl_guess,
                                      method=method, side='upper')
-
+        pl_l, pl_u = _check_convergence(_f_like_opt, theta2_opt, pl_guess,
+                                        pl_l, pl_u, alpha, thresh=0.5,
+                                        method=method)
         if pl_l is not None:
             pl_l += theta2_bias
         if pl_u is not None:
@@ -1531,6 +1734,12 @@ class EONR(object):
             #  add this to theta2_bias for subsequent calculations. It seems
             #  as if theta2_bias changed from when it was set in coefs_nrtn:
             #  perhaps it should be recalculated
+        if delta_tstat is True:
+            df_temp = _delta_tstat(theta2_opt, pl_l, pl_u, alpha)
+            if self.df_delta_tstat is None:
+                self.df_delta_tstat = df_temp
+            else:
+                self.df_delta_tstat = self.df_delta_tstat.append(df_temp)
         return pl_l, pl_u, wald_l, wald_u, method, method
 
     def _handle_no_ci(self):
@@ -1558,13 +1767,13 @@ class EONR(object):
                                     self.price_ratio,
                                     f_stat, t_stat, level,
                                     wald_l, wald_u, np.nan, np.nan,
-                                    'N/A', 'N/A']],
+                                    np.nan, np.nan, 'N/A', 'N/A']],
                                   columns=df_ci.columns)
             df_ci = df_ci.append(df_row, ignore_index=True)
-        boot_ci = [None] * ((len(self.ci_list) * 2))
-        boot_ci = [self.eonr, self.eonr] + list(boot_ci)
-        df_boot = self._parse_boot_ci(boot_ci)
-        df_ci = pd.concat([df_ci, df_boot], axis=1)
+#        boot_ci = [None] * ((len(self.ci_list) * 2))
+#        boot_ci = [self.eonr, self.eonr] + list(boot_ci)
+#        df_boot = self._parse_boot_ci(boot_ci)
+#        df_ci = pd.concat([df_ci, df_boot], axis=1)
         if self.df_ci is None:
             df_ci.insert(loc=0, column='run_n', value=1)
             self.df_ci = df_ci
@@ -1573,7 +1782,7 @@ class EONR(object):
             df_ci.insert(loc=0, column='run_n', value=last_run_n+1)
             self.df_ci = self.df_ci.append(df_ci, ignore_index=True)
         last_run_n = self.df_ci.iloc[-1, :]['run_n']
-        self.df_ci_temp = self.df_ci[(self.df_ci['run_n'] == last_run_n) &
+        self.df_ci_last = self.df_ci[(self.df_ci['run_n'] == last_run_n) &
                                      (self.df_ci['level'] == self.ci_level)]
 
     def _modify_poly1d(self, f, idx, new_val):
@@ -1589,18 +1798,23 @@ class EONR(object):
             f_new = np.poly1d([f[2],  f[1], new_val])
         return f_new
 
-    def _parse_alpha_list(self, alpha_list):
+    def _parse_alpha_list(self, alpha):
         '''
         Creates a lower and upper percentile from a list of alpha values. The
         lower is (alpha / 2) and upper is (1 - (alpha / 2)). Required for
         scikits-bootstrap
         '''
-        alpha_list_pctle = []
-        for alpha in alpha_list:
+        if isinstance(alpha, list):
+            alpha_pctle = []
+            for item in alpha:
+                pctle_l = item / 2
+                pctle_u = 1 - (item / 2)
+                alpha_pctle.extend([pctle_l, pctle_u])
+        else:
             pctle_l = alpha / 2
             pctle_u = 1 - (alpha / 2)
-            alpha_list_pctle.extend([pctle_l, pctle_u])
-        return alpha_list_pctle
+            alpha_pctle = [pctle_l, pctle_u]
+        return alpha_pctle
 
     def _parse_boot_ci(self, boot_ci):
         '''
@@ -1616,29 +1830,30 @@ class EONR(object):
         for lower, upper in grouped(boot_ci, 2):
             boot_l.append(lower)
             boot_u.append(upper)
-        df_boot = pd.DataFrame({'boot_l': boot_l,
+        df_boot = pd.DataFrame({'alpha': self.alpha_list,
+                                'boot_l': boot_l,
                                 'boot_u': boot_u})
         return df_boot
 
-    def _run_bootstrap(self, df_ci, alpha_list, n_samples=9999):
-        '''
-        Calls the _compute_bootstrap() function.
-        '''
-        pctle_list = self._parse_alpha_list(alpha_list)
-        boot_ci = self._compute_bootstrap(alpha=pctle_list,
-                                          n_samples=n_samples)
-        if boot_ci is None:
-            boot_ci = []
-            for pctle in pctle_list:
-                boot_ci_temp = self._compute_bootstrap(alpha=pctle,
-                                                       n_samples=n_samples)
-                boot_ci.append(boot_ci_temp)
-        if boot_ci is None:
-            boot_ci = [None] * ((len(self.ci_list) * 2) + 2)
-        boot_ci = [self.eonr, self.eonr] + list(boot_ci)
-        df_boot = self._parse_boot_ci(boot_ci)
-        df_ci = pd.concat([df_ci, df_boot], axis=1)
-        return df_ci
+#    def _run_bootstrap(self, alpha, n_samples=9999):
+#        '''
+#        Calls the _compute_bootstrap() function.
+#        '''
+#        pctle = self._parse_alpha_list(alpha)
+#        boot_ci = self._compute_bootstrap(alpha=pctle,
+#                                          n_samples=n_samples)
+##        if boot_ci is None:
+##            boot_ci = []
+##            for item in pctle_list:
+##                boot_ci_temp = self._compute_bootstrap(alpha=item,
+##                                                       n_samples=n_samples)
+##                boot_ci.append(boot_ci_temp)
+##        if boot_ci is None:
+##            boot_ci = [None] * ((len(self.ci_list) * 2) + 2)
+##        boot_ci = [self.eonr, self.eonr] + list(boot_ci)
+##        df_boot = self._parse_boot_ci(boot_ci)
+##        df_ci = pd.concat([df_ci, df_boot], axis=1)
+#        return boot_ci
 
     def calc_delta(self, df_results=None):
         '''Calculates the change in EONR among economic scenarios
@@ -1685,7 +1900,8 @@ class EONR(object):
     def calculate_eonr(self, df, col_n_app=None, col_yld=None,
                        col_crop_nup=None, col_n_avail=None,
                        col_year=None, col_location=None, col_time_n=None,
-                       bootstrap_ci=True):
+                       bootstrap_ci=False, samples_boot=9999,
+                       delta_tstat=False):
         '''Calculates the EONR and its confidence intervals
 
         Parameters:
@@ -1711,7 +1927,14 @@ class EONR(object):
                 confidence intervals are to be computed. If calculating the
                 EONR for many sites and/or economic scenarios, it may be
                 desirable to set to ``False`` because the bootstrap confidence
-                intervals take the most time to compute (default: True).
+                intervals take the most time to compute (default: False).
+            samples_boot (``int``, optional): Number of samples in the
+                bootstrap computation (default: 9999).
+            delta_tstat (``bool``, optional): Indicates whether the
+                difference from the t-statistic will be computed (as a function
+                of theta2/N rate). May be useful to observe what optimization
+                method is best suited to reach convergence when computing the
+                profile-likelihood CIs (default: False).
 
         Note:
             ``col_n_app`` and ``col_yld`` are required by ``EONR``, but not
@@ -1729,6 +1952,8 @@ class EONR(object):
             optional. They only affect the titles and axes labels of the plots.
 
         '''
+        msg = ('Please set EONR.price_grain > 0.')
+        assert self.price_grain > 0, msg
         if col_n_app is not None:
             self.col_n_app = str(col_n_app)
         if col_yld is not None:
@@ -1756,8 +1981,13 @@ class EONR(object):
         else:
             self._compute_residuals()
             self._compute_cis(col_x=self.col_n_app, col_y='grtn',
-                              bootstrap_ci=bootstrap_ci)
+                              bootstrap_ci=bootstrap_ci,
+                              samples_boot=samples_boot,
+                              delta_tstat=delta_tstat)
         self._build_mrtn_lines()
+        if self.costs_at_onr != 0:
+            self._rtn_derivative()
+#        self._ci_pdf()
         if self.print_out is True:
             self._print_grtn()
         self._print_results()
@@ -1771,11 +2001,13 @@ class EONR(object):
         unit_price_grain = self.unit_rtn
         unit_cost_n = '{0} per {1}'.format(self.unit_currency,
                                            self.unit_fert)
+        df_ci_level = self.df_ci[self.df_ci['level'] == self.ci_level]
         results = [[self.price_grain, self.cost_n_fert, self.cost_n_social,
                     self.price_ratio, unit_price_grain, unit_cost_n,
                     self.location, self.year, self.time_n,
                     base_zero, self.eonr,
                     self.coefs_nrtn['eonr_bias'],
+                    self.R, self.costs_at_onr,
                     self.ci_level, self.df_ci_temp['wald_l'].item(),
                     self.df_ci_temp['wald_u'].item(),
                     self.df_ci_temp['pl_l'].item(),
@@ -1842,6 +2074,37 @@ class EONR(object):
                                       y_min=y_min, y_max=y_max, style=style)
         self.fig_eonr = self.plotting_tools.fig_eonr
 
+    def plot_modify_size(self, fig=None, plotsize_x=7, plotsize_y=4,
+                         labelsize=11):
+        '''
+        Modifies the size of the last plot generated
+
+        Parameters:
+            fig (``Matplotlib Figure``, optional): Matplotlib figure to modify
+                (default: None)
+            plotsize_x (``float``, optional): Sets x size of plot in inches
+                (default: 7)
+            plotsize_y (``float``, optional): Sets y size of plot in inches
+                (default: 4)
+            labelsize (``float``, optional): Sets tick and label
+                (defaulat: 11)
+        '''
+        self.plotting_tools.modify_size(fig=fig, plotsize_x=plotsize_x,
+                                        plotsize_y=plotsize_y,
+                                        labelsize=labelsize)
+
+    def plot_modify_title(self, title_text, g=None, size_font=12):
+        '''
+        Allows user to replace the title text
+
+        Parameters:
+            title_text (``str``): New title text
+            g (``matplotlib.figure``): Matplotlib figure object to modify
+                (default: None)
+            size_font (``float``): Font size to use (default: 12)
+        '''
+        self.plotting_tools.modify_title(title_text, g=g, size_font=size_font)
+
     def plot_save(self, fname=None, base_dir=None, fig=None, dpi=300):
         '''Saves a generated matplotlib figure to file
 
@@ -1858,8 +2121,52 @@ class EONR(object):
         self.plotting_tools.plot_save(fname=fname, base_dir=base_dir, fig=fig,
                                       dpi=dpi)
 
+    def plot_delta_tstat(self, level_list=None, style='ggplot'):
+        '''Plots the test statistic as a function nitrogen rate
+
+        Parameters:
+            level_list (``list``): The confidence levels to plot; should be a
+                subset of items in EONR.ci_list (default: None).
+            style (``str``, optional): The style of the plolt; can be any of
+                the options supported by ``matplotlib``
+        '''
+        if self.plotting_tools is None:
+            self.plotting_tools = Plotting_tools(self)
+        else:
+            self.plotting_tools.update_eonr(self)
+        self.plotting_tools.plot_delta_tstat(level_list=level_list,
+                                             style=style)
+        self.fig_delta_tstat = self.plotting_tools.fig_delta_tstat
+
+    def plot_derivative(self, ci_type='profile-likelihood', ci_level=None,
+                        style='ggplot'):
+        '''
+        Plots a zoomed up view of the ONR and the derivative
+
+        Parameters:
+            ci_type (str): Indicates which confidence interval type should be
+                plotted. Options are 'wald', to plot the Wald
+                CIs; 'profile-likelihood', to plot the profile-likelihood
+                CIs; or 'bootstrap', to plot the bootstrap CIs (default:
+                'profile-likelihood').
+            ci_level (float): The confidence interval level to be plotted, and
+                must be one of the values in EONR.ci_list. If None, uses the
+                EONR.ci_level (default: None).
+            level (``float``): The confidence levels to plot; should be a
+                value from EONR.ci_list (default: 0.90).
+            style (``str``, optional): The style of the plolt; can be any of
+                the options supported by ``matplotlib``
+        '''
+        if self.plotting_tools is None:
+            self.plotting_tools = Plotting_tools(self)
+        else:
+            self.plotting_tools.update_eonr(self)
+        self.plotting_tools.plot_derivative(ci_type=ci_type, ci_level=ci_level,
+                                            style=style)
+        self.fig_derivative = self.plotting_tools.fig_derivative
+
     def plot_tau(self, y_axis='t_stat', emphasis='profile-likelihood',
-                 run_n=None):
+                 run_n=None, style='ggplot'):
         '''Plots the test statistic as a function nitrogen rate
 
         Parameters:
@@ -1876,14 +2183,15 @@ class EONR(object):
             run_n (``int``, optional): The run number to plot, as indicated in
                 ``EONR.df_ci``; if ``None``, uses the most recent, or maximum,
                 run_n in ``EONR.df_ci`` (default: None).
-
+            style (``str``, optional): The style of the plolt; can be any of
+                the options supported by ``matplotlib``
         '''
         if self.plotting_tools is None:
             self.plotting_tools = Plotting_tools(self)
         else:
             self.plotting_tools.update_eonr(self)
         self.plotting_tools.plot_tau(y_axis=y_axis, emphasis=emphasis,
-                                     run_n=run_n)
+                                     run_n=run_n, style=style)
         self.fig_tau = self.plotting_tools.fig_tau
 
     def print_results(self):

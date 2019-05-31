@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="python">
   <head>
     <meta charset="utf-8" />
-    <title>eonr.plotting_tools &#8212; eonr 0.1.3 documentation</title>
+    <title>eonr.plotting_tools &#8212; eonr 0.1.4 documentation</title>
     <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -37,7 +37,7 @@
         </button>
         <a class="navbar-brand" href="../../index.html">
           EONR</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.1.3</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.1.4</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -129,6 +129,7 @@
 <div class="viewcode-block" id="Plotting_tools"><a class="viewcode-back" href="../../eonr.html#eonr.plotting_tools.Plotting_tools">[docs]</a><span class="k">class</span> <span class="nc">Plotting_tools</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">EONR</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">df_data</span> <span class="o">=</span> <span class="n">EONR</span><span class="o">.</span><span class="n">df_data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">df_delta_tstat</span> <span class="o">=</span> <span class="n">EONR</span><span class="o">.</span><span class="n">df_delta_tstat</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cost_n_fert</span> <span class="o">=</span> <span class="n">EONR</span><span class="o">.</span><span class="n">cost_n_fert</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cost_n_social</span> <span class="o">=</span> <span class="n">EONR</span><span class="o">.</span><span class="n">cost_n_social</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">price_grain</span> <span class="o">=</span> <span class="n">EONR</span><span class="o">.</span><span class="n">price_grain</span>
@@ -164,13 +165,19 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">mrtn</span> <span class="o">=</span> <span class="n">EONR</span><span class="o">.</span><span class="n">mrtn</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">eonr</span> <span class="o">=</span> <span class="n">EONR</span><span class="o">.</span><span class="n">eonr</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">df_ci</span> <span class="o">=</span> <span class="n">EONR</span><span class="o">.</span><span class="n">df_ci</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">df_ci_pdf</span> <span class="o">=</span> <span class="n">EONR</span><span class="o">.</span><span class="n">df_ci_pdf</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">df_delta_tstat</span> <span class="o">=</span> <span class="n">EONR</span><span class="o">.</span><span class="n">df_delta_tstat</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">df_der</span> <span class="o">=</span> <span class="n">EONR</span><span class="o">.</span><span class="n">df_der</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">df_linspace</span> <span class="o">=</span> <span class="n">EONR</span><span class="o">.</span><span class="n">df_linspace</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">fig_delta_tstat</span> <span class="o">=</span> <span class="n">EONR</span><span class="o">.</span><span class="n">fig_eonr</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fig_derivative</span> <span class="o">=</span> <span class="n">EONR</span><span class="o">.</span><span class="n">fig_derivative</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fig_eonr</span> <span class="o">=</span> <span class="n">EONR</span><span class="o">.</span><span class="n">fig_eonr</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fig_tau</span> <span class="o">=</span> <span class="n">EONR</span><span class="o">.</span><span class="n">fig_tau</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">linspace_cost_n_fert</span> <span class="o">=</span> <span class="n">EONR</span><span class="o">.</span><span class="n">linspace_cost_n_fert</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">linspace_cost_n_social</span> <span class="o">=</span> <span class="n">EONR</span><span class="o">.</span><span class="n">linspace_cost_n_social</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">linspace_qp</span> <span class="o">=</span> <span class="n">EONR</span><span class="o">.</span><span class="n">linspace_qp</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">linspace_rtn</span> <span class="o">=</span> <span class="n">EONR</span><span class="o">.</span><span class="n">linspace_rtn</span>
+<span class="c1">#        self.linspace_cost_n_fert = EONR.linspace_cost_n_fert</span>
+<span class="c1">#        self.linspace_cost_n_social = EONR.linspace_cost_n_social</span>
+<span class="c1">#        self.linspace_qp = EONR.linspace_qp</span>
+<span class="c1">#        self.linspace_rtn = EONR.linspace_rtn</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">df_ci_temp</span> <span class="o">=</span> <span class="n">EONR</span><span class="o">.</span><span class="n">df_ci_temp</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ci_list</span> <span class="o">=</span> <span class="n">EONR</span><span class="o">.</span><span class="n">ci_list</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">alpha_list</span> <span class="o">=</span> <span class="n">EONR</span><span class="o">.</span><span class="n">alpha_list</span>
@@ -180,10 +187,16 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">palette</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_seaborn_palette</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;muted&#39;</span><span class="p">,</span> <span class="n">cmap_len</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 
     <span class="c1">#  Following are plotting functions</span>
-    <span class="k">def</span> <span class="nf">_add_labels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">x_max</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_add_labels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">x_max</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">run_n</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fert_range</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Adds EONR and economic labels to the plot</span>
 <span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="n">run_n</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">df_ci</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_ci</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">df_ci</span><span class="p">[</span><span class="s1">&#39;run_n&#39;</span><span class="p">]</span> <span class="o">==</span>
+                               <span class="bp">self</span><span class="o">.</span><span class="n">df_ci</span><span class="p">[</span><span class="s1">&#39;run_n&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">df_ci</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_ci</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">df_ci</span><span class="p">[</span><span class="s1">&#39;run_n&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">run_n</span><span class="p">]</span>
+
         <span class="k">if</span> <span class="n">x_max</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">_</span><span class="p">,</span> <span class="n">x_max</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_xlim</span><span class="p">()</span>
         <span class="n">boxstyle_str</span> <span class="o">=</span> <span class="s1">&#39;round, pad=0.5, rounding_size=0.15&#39;</span>
@@ -192,9 +205,21 @@
         <span class="n">label_eonr</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">: </span><span class="si">{1:.0f}</span><span class="s1"> </span><span class="si">{2}</span><span class="se">\n</span><span class="s1">MRTN: $</span><span class="si">{3:.2f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">onr_acr</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">eonr</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unit_nrate</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mrtn</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">eonr</span> <span class="o">&lt;=</span> <span class="n">x_max</span><span class="p">:</span>
-            <span class="n">g</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">eonr</span><span class="p">],</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">mrtn</span><span class="p">],</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span>
-                      <span class="n">color</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">palette</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">markeredgecolor</span><span class="o">=</span><span class="s1">&#39;white&#39;</span><span class="p">,</span>
-                      <span class="n">label</span><span class="o">=</span><span class="n">label_eonr</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">fert_range</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="n">err_l</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">eonr</span> <span class="o">-</span>
+                         <span class="n">df_ci</span><span class="p">[</span><span class="n">df_ci</span><span class="p">[</span><span class="s1">&#39;level&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mf">0.5</span><span class="p">][</span><span class="s1">&#39;pl_l&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">()]</span>
+                <span class="n">err_u</span> <span class="o">=</span> <span class="p">[</span><span class="n">df_ci</span><span class="p">[</span><span class="n">df_ci</span><span class="p">[</span><span class="s1">&#39;level&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mf">0.5</span><span class="p">][</span><span class="s1">&#39;pl_u&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">()</span> <span class="o">-</span>
+                         <span class="bp">self</span><span class="o">.</span><span class="n">eonr</span><span class="p">]</span>
+                <span class="n">g</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">eonr</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">mrtn</span><span class="p">,</span>
+                              <span class="n">xerr</span><span class="o">=</span><span class="p">[</span><span class="n">err_l</span><span class="p">,</span> <span class="n">err_u</span><span class="p">],</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span>
+                              <span class="n">color</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">palette</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">markeredgecolor</span><span class="o">=</span><span class="s1">&#39;white&#39;</span><span class="p">,</span>
+                              <span class="n">ecolor</span><span class="o">=</span><span class="s1">&#39;#7b7b7b&#39;</span><span class="p">,</span> <span class="n">capsize</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">capthick</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span>
+                              <span class="n">label</span><span class="o">=</span><span class="n">label_eonr</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">g</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">eonr</span><span class="p">],</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">mrtn</span><span class="p">],</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span>
+                          <span class="n">color</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">palette</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">markeredgecolor</span><span class="o">=</span><span class="s1">&#39;white&#39;</span><span class="p">,</span>
+                          <span class="n">label</span><span class="o">=</span><span class="n">label_eonr</span><span class="p">)</span>
+
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">eonr</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">eonr</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">col_n_app</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">():</span>
             <span class="n">g</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span>
                 <span class="n">label_eonr</span><span class="p">,</span>
@@ -247,13 +272,16 @@
                       <span class="n">fc</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">ec</span><span class="o">=</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">),</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.75</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">g</span>
 
-    <span class="k">def</span> <span class="nf">_add_title</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">size_font</span><span class="o">=</span><span class="mi">12</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_add_title</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">size_font</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">der</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Adds the title to the plot</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">title_text</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> </span><span class="si">{1}</span><span class="s1"> - </span><span class="si">{2}</span><span class="s1"> N Fertilizer Timing&#39;</span>
                       <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">year</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">location</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_n</span><span class="p">))</span>
-        <span class="n">divider</span> <span class="o">=</span> <span class="n">make_axes_locatable</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">ax</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">der</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">divider</span> <span class="o">=</span> <span class="n">make_axes_locatable</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">divider</span> <span class="o">=</span> <span class="n">make_axes_locatable</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">ax</span><span class="p">)</span>
         <span class="n">cax</span> <span class="o">=</span> <span class="n">divider</span><span class="o">.</span><span class="n">append_axes</span><span class="p">(</span><span class="s2">&quot;top&quot;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="s2">&quot;15%&quot;</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
         <span class="n">cax</span><span class="o">.</span><span class="n">get_xaxis</span><span class="p">()</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
         <span class="n">cax</span><span class="o">.</span><span class="n">get_yaxis</span><span class="p">()</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
@@ -262,7 +290,12 @@
                                 <span class="n">prop</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">backgroundcolor</span><span class="o">=</span><span class="s1">&#39;#7b7b7b&#39;</span><span class="p">,</span>
                                           <span class="n">size</span><span class="o">=</span><span class="n">size_font</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;white&#39;</span><span class="p">,</span>
                                           <span class="n">fontweight</span><span class="o">=</span><span class="s1">&#39;bold&#39;</span><span class="p">))</span>
-        <span class="n">size_font</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_set_title_size</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">title_text</span><span class="p">,</span> <span class="n">size_font</span><span class="p">,</span> <span class="n">coef</span><span class="o">=</span><span class="mf">1.15</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">der</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">size_font</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_set_title_size</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">title_text</span><span class="p">,</span> <span class="n">size_font</span><span class="p">,</span>
+                                             <span class="n">coef</span><span class="o">=</span><span class="mf">1.15</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">size_font</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_set_title_size</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">fig</span><span class="p">,</span> <span class="n">title_text</span><span class="p">,</span> <span class="n">size_font</span><span class="p">,</span>
+                                             <span class="n">coef</span><span class="o">=</span><span class="mf">1.15</span><span class="p">)</span>
         <span class="n">text_obj</span><span class="o">.</span><span class="n">prop</span><span class="o">.</span><span class="n">set_size</span><span class="p">(</span><span class="n">size_font</span><span class="p">)</span>
         <span class="n">cax</span><span class="o">.</span><span class="n">add_artist</span><span class="p">(</span><span class="n">text_obj</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">g</span>
@@ -354,35 +387,53 @@
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Draws N cost on plot</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="n">g</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">linspace_qp</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-                  <span class="bp">self</span><span class="o">.</span><span class="n">linspace_qp</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df_linspace</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">],</span>
+                  <span class="bp">self</span><span class="o">.</span><span class="n">df_linspace</span><span class="p">[</span><span class="s1">&#39;quad_plat&#39;</span><span class="p">],</span>
+<span class="c1">#                  self.linspace_qp[0],</span>
+<span class="c1">#                  self.linspace_qp[1],</span>
                   <span class="n">color</span><span class="o">=</span><span class="n">palette</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
                   <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;-.&#39;</span><span class="p">,</span>
                   <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Gross return to N&#39;</span><span class="p">)</span>
-        <span class="n">g</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">linspace_rtn</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-                  <span class="bp">self</span><span class="o">.</span><span class="n">linspace_rtn</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
-                  <span class="n">color</span><span class="o">=</span><span class="n">palette</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
-                  <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">,</span>
-                  <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Net return to N&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cost_n_social</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df_linspace</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">],</span>
+                      <span class="bp">self</span><span class="o">.</span><span class="n">df_linspace</span><span class="p">[</span><span class="s1">&#39;rtn&#39;</span><span class="p">],</span>
+<span class="c1">#                      self.linspace_rtn[0],</span>
+<span class="c1">#                      self.linspace_rtn[1],</span>
+                      <span class="n">color</span><span class="o">=</span><span class="n">palette</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+                      <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">,</span>
+                      <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Net return to N&#39;</span><span class="p">)</span>
             <span class="c1"># Social cost of N is net NUP * SCN (NUP - inorganic N)</span>
             <span class="n">pal2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_seaborn_palette</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;hls&#39;</span><span class="p">,</span> <span class="n">cmap_len</span><span class="o">=</span><span class="mi">10</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
-            <span class="n">g</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">linspace_cost_n_social</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-                      <span class="bp">self</span><span class="o">.</span><span class="n">linspace_cost_n_social</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df_linspace</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">],</span>
+                      <span class="bp">self</span><span class="o">.</span><span class="n">df_linspace</span><span class="p">[</span><span class="s1">&#39;cost_n_social&#39;</span><span class="p">],</span>
+<span class="c1">#                      self.linspace_cost_n_social[0],</span>
+<span class="c1">#                      self.linspace_cost_n_social[1],</span>
                       <span class="n">color</span><span class="o">=</span><span class="n">pal2</span><span class="p">,</span>
                       <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">,</span>
                       <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-                      <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Social cost from res. N&#39;</span><span class="p">)</span>
-            <span class="n">total</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">linspace_cost_n_fert</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span>\
-                <span class="bp">self</span><span class="o">.</span><span class="n">linspace_cost_n_social</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-            <span class="n">g</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">linspace_cost_n_social</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                      <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Social cost from exc. N&#39;</span><span class="p">)</span>
+            <span class="n">total</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_linspace</span><span class="p">[</span><span class="s1">&#39;cost_n_fert&#39;</span><span class="p">]</span> <span class="o">+</span>\
+                <span class="bp">self</span><span class="o">.</span><span class="n">df_linspace</span><span class="p">[</span><span class="s1">&#39;cost_n_social&#39;</span><span class="p">]</span>
+<span class="c1">#            total = self.linspace_cost_n_fert[1] +\</span>
+<span class="c1">#                self.linspace_cost_n_social[1]</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df_linspace</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">],</span>
+<span class="c1">#                      self.linspace_cost_n_social[0],</span>
                       <span class="n">total</span><span class="p">,</span>
                       <span class="n">color</span><span class="o">=</span><span class="n">palette</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span>
                       <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span>
                       <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Total N cost&#39;</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">g</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">linspace_cost_n_fert</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-                      <span class="bp">self</span><span class="o">.</span><span class="n">linspace_cost_n_fert</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">cost_n_fert</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df_linspace</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">],</span>
+                      <span class="bp">self</span><span class="o">.</span><span class="n">df_linspace</span><span class="p">[</span><span class="s1">&#39;rtn&#39;</span><span class="p">],</span>
+<span class="c1">#                      self.linspace_rtn[0],</span>
+<span class="c1">#                      self.linspace_rtn[1],</span>
+                      <span class="n">color</span><span class="o">=</span><span class="n">palette</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+                      <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">,</span>
+                      <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Net return to N&#39;</span><span class="p">)</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df_linspace</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">],</span>
+                      <span class="bp">self</span><span class="o">.</span><span class="n">df_linspace</span><span class="p">[</span><span class="s1">&#39;cost_n_fert&#39;</span><span class="p">],</span>
+<span class="c1">#                      self.linspace_cost_n_fert[0],</span>
+<span class="c1">#                      self.linspace_cost_n_fert[1],</span>
                       <span class="n">color</span><span class="o">=</span><span class="n">palette</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span>
                       <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span>
                       <span class="n">label</span><span class="o">=</span><span class="s1">&#39;N fertilizer cost&#39;</span><span class="p">)</span>
@@ -443,13 +494,24 @@
         <span class="k">return</span> <span class="n">g</span>
 
     <span class="k">def</span> <span class="nf">_place_legend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s1">&#39;upper left&#39;</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;white&#39;</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        2: GRTN</span>
+<span class="sd">        3: NRTN</span>
+<span class="sd">        4: Cost N fert</span>
+<span class="sd">        5: Cost N social</span>
+<span class="sd">        0: Confidence intervals</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">h</span><span class="p">,</span> <span class="n">leg</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">get_legend_handles_labels</span><span class="p">()</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cost_n_social</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cost_n_social</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">order</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+            <span class="n">handles</span> <span class="o">=</span> <span class="p">[</span><span class="n">h</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">order</span><span class="p">]</span>
+            <span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="n">leg</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">order</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">cost_n_fert</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">order</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
             <span class="n">handles</span> <span class="o">=</span> <span class="p">[</span><span class="n">h</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">order</span><span class="p">]</span>
             <span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="n">leg</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">order</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">order</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+            <span class="n">order</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
             <span class="n">handles</span> <span class="o">=</span> <span class="p">[</span><span class="n">h</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">order</span><span class="p">]</span>
             <span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="n">leg</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">order</span><span class="p">]</span>
         <span class="n">patch_ci</span> <span class="o">=</span> <span class="n">mpatches</span><span class="o">.</span><span class="n">Patch</span><span class="p">(</span><span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;#7b7b7b&#39;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span>
@@ -515,6 +577,311 @@
             <span class="nb">print</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Using &quot;ggplot&quot; style instead..&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">style</span><span class="p">))</span>
             <span class="n">plt</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s1">&#39;ggplot&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_der_draw_lines</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">level</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Adds the lineplot to each axes</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">ax1</span><span class="p">,</span> <span class="n">ax2</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">g</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">df_ci</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_ci</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">pl_l</span> <span class="o">=</span> <span class="n">df_ci</span><span class="p">[</span><span class="n">df_ci</span><span class="p">[</span><span class="s1">&#39;level&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">level</span><span class="p">][</span><span class="s1">&#39;pl_l&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+        <span class="n">pl_u</span> <span class="o">=</span> <span class="n">df_ci</span><span class="p">[</span><span class="n">df_ci</span><span class="p">[</span><span class="s1">&#39;level&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">level</span><span class="p">][</span><span class="s1">&#39;pl_u&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+
+        <span class="n">df_opt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_linspace</span><span class="p">[(</span><span class="bp">self</span><span class="o">.</span><span class="n">df_linspace</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">pl_l</span><span class="p">)</span> <span class="o">&amp;</span>
+                                  <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df_linspace</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">pl_u</span><span class="p">)]</span>
+        <span class="n">der_max</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_linspace</span><span class="p">[</span><span class="s1">&#39;rtn_der&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="o">-</span><span class="mi">10</span><span class="p">:]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+        <span class="n">df_trim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_linspace</span><span class="p">[(</span><span class="bp">self</span><span class="o">.</span><span class="n">df_linspace</span><span class="p">[</span><span class="s1">&#39;rtn_der&#39;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">der_max</span><span class="p">)</span> <span class="o">&amp;</span>
+                                   <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df_linspace</span><span class="p">[</span><span class="s1">&#39;rtn_der2&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">0.001</span><span class="p">)]</span>
+
+        <span class="n">ax1</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df_opt</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">],</span>
+                 <span class="n">df_opt</span><span class="p">[</span><span class="s1">&#39;rtn&#39;</span><span class="p">],</span>
+                 <span class="n">color</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">palette</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+                 <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">,</span>
+                 <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Net return to N&#39;</span><span class="p">)</span>
+        <span class="n">ax2</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df_trim</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">],</span>
+                 <span class="n">df_trim</span><span class="p">[</span><span class="s1">&#39;rtn_der&#39;</span><span class="p">],</span>
+                 <span class="n">color</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">palette</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                 <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">,</span>
+                 <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;|$\Delta$Net return to N|&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">g</span>
+
+    <span class="k">def</span> <span class="nf">_der_add_ci</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">ci_type</span><span class="o">=</span><span class="s1">&#39;profile-likelihood&#39;</span><span class="p">,</span> <span class="n">ci_level</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Adds upper and lower confidence curves to the EONR plot</span>
+<span class="sd">        &lt;ci_type&gt; --&gt; type of confidence interval to display</span>
+<span class="sd">            &#39;profile-likelihood&#39; (default) is the profile likelihood confidence</span>
+<span class="sd">            interval (see Cook and Weisberg, 1990)</span>
+<span class="sd">            &#39;wald&#39; is the Wald (uniform) confidence interval</span>
+<span class="sd">            if the profile-likelihood confidence interval is available, it is</span>
+<span class="sd">            recommended to use this for EONR data</span>
+<span class="sd">        &lt;ci_level&gt; --&gt; the confidence level to display</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;Please choose either &quot;profile-likelihood&quot; or &quot;wald&quot; for &#39;</span>
+               <span class="s1">&#39;&lt;ci_type&gt;&#39;</span><span class="p">)</span>
+        <span class="n">ci_types</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;profile-likelihood&#39;</span><span class="p">,</span> <span class="s1">&#39;wald&#39;</span><span class="p">,</span> <span class="s1">&#39;bootstrap&#39;</span><span class="p">]</span>
+        <span class="k">assert</span> <span class="n">ci_type</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">ci_types</span><span class="p">,</span> <span class="n">msg</span>
+        <span class="k">if</span> <span class="n">ci_type</span> <span class="o">==</span> <span class="s1">&#39;profile-likelihood&#39;</span><span class="p">:</span>
+            <span class="n">ci_l</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_ci_temp</span><span class="p">[</span><span class="s1">&#39;pl_l&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+            <span class="n">ci_u</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_ci_temp</span><span class="p">[</span><span class="s1">&#39;pl_u&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">ci_type</span> <span class="o">==</span> <span class="s1">&#39;wald&#39;</span><span class="p">:</span>
+            <span class="n">ci_l</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_ci_temp</span><span class="p">[</span><span class="s1">&#39;wald_l&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+            <span class="n">ci_u</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_ci_temp</span><span class="p">[</span><span class="s1">&#39;wald_u&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">ci_type</span> <span class="o">==</span> <span class="s1">&#39;bootstrap&#39;</span><span class="p">:</span>
+            <span class="n">ci_l</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_ci_temp</span><span class="p">[</span><span class="s1">&#39;boot_l&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+            <span class="n">ci_u</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_ci_temp</span><span class="p">[</span><span class="s1">&#39;boot_u&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+
+        <span class="n">g</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">axvspan</span><span class="p">(</span><span class="n">ci_l</span><span class="p">,</span> <span class="n">ci_u</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;#7b7b7b&#39;</span><span class="p">)</span>  <span class="c1"># alpha is trans</span>
+        <span class="k">if</span> <span class="n">ci_level</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">ci_level</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ci_level</span>
+        <span class="n">label_ci</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;Confidence (</span><span class="si">{0:.2f}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ci_level</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">eonr</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">col_n_app</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">():</span>
+            <span class="n">alpha_axvline</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">ci_l</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;#7b7b7b&#39;</span><span class="p">,</span>
+                         <span class="n">label</span><span class="o">=</span><span class="n">label_ci</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">alpha_axvline</span><span class="p">)</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">ci_u</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;#7b7b7b&#39;</span><span class="p">,</span>
+                         <span class="n">label</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">alpha_axvline</span><span class="p">)</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">eonr</span><span class="p">,</span>
+                         <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span>
+                         <span class="n">linewidth</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span>
+                         <span class="n">color</span><span class="o">=</span><span class="s1">&#39;#555555&#39;</span><span class="p">,</span>
+                         <span class="n">label</span><span class="o">=</span><span class="s1">&#39;EONR&#39;</span><span class="p">,</span>
+                         <span class="n">alpha</span><span class="o">=</span><span class="n">alpha_axvline</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">alpha_axvline</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;#7b7b7b&#39;</span><span class="p">,</span>
+                         <span class="n">label</span><span class="o">=</span><span class="n">label_ci</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">alpha_axvline</span><span class="p">)</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;#7b7b7b&#39;</span><span class="p">,</span>
+                         <span class="n">label</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">alpha_axvline</span><span class="p">)</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span>
+                         <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span>
+                         <span class="n">linewidth</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span>
+                         <span class="n">color</span><span class="o">=</span><span class="s1">&#39;#555555&#39;</span><span class="p">,</span>
+                         <span class="n">label</span><span class="o">=</span><span class="s1">&#39;EONR&#39;</span><span class="p">,</span>
+                         <span class="n">alpha</span><span class="o">=</span><span class="n">alpha_axvline</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">g</span>
+
+    <span class="k">def</span> <span class="nf">_der_add_labels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">x_max</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fert_range</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Addes labels to the derivative plot</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="n">x_max</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">_</span><span class="p">,</span> <span class="n">x_max</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">get_xlim</span><span class="p">()</span>
+        <span class="n">df_ci</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_ci</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">df_ci</span><span class="p">[</span><span class="s1">&#39;run_n&#39;</span><span class="p">]</span> <span class="o">==</span>
+                           <span class="bp">self</span><span class="o">.</span><span class="n">df_ci</span><span class="p">[</span><span class="s1">&#39;run_n&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()]</span>
+        <span class="n">boxstyle_str</span> <span class="o">=</span> <span class="s1">&#39;round, pad=0.5, rounding_size=0.15&#39;</span>
+        <span class="n">el</span> <span class="o">=</span> <span class="n">mpatches</span><span class="o">.</span><span class="n">Ellipse</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">add_artist</span><span class="p">(</span><span class="n">el</span><span class="p">)</span>
+
+        <span class="n">label_eonr</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">: </span><span class="si">{1:.0f}</span><span class="s1"> </span><span class="si">{2}</span><span class="se">\n</span><span class="s1">MRTN: $</span><span class="si">{3:.2f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">onr_acr</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">eonr</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unit_nrate</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mrtn</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">eonr</span> <span class="o">&lt;=</span> <span class="n">x_max</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">fert_range</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="n">err_l</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">eonr</span> <span class="o">-</span>
+                         <span class="n">df_ci</span><span class="p">[</span><span class="n">df_ci</span><span class="p">[</span><span class="s1">&#39;level&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mf">0.5</span><span class="p">][</span><span class="s1">&#39;pl_l&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">()]</span>
+                <span class="n">err_u</span> <span class="o">=</span> <span class="p">[</span><span class="n">df_ci</span><span class="p">[</span><span class="n">df_ci</span><span class="p">[</span><span class="s1">&#39;level&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mf">0.5</span><span class="p">][</span><span class="s1">&#39;pl_u&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">()</span> <span class="o">-</span>
+                         <span class="bp">self</span><span class="o">.</span><span class="n">eonr</span><span class="p">]</span>
+                <span class="n">g</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">eonr</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">mrtn</span><span class="p">,</span>
+                                  <span class="n">xerr</span><span class="o">=</span><span class="p">[</span><span class="n">err_l</span><span class="p">,</span> <span class="n">err_u</span><span class="p">],</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">,</span>
+                                  <span class="n">markersize</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">palette</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+                                  <span class="n">markeredgecolor</span><span class="o">=</span><span class="s1">&#39;white&#39;</span><span class="p">,</span> <span class="n">ecolor</span><span class="o">=</span><span class="s1">&#39;#7b7b7b&#39;</span><span class="p">,</span>
+                                  <span class="n">capsize</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">capthick</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">label_eonr</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">g</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">eonr</span><span class="p">],</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">mrtn</span><span class="p">],</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">,</span>
+                               <span class="n">markersize</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">palette</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+                               <span class="n">markeredgecolor</span><span class="o">=</span><span class="s1">&#39;white&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">label_eonr</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">eonr</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">eonr</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">col_n_app</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">():</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span>
+                <span class="n">label_eonr</span><span class="p">,</span>
+                <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">eonr</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mrtn</span><span class="p">),</span> <span class="n">xytext</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">80</span><span class="p">,</span> <span class="o">-</span><span class="mi">30</span><span class="p">),</span>
+                <span class="n">textcoords</span><span class="o">=</span><span class="s1">&#39;offset points&#39;</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">,</span> <span class="n">va</span><span class="o">=</span><span class="s1">&#39;top&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>
+                <span class="n">color</span><span class="o">=</span><span class="s1">&#39;#444444&#39;</span><span class="p">,</span>
+                <span class="n">bbox</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">boxstyle</span><span class="o">=</span><span class="n">boxstyle_str</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">fc</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+                          <span class="n">ec</span><span class="o">=</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)),</span>
+                <span class="n">arrowprops</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">arrowstyle</span><span class="o">=</span><span class="s1">&#39;-|&gt;&#39;</span><span class="p">,</span>
+                                <span class="n">color</span><span class="o">=</span><span class="s2">&quot;grey&quot;</span><span class="p">,</span>
+                                <span class="n">patchB</span><span class="o">=</span><span class="n">el</span><span class="p">,</span>
+                                <span class="n">shrinkB</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+                                <span class="n">connectionstyle</span><span class="o">=</span><span class="s1">&#39;arc3,rad=-0.3&#39;</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span>
+                <span class="n">label_eonr</span><span class="p">,</span>
+                <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">xycoords</span><span class="o">=</span><span class="s1">&#39;axes fraction&#39;</span><span class="p">,</span> <span class="n">xytext</span><span class="o">=</span><span class="p">(</span><span class="mf">0.98</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">),</span>
+                <span class="n">ha</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">,</span> <span class="n">va</span><span class="o">=</span><span class="s1">&#39;bottom&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;#444444&#39;</span><span class="p">,</span>
+                <span class="n">bbox</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">boxstyle</span><span class="o">=</span><span class="n">boxstyle_str</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">fc</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+                          <span class="n">ec</span><span class="o">=</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)))</span>
+
+        <span class="n">label_econ</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;Grain price: $</span><span class="si">{0:.2f}</span><span class="se">\n</span><span class="s1">N fertilizer cost: $</span><span class="si">{1:.2f}</span><span class="s1">&#39;</span>
+                      <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">price_grain</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cost_n_fert</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cost_n_social</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">metric</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">label_econ</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="se">\n</span><span class="s1">Social cost of N: $</span><span class="si">{1:.2f}</span><span class="se">\n</span><span class="s1">Price ratio: &#39;</span>
+                          <span class="s1">&#39;</span><span class="si">{2:.2f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">label_econ</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cost_n_social</span><span class="p">,</span>
+                                           <span class="bp">self</span><span class="o">.</span><span class="n">price_ratio</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">cost_n_social</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">metric</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="n">label_econ</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="se">\n</span><span class="s1">Social cost of N: $</span><span class="si">{1:.2f}</span><span class="se">\n</span><span class="s1">Price ratio: &#39;</span>
+                          <span class="s1">&#39;</span><span class="si">{2:.3f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">label_econ</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cost_n_social</span><span class="p">,</span>
+                                           <span class="bp">self</span><span class="o">.</span><span class="n">price_ratio</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">cost_n_social</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">metric</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">label_econ</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="se">\n</span><span class="s1">Price ratio: </span><span class="si">{1:.2f}</span><span class="s1">&#39;</span>
+                          <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">label_econ</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">price_ratio</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">label_econ</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="se">\n</span><span class="s1">Price ratio: </span><span class="si">{1:.3f}</span><span class="s1">&#39;</span>
+                          <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">label_econ</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">price_ratio</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_zero</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">label_econ</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="se">\n</span><span class="s1">Base zero: </span><span class="si">{1}{2:.2f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">label_econ</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unit_currency</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">coefs_grtn_primary</span><span class="p">[</span><span class="s1">&#39;b0&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">n</span><span class="p">))</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span>
+            <span class="n">label_econ</span><span class="p">,</span>
+            <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">xycoords</span><span class="o">=</span><span class="s1">&#39;axes fraction&#39;</span><span class="p">,</span> <span class="n">xytext</span><span class="o">=</span><span class="p">(</span><span class="mf">0.98</span><span class="p">,</span> <span class="mf">0.95</span><span class="p">),</span>
+            <span class="n">horizontalalignment</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">,</span> <span class="n">verticalalignment</span><span class="o">=</span><span class="s1">&#39;top&#39;</span><span class="p">,</span>
+            <span class="n">fontsize</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;#444444&#39;</span><span class="p">,</span>
+            <span class="n">bbox</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">boxstyle</span><span class="o">=</span><span class="n">boxstyle_str</span><span class="p">,</span>
+                      <span class="n">fc</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">ec</span><span class="o">=</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">),</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.75</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">g</span>
+
+    <span class="k">def</span> <span class="nf">_der_add_onr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">alpha_lines</span><span class="o">=</span><span class="mf">0.5</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Adds vertical line where ONR is</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">y_min</span><span class="p">,</span> <span class="n">y_max</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_ylim</span><span class="p">()</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">eonr</span><span class="p">,</span> <span class="n">ymin</span><span class="o">=</span><span class="n">y_min</span><span class="p">,</span> <span class="n">ymax</span><span class="o">=</span><span class="n">y_max</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span>
+                     <span class="n">linewidth</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;#7b7b7b&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">alpha_lines</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">g</span>
+
+    <span class="k">def</span> <span class="nf">_der_modify_axes_labels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">):</span>
+        <span class="n">ylabel1</span> <span class="o">=</span> <span class="s1">&#39;Return to N</span><span class="se">\n</span><span class="s1">(</span><span class="si">{0}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">unit_rtn</span><span class="p">)</span>
+        <span class="n">ylabel2</span> <span class="o">=</span> <span class="p">(</span><span class="sa">r</span><span class="s1">&#39;|$\Delta$ Return to N|&#39;&#39;</span><span class="se">\n</span><span class="s1">&#39;&#39;(\</span><span class="si">{0}</span><span class="s1"> per </span><span class="si">{1}</span><span class="s1">)&#39;</span>
+                   <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">unit_rtn</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unit_fert</span><span class="p">))</span>
+        <span class="n">xlabel</span> <span class="o">=</span> <span class="s1">&#39;N Rate (</span><span class="si">{0}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">unit_nrate</span><span class="p">)</span>
+
+        <span class="n">g</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">ylabel1</span><span class="p">,</span> <span class="n">fontweight</span><span class="o">=</span><span class="s1">&#39;bold&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">fontsize</span><span class="p">)</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">ylabel2</span><span class="p">,</span> <span class="n">fontweight</span><span class="o">=</span><span class="s1">&#39;bold&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">fontsize</span><span class="p">)</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="n">xlabel</span><span class="p">,</span> <span class="n">fontweight</span><span class="o">=</span><span class="s1">&#39;bold&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">fontsize</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">g</span>
+
+    <span class="k">def</span> <span class="nf">_der_place_legend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s1">&#39;best&#39;</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;white&#39;</span><span class="p">):</span>
+        <span class="c1"># Upper legend</span>
+        <span class="n">h1</span><span class="p">,</span> <span class="n">leg1</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_legend_handles_labels</span><span class="p">()</span>
+<span class="c1">#        order = list(range(len(h1)))</span>
+        <span class="n">order</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+        <span class="n">handles</span> <span class="o">=</span> <span class="p">[</span><span class="n">h1</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">order</span><span class="p">]</span>
+        <span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="n">leg1</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">order</span><span class="p">]</span>
+        <span class="n">patch_ci</span> <span class="o">=</span> <span class="n">mpatches</span><span class="o">.</span><span class="n">Patch</span><span class="p">(</span><span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;#7b7b7b&#39;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span>
+                                  <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+        <span class="n">handles</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">patch_ci</span>
+        <span class="n">leg1</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">handles</span><span class="o">=</span><span class="n">handles</span><span class="p">,</span>
+                               <span class="n">labels</span><span class="o">=</span><span class="n">labels</span><span class="p">,</span>
+                               <span class="n">loc</span><span class="o">=</span><span class="s1">&#39;upper right&#39;</span><span class="p">,</span>
+                               <span class="n">frameon</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                               <span class="n">framealpha</span><span class="o">=</span><span class="mf">0.75</span><span class="p">,</span>
+                               <span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;white&#39;</span><span class="p">,</span>
+                               <span class="n">fancybox</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                               <span class="n">borderpad</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+                               <span class="n">edgecolor</span><span class="o">=</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">),</span>
+                               <span class="n">prop</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;weight&#39;</span><span class="p">:</span> <span class="s1">&#39;bold&#39;</span><span class="p">,</span>
+                                     <span class="s1">&#39;size&#39;</span><span class="p">:</span> <span class="mi">7</span><span class="p">})</span>
+        <span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">leg1</span><span class="o">.</span><span class="n">get_texts</span><span class="p">():</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">setp</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;#444444&#39;</span><span class="p">)</span>
+        <span class="c1"># Lower legend</span>
+        <span class="n">h2</span><span class="p">,</span> <span class="n">leg2</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">get_legend_handles_labels</span><span class="p">()</span>
+        <span class="n">order</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">h2</span><span class="p">)))</span>
+        <span class="n">handles</span> <span class="o">=</span> <span class="p">[</span><span class="n">h2</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">order</span><span class="p">]</span>
+        <span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="n">leg2</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">order</span><span class="p">]</span>
+        <span class="n">leg2</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">handles</span><span class="o">=</span><span class="n">handles</span><span class="p">,</span>
+                               <span class="n">labels</span><span class="o">=</span><span class="n">labels</span><span class="p">,</span>
+                               <span class="n">loc</span><span class="o">=</span><span class="n">loc</span><span class="p">,</span>
+                               <span class="n">frameon</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                               <span class="n">framealpha</span><span class="o">=</span><span class="mf">0.75</span><span class="p">,</span>
+                               <span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;white&#39;</span><span class="p">,</span>
+                               <span class="n">fancybox</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                               <span class="n">borderpad</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+                               <span class="n">edgecolor</span><span class="o">=</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">),</span>
+                               <span class="n">prop</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;weight&#39;</span><span class="p">:</span> <span class="s1">&#39;bold&#39;</span><span class="p">,</span>
+                                     <span class="s1">&#39;size&#39;</span><span class="p">:</span> <span class="mi">7</span><span class="p">})</span>
+        <span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">leg2</span><span class="o">.</span><span class="n">get_texts</span><span class="p">():</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">setp</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;#444444&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">g</span>
+
+    <span class="k">def</span> <span class="nf">_der_modify_plot_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">plotsize_x</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">plotsize_y</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span>
+                                <span class="n">labelsize</span><span class="o">=</span><span class="mi">11</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Modifies plot size, changes font to bold, and sets tick/label size</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gcf</span><span class="p">()</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">set_size_inches</span><span class="p">(</span><span class="n">plotsize_x</span><span class="p">,</span> <span class="n">plotsize_y</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;font.weight&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;bold&#39;</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_tick_params</span><span class="p">(</span><span class="n">labelsize</span><span class="o">=</span><span class="n">labelsize</span><span class="p">)</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_tick_params</span><span class="p">(</span><span class="n">labelsize</span><span class="o">=</span><span class="n">labelsize</span><span class="p">)</span>
+<span class="c1">#        g.fig.subplots_adjust(top=0.9, bottom=0.135, left=0.11, right=0.99)</span>
+        <span class="k">return</span> <span class="n">g</span>
+
+    <span class="k">def</span> <span class="nf">_dt_add_onr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">alpha_lines</span><span class="o">=</span><span class="mf">0.5</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Adds vertical line where ONR is</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">y_min</span><span class="p">,</span> <span class="n">y_max</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_ylim</span><span class="p">()</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">eonr</span><span class="p">,</span> <span class="n">ymin</span><span class="o">=</span><span class="n">y_min</span><span class="p">,</span> <span class="n">ymax</span><span class="o">=</span><span class="n">y_max</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span>
+                     <span class="n">linewidth</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;#7b7b7b&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">alpha_lines</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">g</span>
+
+    <span class="k">def</span> <span class="nf">_dt_modify_axes_labels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">11</span><span class="p">):</span>
+        <span class="n">y_label</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;$\Delta$ $\tau$($\theta_2$)&#39;</span>
+
+        <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="n">y_label</span><span class="p">,</span>
+                   <span class="n">fontweight</span><span class="o">=</span><span class="s1">&#39;bold&#39;</span><span class="p">,</span>
+                   <span class="n">fontsize</span><span class="o">=</span><span class="n">fontsize</span><span class="p">)</span>
+        <span class="n">x_label</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;$\tilde{\theta_2}$&#39;</span>
+        <span class="n">xlab_obj</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="n">x_label</span><span class="p">,</span>
+                              <span class="n">fontweight</span><span class="o">=</span><span class="s1">&#39;bold&#39;</span><span class="p">,</span>
+                              <span class="n">fontsize</span><span class="o">=</span><span class="n">fontsize</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">getp</span><span class="p">(</span><span class="n">xlab_obj</span><span class="p">,</span> <span class="s1">&#39;color&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_dt_place_legend_tau</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s1">&#39;best&#39;</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;white&#39;</span><span class="p">):</span>
+        <span class="n">h</span><span class="p">,</span> <span class="n">leg</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">get_legend_handles_labels</span><span class="p">()</span>
+        <span class="n">order</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">h</span><span class="p">)))</span>
+        <span class="n">handles</span> <span class="o">=</span> <span class="p">[</span><span class="n">h</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">order</span><span class="p">]</span>
+        <span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="n">leg</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">order</span><span class="p">]</span>
+        <span class="n">leg</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;CI Level&#39;</span><span class="p">,</span>
+                          <span class="n">handles</span><span class="o">=</span><span class="n">handles</span><span class="p">,</span>
+                          <span class="n">labels</span><span class="o">=</span><span class="n">labels</span><span class="p">,</span>
+                          <span class="n">loc</span><span class="o">=</span><span class="n">loc</span><span class="p">,</span>
+                          <span class="n">frameon</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                          <span class="n">framealpha</span><span class="o">=</span><span class="mf">0.75</span><span class="p">,</span>
+                          <span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;white&#39;</span><span class="p">,</span>
+                          <span class="n">fancybox</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                          <span class="n">borderpad</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+                          <span class="n">edgecolor</span><span class="o">=</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">),</span>
+                          <span class="n">prop</span><span class="o">=</span><span class="p">{</span>
+                                  <span class="s1">&#39;weight&#39;</span><span class="p">:</span> <span class="s1">&#39;bold&#39;</span><span class="p">,</span>
+                                  <span class="s1">&#39;size&#39;</span><span class="p">:</span> <span class="mi">9</span>
+                            <span class="p">})</span>
+        <span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">leg</span><span class="o">.</span><span class="n">get_texts</span><span class="p">():</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">setp</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;#444444&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">g</span>
+
+    <span class="k">def</span> <span class="nf">_dt_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">df_delta_tstat</span><span class="p">,</span> <span class="n">level_list</span><span class="p">,</span> <span class="n">lw_thick</span><span class="o">=</span><span class="mf">1.6</span><span class="p">,</span>
+                 <span class="n">lw_thin</span><span class="o">=</span><span class="mf">1.1</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Draws delta tau/t-stat as a function of theta2_hat</span>
+<span class="sd">        &lt;emphasis&gt; --&gt; what curve to draw with empahsis</span>
+<span class="sd">        &lt;df_ci&gt; --&gt; the dataframe containing confidence interval data</span>
+<span class="sd">        &lt;y_ci&gt; --&gt; the y data to plot</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">level</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">level_list</span><span class="p">):</span>
+            <span class="n">palette</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_seaborn_palette</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;PuBuGn_d&#39;</span><span class="p">,</span>
+                                            <span class="n">cmap_len</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">level_list</span><span class="p">))</span>
+            <span class="n">df_level</span> <span class="o">=</span> <span class="n">df_delta_tstat</span><span class="p">[</span><span class="n">df_delta_tstat</span><span class="p">[</span><span class="s1">&#39;level&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">level</span><span class="p">]</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df_level</span><span class="p">[</span><span class="s1">&#39;rate_n&#39;</span><span class="p">],</span> <span class="n">df_level</span><span class="p">[</span><span class="s1">&#39;delta_tstat&#39;</span><span class="p">],</span>
+                      <span class="n">color</span><span class="o">=</span><span class="n">palette</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="n">lw_thick</span><span class="p">,</span>
+                      <span class="n">label</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">{0:.2f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">level</span><span class="p">))</span>
+
+<span class="c1">#        g.ax.plot(df_delta_tstat[&#39;rate_n&#39;], df_delta_tstat[&#39;delta_tstat&#39;],</span>
+<span class="c1">#                  color=self.palette[3], linestyle=&#39;-&#39;, linewidth=lw_thick,</span>
+<span class="c1">#                  label=&#39;$|\delta|$ $|\tau|$($|\theta2|$)/T-stat&#39;)</span>
+        <span class="k">return</span> <span class="n">g</span>
 
     <span class="k">def</span> <span class="nf">_pci_modify_axes_labels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y_axis</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">11</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">y_axis</span> <span class="o">==</span> <span class="s1">&#39;t_stat&#39;</span><span class="p">:</span>
@@ -748,11 +1115,11 @@
 
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">text_obj_dummy</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">title_text</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">size_font</span><span class="p">)</span>
-        <span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_xlim</span><span class="p">()</span>
-        <span class="n">dpi</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">get_dpi</span><span class="p">()</span>
-        <span class="n">width_in</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">get_size_inches</span><span class="p">()</span>
+        <span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_xlim</span><span class="p">()</span>
+        <span class="n">dpi</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">get_dpi</span><span class="p">()</span>
+        <span class="n">width_in</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">get_size_inches</span><span class="p">()</span>
         <span class="n">pix_width</span> <span class="o">=</span> <span class="n">dpi</span> <span class="o">*</span> <span class="n">width_in</span>
-        <span class="n">r</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">get_renderer</span><span class="p">()</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">get_renderer</span><span class="p">()</span>
         <span class="n">pix_width</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">width</span>
         <span class="n">text_size</span> <span class="o">=</span> <span class="n">text_obj_dummy</span><span class="o">.</span><span class="n">get_window_extent</span><span class="p">(</span><span class="n">renderer</span><span class="o">=</span><span class="n">r</span><span class="p">)</span>
         <span class="k">while</span> <span class="p">(</span><span class="n">text_size</span><span class="o">.</span><span class="n">width</span> <span class="o">*</span> <span class="n">coef</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">pix_width</span><span class="p">:</span>
@@ -762,12 +1129,60 @@
         <span class="n">text_obj_dummy</span><span class="o">.</span><span class="n">remove</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">size_font</span>
 
-    <span class="k">def</span> <span class="nf">_pci_add_title</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">size_font</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Adds the title to profile-liikelihood plot</span>
+<div class="viewcode-block" id="Plotting_tools.modify_size"><a class="viewcode-back" href="../../eonr.html#eonr.plotting_tools.Plotting_tools.modify_size">[docs]</a>    <span class="k">def</span> <span class="nf">modify_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fig</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">plotsize_x</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">plotsize_y</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">labelsize</span><span class="o">=</span><span class="mi">11</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Modifies the size of the last plot generated</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">            fig (``Matplotlib Figure``, optional): Matplotlib figure to modify</span>
+<span class="sd">                (default: None)</span>
+<span class="sd">            plotsize_x (``float``, optional): Sets x size of plot in inches</span>
+<span class="sd">                (default: 7)</span>
+<span class="sd">            plotsize_y (``float``, optional): Sets y size of plot in inches</span>
+<span class="sd">                (default: 4)</span>
+<span class="sd">            labelsize (``float``, optional): Sets tick and label</span>
+<span class="sd">                (defaulat: 11)</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="n">title_text</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> </span><span class="si">{1}</span><span class="s1"> - </span><span class="si">{2}</span><span class="s1"> N Fertilizer Timing&#39;</span>
-                      <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">year</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">location</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_n</span><span class="p">))</span>
-        <span class="n">divider</span> <span class="o">=</span> <span class="n">make_axes_locatable</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">ax</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">fig</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gcf</span><span class="p">()</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">set_size_inches</span><span class="p">(</span><span class="n">plotsize_x</span><span class="p">,</span> <span class="n">plotsize_y</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;font.weight&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;bold&#39;</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_tick_params</span><span class="p">(</span><span class="n">labelsize</span><span class="o">=</span><span class="n">labelsize</span><span class="p">)</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_tick_params</span><span class="p">(</span><span class="n">labelsize</span><span class="o">=</span><span class="n">labelsize</span><span class="p">)</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">fig</span></div>
+
+<div class="viewcode-block" id="Plotting_tools.modify_title"><a class="viewcode-back" href="../../eonr.html#eonr.plotting_tools.Plotting_tools.modify_title">[docs]</a>    <span class="k">def</span> <span class="nf">modify_title</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title_text</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">size_font</span><span class="o">=</span><span class="mi">12</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Parameters:</span>
+<span class="sd">            title_text (``str``): New title text</span>
+<span class="sd">            g (``matplotlib.figure``): Matplotlib figure object to modify</span>
+<span class="sd">                (default: None)</span>
+<span class="sd">            size_font (``float``): Font size to use (default: 12)</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+<span class="c1">#        title_text = (&#39;{0} {1} - {2} N Fertilizer Timing&#39;</span>
+<span class="c1">#                      &#39;&#39;.format(self.year, self.location, self.time_n))</span>
+<span class="c1">#        msg = (&#39;No figure available; please pass a figure using the `g` &#39;</span>
+<span class="c1">#               &#39;parameter.&#39;)</span>
+<span class="c1">#        assert self.fig_eonr is not None, msg</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">ax</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">g_fig</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="n">g_fig</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="n">g_fig</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">ax</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">divider</span> <span class="o">=</span> <span class="n">make_axes_locatable</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">ax</span><span class="p">)</span>
+            <span class="n">size_font</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_set_title_size</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">fig</span><span class="p">,</span> <span class="n">title_text</span><span class="p">,</span> <span class="n">size_font</span><span class="p">,</span>
+                                             <span class="n">coef</span><span class="o">=</span><span class="mf">1.15</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ax</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">divider</span> <span class="o">=</span> <span class="n">make_axes_locatable</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">size_font</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_set_title_size</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">title_text</span><span class="p">,</span> <span class="n">size_font</span><span class="p">,</span>
+                                             <span class="n">coef</span><span class="o">=</span><span class="mf">1.15</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_axis_off</span><span class="p">()</span>
         <span class="n">cax</span> <span class="o">=</span> <span class="n">divider</span><span class="o">.</span><span class="n">append_axes</span><span class="p">(</span><span class="s2">&quot;top&quot;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="s2">&quot;15%&quot;</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
         <span class="n">cax</span><span class="o">.</span><span class="n">get_xaxis</span><span class="p">()</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
         <span class="n">cax</span><span class="o">.</span><span class="n">get_yaxis</span><span class="p">()</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
@@ -776,13 +1191,95 @@
                                 <span class="n">prop</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">backgroundcolor</span><span class="o">=</span><span class="s1">&#39;#7b7b7b&#39;</span><span class="p">,</span>
                                           <span class="n">size</span><span class="o">=</span><span class="n">size_font</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;white&#39;</span><span class="p">,</span>
                                           <span class="n">fontweight</span><span class="o">=</span><span class="s1">&#39;bold&#39;</span><span class="p">))</span>
-        <span class="n">size_font</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_set_title_size</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">title_text</span><span class="p">,</span> <span class="n">size_font</span><span class="p">,</span> <span class="n">coef</span><span class="o">=</span><span class="mf">1.3</span><span class="p">)</span>
         <span class="n">text_obj</span><span class="o">.</span><span class="n">prop</span><span class="o">.</span><span class="n">set_size</span><span class="p">(</span><span class="n">size_font</span><span class="p">)</span>
         <span class="n">cax</span><span class="o">.</span><span class="n">add_artist</span><span class="p">(</span><span class="n">text_obj</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">g_fig</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">g</span></div>
+
+<div class="viewcode-block" id="Plotting_tools.plot_delta_tstat"><a class="viewcode-back" href="../../eonr.html#eonr.plotting_tools.Plotting_tools.plot_delta_tstat">[docs]</a>    <span class="k">def</span> <span class="nf">plot_delta_tstat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">level_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s1">&#39;ggplot&#39;</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Plots the test statistic as a function nitrogen rate</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">            level_list (``list``): The confidence levels to plot; should be a</span>
+<span class="sd">                subset of items in EONR.ci_list (default: None).</span>
+<span class="sd">            style (``str``, optional): The style of the plolt; can be any of</span>
+<span class="sd">                the options supported by ``matplotlib``</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">msg1</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;&quot;delta_tstat&quot; was not computed. Please use the &#39;</span>
+                <span class="s1">&#39;delta_tstat=True option when calculating EONR: &#39;</span>
+                <span class="s1">&#39;EONR.calculate_eonr(delta_tstat=True)&#39;</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_delta_tstat</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="n">msg1</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_style</span><span class="p">(</span><span class="n">style</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">level_list</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">level_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_delta_tstat</span><span class="p">[</span><span class="s1">&#39;level&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+        <span class="n">df_delta_tstat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_delta_tstat</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">g</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">FacetGrid</span><span class="p">(</span><span class="n">df_delta_tstat</span><span class="p">)</span>
+        <span class="n">g</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dt_add_onr</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+        <span class="n">g</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dt_plot</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">df_delta_tstat</span><span class="p">,</span> <span class="n">level_list</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dt_modify_axes_labels</span><span class="p">()</span>
+        <span class="n">g</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dt_place_legend_tau</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+        <span class="n">g</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_modify_plot_params</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">plotsize_x</span><span class="o">=</span><span class="mf">4.5</span><span class="p">,</span> <span class="n">plotsize_y</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+                                     <span class="n">labelsize</span><span class="o">=</span><span class="mi">11</span><span class="p">)</span>
+<span class="c1">#        g.ax.tick_params(axis=&#39;both&#39;, labelsize=9)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_add_title</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+<span class="c1">#        g.ax.grid(False, axis=&#39;x&#39;)</span>
+<span class="c1">#        y_grids = g.ax.get_ygridlines()</span>
+<span class="c1">#        for idx, grid in enumerate(y_grids):</span>
+<span class="c1">#            if idx == 1:</span>
+<span class="c1">#                grid.set_linewidth(1.0)</span>
+<span class="c1">#            else:</span>
+<span class="c1">#                grid.set_alpha(0.4)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fig_delta_tstat</span> <span class="o">=</span> <span class="n">g</span></div>
+
+<div class="viewcode-block" id="Plotting_tools.plot_derivative"><a class="viewcode-back" href="../../eonr.html#eonr.plotting_tools.Plotting_tools.plot_derivative">[docs]</a>    <span class="k">def</span> <span class="nf">plot_derivative</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ci_type</span><span class="o">=</span><span class="s1">&#39;profile-likelihood&#39;</span><span class="p">,</span> <span class="n">ci_level</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                        <span class="n">style</span><span class="o">=</span><span class="s1">&#39;ggplot&#39;</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Plots a zoomed up view of the ONR and the derivative</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">            ci_type (str): Indicates which confidence interval type should be</span>
+<span class="sd">                plotted. Options are &#39;wald&#39;, to plot the Wald</span>
+<span class="sd">                CIs; &#39;profile-likelihood&#39;, to plot the profile-likelihood</span>
+<span class="sd">                CIs; or &#39;bootstrap&#39;, to plot the bootstrap CIs (default:</span>
+<span class="sd">                &#39;profile-likelihood&#39;).</span>
+<span class="sd">            ci_level (float): The confidence interval level to be plotted, and</span>
+<span class="sd">                must be one of the values in EONR.ci_list. If None, uses the</span>
+<span class="sd">                EONR.ci_level (default: None).</span>
+<span class="sd">            level (``float``): The confidence levels to plot; should be a</span>
+<span class="sd">                value from EONR.ci_list (default: 0.90).</span>
+<span class="sd">            style (``str``, optional): The style of the plolt; can be any of</span>
+<span class="sd">                the options supported by ``matplotlib``</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_style</span><span class="p">(</span><span class="n">style</span><span class="p">)</span>
+        <span class="n">g</span><span class="p">,</span> <span class="p">(</span><span class="n">ax1</span><span class="p">,</span> <span class="n">ax2</span><span class="p">)</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">nrows</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">sharex</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">g</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_der_modify_axes_labels</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+        <span class="n">g</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_der_add_ci</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">ci_type</span><span class="o">=</span><span class="n">ci_type</span><span class="p">,</span> <span class="n">ci_level</span><span class="o">=</span><span class="n">ci_level</span><span class="p">)</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">eonr</span><span class="p">,</span>
+                          <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span>
+                          <span class="n">linewidth</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span>
+                          <span class="n">color</span><span class="o">=</span><span class="s1">&#39;#555555&#39;</span><span class="p">,</span>
+                          <span class="n">label</span><span class="o">=</span><span class="s1">&#39;EONR&#39;</span><span class="p">)</span>
+        <span class="n">g</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_der_draw_lines</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mf">0.99</span><span class="p">)</span>
+        <span class="n">g</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_der_add_onr</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+<span class="c1">#        g = self._modify_axes_pos(g)</span>
+        <span class="n">g</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_der_place_legend</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s1">&#39;lower right&#39;</span><span class="p">)</span>
+        <span class="n">g</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_der_modify_plot_params</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">plotsize_x</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">plotsize_y</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+                                         <span class="n">labelsize</span><span class="o">=</span><span class="mi">11</span><span class="p">)</span>
+
+        <span class="n">g</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_der_add_labels</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+        <span class="n">g</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_title</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">der</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">fig_derivative</span> <span class="o">=</span> <span class="n">g</span></div>
 
 <div class="viewcode-block" id="Plotting_tools.plot_eonr"><a class="viewcode-back" href="../../eonr.html#eonr.plotting_tools.Plotting_tools.plot_eonr">[docs]</a>    <span class="k">def</span> <span class="nf">plot_eonr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ci_type</span><span class="o">=</span><span class="s1">&#39;profile-likelihood&#39;</span><span class="p">,</span> <span class="n">ci_level</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                   <span class="n">run_n</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">x_min</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">x_max</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">y_min</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">y_max</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                  <span class="n">style</span><span class="o">=</span><span class="s1">&#39;ggplot&#39;</span><span class="p">):</span>
+                  <span class="n">fert_range</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s1">&#39;ggplot&#39;</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Plots EONR, MRTN, GRTN, net return, and nitrogen cost</span>
 
 <span class="sd">        Parameters:</span>
@@ -801,6 +1298,9 @@
 <span class="sd">            x_max (int): The maximum x-bounds of the plot (default: None)</span>
 <span class="sd">            y_min (int): The minimum y-bounds of the plot (default: None)</span>
 <span class="sd">            y_max (int): The maximum y-bounds of the plot (default: None)</span>
+<span class="sd">            fert_range (bool): Whether to include the recommended range in</span>
+<span class="sd">                fertilizer rate; this is the 50% confidence interval (default:</span>
+<span class="sd">                True)</span>
 <span class="sd">            style (str): The style of the plolt; can be any of the options</span>
 <span class="sd">                supported by</span>
 <span class="sd">                supported by</span>
@@ -826,7 +1326,7 @@
         <span class="n">g</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_place_legend</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s1">&#39;upper left&#39;</span><span class="p">)</span>
         <span class="n">g</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_modify_plot_params</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">plotsize_x</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">plotsize_y</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
                                      <span class="n">labelsize</span><span class="o">=</span><span class="mi">11</span><span class="p">)</span>
-        <span class="n">g</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_labels</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">x_max</span><span class="p">)</span>
+        <span class="n">g</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_labels</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">x_max</span><span class="p">,</span> <span class="n">fert_range</span><span class="o">=</span><span class="n">fert_range</span><span class="p">)</span>
         <span class="n">g</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_title</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 
@@ -878,7 +1378,7 @@
         <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="n">dpi</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Plotting_tools.plot_tau"><a class="viewcode-back" href="../../eonr.html#eonr.plotting_tools.Plotting_tools.plot_tau">[docs]</a>    <span class="k">def</span> <span class="nf">plot_tau</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y_axis</span><span class="o">=</span><span class="s1">&#39;t_stat&#39;</span><span class="p">,</span> <span class="n">emphasis</span><span class="o">=</span><span class="s1">&#39;profile-likelihood&#39;</span><span class="p">,</span>
-                 <span class="n">run_n</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                 <span class="n">run_n</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s1">&#39;ggplot&#39;</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Plots the test statistic as a function nitrogen rate</span>
 
 <span class="sd">        Parameters:</span>
@@ -894,7 +1394,10 @@
 <span class="sd">            run_n (int): The run number to plot, as indicated in EONR.df_ci; if</span>
 <span class="sd">                None, uses the most recent, or maximum, run_n in df_ci</span>
 <span class="sd">                (default: None).</span>
+<span class="sd">            style (``str``, optional): The style of the plolt; can be any of</span>
+<span class="sd">                the options supported by ``matplotlib``</span>
 <span class="sd">        &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_style</span><span class="p">(</span><span class="n">style</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">run_n</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">df_ci</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_ci</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">df_ci</span><span class="p">[</span><span class="s1">&#39;run_n&#39;</span><span class="p">]</span> <span class="o">==</span>
                                <span class="bp">self</span><span class="o">.</span><span class="n">df_ci</span><span class="p">[</span><span class="s1">&#39;run_n&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()]</span>
@@ -911,6 +1414,7 @@
         <span class="k">assert</span> <span class="n">emphasis</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;wald&#39;</span><span class="p">,</span> <span class="s1">&#39;profile-likelihood&#39;</span><span class="p">,</span> <span class="s1">&#39;bootstrap&#39;</span><span class="p">,</span> <span class="s1">&#39;None&#39;</span><span class="p">,</span>
                             <span class="kc">None</span><span class="p">],</span> <span class="n">msg2</span>
         <span class="n">g</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">FacetGrid</span><span class="p">(</span><span class="n">df_ci</span><span class="p">)</span>
+        <span class="n">g</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dt_add_onr</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">y_axis</span> <span class="o">==</span> <span class="s1">&#39;level&#39;</span><span class="p">:</span>
             <span class="n">y_ci</span> <span class="o">=</span> <span class="n">df_ci</span><span class="p">[</span><span class="n">y_axis</span><span class="p">]</span> <span class="o">*</span> <span class="mi">100</span>
         <span class="k">else</span><span class="p">:</span>
@@ -946,7 +1450,7 @@
         <span class="n">g</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">labelsize</span><span class="o">=</span><span class="mi">9</span><span class="p">)</span>
         <span class="n">g</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pci_add_ci_level</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">df_ci</span><span class="p">,</span> <span class="n">y_axis</span><span class="o">=</span><span class="n">y_axis</span><span class="p">,</span> <span class="n">emphasis</span><span class="o">=</span><span class="n">emphasis</span><span class="p">)</span>
         <span class="n">g</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pci_add_labels</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">df_ci</span><span class="p">,</span> <span class="n">y_axis</span><span class="o">=</span><span class="n">y_axis</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_pci_add_title</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_add_title</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
         <span class="n">g</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">)</span>
         <span class="n">y_grids</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">get_ygridlines</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">grid</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">y_grids</span><span class="p">):</span>
@@ -964,6 +1468,7 @@
 <span class="sd">            EONR (EONR object): The EONR object to update</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">df_data</span> <span class="o">=</span> <span class="n">EONR</span><span class="o">.</span><span class="n">df_data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">df_delta_tstat</span> <span class="o">=</span> <span class="n">EONR</span><span class="o">.</span><span class="n">df_delta_tstat</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cost_n_fert</span> <span class="o">=</span> <span class="n">EONR</span><span class="o">.</span><span class="n">cost_n_fert</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cost_n_social</span> <span class="o">=</span> <span class="n">EONR</span><span class="o">.</span><span class="n">cost_n_social</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">price_grain</span> <span class="o">=</span> <span class="n">EONR</span><span class="o">.</span><span class="n">price_grain</span>
@@ -996,12 +1501,17 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">mrtn</span> <span class="o">=</span> <span class="n">EONR</span><span class="o">.</span><span class="n">mrtn</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">eonr</span> <span class="o">=</span> <span class="n">EONR</span><span class="o">.</span><span class="n">eonr</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">df_ci</span> <span class="o">=</span> <span class="n">EONR</span><span class="o">.</span><span class="n">df_ci</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">df_ci_pdf</span> <span class="o">=</span> <span class="n">EONR</span><span class="o">.</span><span class="n">df_ci_pdf</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">df_der</span> <span class="o">=</span> <span class="n">EONR</span><span class="o">.</span><span class="n">df_der</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">df_linspace</span> <span class="o">=</span> <span class="n">EONR</span><span class="o">.</span><span class="n">df_linspace</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fig_delta_tstat</span> <span class="o">=</span> <span class="n">EONR</span><span class="o">.</span><span class="n">fig_eonr</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fig_derivative</span> <span class="o">=</span> <span class="n">EONR</span><span class="o">.</span><span class="n">fig_derivative</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fig_eonr</span> <span class="o">=</span> <span class="n">EONR</span><span class="o">.</span><span class="n">fig_eonr</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fig_tau</span> <span class="o">=</span> <span class="n">EONR</span><span class="o">.</span><span class="n">fig_tau</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">linspace_cost_n_fert</span> <span class="o">=</span> <span class="n">EONR</span><span class="o">.</span><span class="n">linspace_cost_n_fert</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">linspace_cost_n_social</span> <span class="o">=</span> <span class="n">EONR</span><span class="o">.</span><span class="n">linspace_cost_n_social</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">linspace_qp</span> <span class="o">=</span> <span class="n">EONR</span><span class="o">.</span><span class="n">linspace_qp</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">linspace_rtn</span> <span class="o">=</span> <span class="n">EONR</span><span class="o">.</span><span class="n">linspace_rtn</span>
+<span class="c1">#        self.linspace_cost_n_fert = EONR.linspace_cost_n_fert</span>
+<span class="c1">#        self.linspace_cost_n_social = EONR.linspace_cost_n_social</span>
+<span class="c1">#        self.linspace_qp = EONR.linspace_qp</span>
+<span class="c1">#        self.linspace_rtn = EONR.linspace_rtn</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">df_ci_temp</span> <span class="o">=</span> <span class="n">EONR</span><span class="o">.</span><span class="n">df_ci_temp</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ci_list</span> <span class="o">=</span> <span class="n">EONR</span><span class="o">.</span><span class="n">ci_list</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">alpha_list</span> <span class="o">=</span> <span class="n">EONR</span><span class="o">.</span><span class="n">alpha_list</span>

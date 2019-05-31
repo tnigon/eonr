@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="python">
   <head>
     <meta charset="utf-8" />
-    <title>eonr package &#8212; eonr 0.1.3 documentation</title>
+    <title>eonr package &#8212; eonr 0.1.4 documentation</title>
     <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -37,7 +37,7 @@
         </button>
         <a class="navbar-brand" href="index.html">
           EONR</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.1.3</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.1.4</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -319,7 +319,7 @@ relative to the economic scenario resulting in the highest EONR.</p>
 
 <dl class="method">
 <dt id="eonr.eonr.EONR.calculate_eonr">
-<code class="descname">calculate_eonr</code><span class="sig-paren">(</span><em>df</em>, <em>col_n_app=None</em>, <em>col_yld=None</em>, <em>col_crop_nup=None</em>, <em>col_n_avail=None</em>, <em>col_year=None</em>, <em>col_location=None</em>, <em>col_time_n=None</em>, <em>bootstrap_ci=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/eonr/eonr.html#EONR.calculate_eonr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#eonr.eonr.EONR.calculate_eonr" title="Permalink to this definition">¶</a></dt>
+<code class="descname">calculate_eonr</code><span class="sig-paren">(</span><em>df</em>, <em>col_n_app=None</em>, <em>col_yld=None</em>, <em>col_crop_nup=None</em>, <em>col_n_avail=None</em>, <em>col_year=None</em>, <em>col_location=None</em>, <em>col_time_n=None</em>, <em>bootstrap_ci=False</em>, <em>samples_boot=9999</em>, <em>delta_tstat=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/eonr/eonr.html#EONR.calculate_eonr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#eonr.eonr.EONR.calculate_eonr" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the EONR and its confidence intervals</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -346,7 +346,14 @@ application timing (default: None).</p></li>
 confidence intervals are to be computed. If calculating the
 EONR for many sites and/or economic scenarios, it may be
 desirable to set to <code class="docutils literal notranslate"><span class="pre">False</span></code> because the bootstrap confidence
-intervals take the most time to compute (default: True).</p></li>
+intervals take the most time to compute (default: False).</p></li>
+<li><p><strong>samples_boot</strong> (<code class="docutils literal notranslate"><span class="pre">int</span></code>, optional) -- Number of samples in the
+bootstrap computation (default: 9999).</p></li>
+<li><p><strong>delta_tstat</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>, optional) -- Indicates whether the
+difference from the t-statistic will be computed (as a function
+of theta2/N rate). May be useful to observe what optimization
+method is best suited to reach convergence when computing the
+profile-likelihood CIs (default: False).</p></li>
 </ul>
 </dd>
 </dl>
@@ -368,6 +375,46 @@ therefore, <code class="docutils literal notranslate"><span class="pre">EONR.cos
 <p><code class="docutils literal notranslate"><span class="pre">col_year</span></code>, <code class="docutils literal notranslate"><span class="pre">col_location</span></code>, and <code class="docutils literal notranslate"><span class="pre">col_time_n</span></code> are purely
 optional. They only affect the titles and axes labels of the plots.</p>
 </div>
+</dd></dl>
+
+<dl class="method">
+<dt id="eonr.eonr.EONR.plot_delta_tstat">
+<code class="descname">plot_delta_tstat</code><span class="sig-paren">(</span><em>level_list=None</em>, <em>style='ggplot'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/eonr/eonr.html#EONR.plot_delta_tstat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#eonr.eonr.EONR.plot_delta_tstat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots the test statistic as a function nitrogen rate</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>level_list</strong> (<code class="docutils literal notranslate"><span class="pre">list</span></code>) -- The confidence levels to plot; should be a
+subset of items in EONR.ci_list (default: None).</p></li>
+<li><p><strong>style</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>, optional) -- The style of the plolt; can be any of
+the options supported by <code class="docutils literal notranslate"><span class="pre">matplotlib</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="eonr.eonr.EONR.plot_derivative">
+<code class="descname">plot_derivative</code><span class="sig-paren">(</span><em>ci_type='profile-likelihood'</em>, <em>ci_level=None</em>, <em>style='ggplot'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/eonr/eonr.html#EONR.plot_derivative"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#eonr.eonr.EONR.plot_derivative" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots a zoomed up view of the ONR and the derivative</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ci_type</strong> (<em>str</em>) -- Indicates which confidence interval type should be
+plotted. Options are 'wald', to plot the Wald
+CIs; 'profile-likelihood', to plot the profile-likelihood
+CIs; or 'bootstrap', to plot the bootstrap CIs (default:
+'profile-likelihood').</p></li>
+<li><p><strong>ci_level</strong> (<em>float</em>) -- The confidence interval level to be plotted, and
+must be one of the values in EONR.ci_list. If None, uses the
+EONR.ci_level (default: None).</p></li>
+<li><p><strong>level</strong> (<code class="docutils literal notranslate"><span class="pre">float</span></code>) -- The confidence levels to plot; should be a
+value from EONR.ci_list (default: 0.90).</p></li>
+<li><p><strong>style</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>, optional) -- The style of the plolt; can be any of
+the options supported by <code class="docutils literal notranslate"><span class="pre">matplotlib</span></code></p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
@@ -410,6 +457,42 @@ Matplotlib if left as <code class="docutils literal notranslate"><span class="pr
 </dd></dl>
 
 <dl class="method">
+<dt id="eonr.eonr.EONR.plot_modify_size">
+<code class="descname">plot_modify_size</code><span class="sig-paren">(</span><em>fig=None</em>, <em>plotsize_x=7</em>, <em>plotsize_y=4</em>, <em>labelsize=11</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/eonr/eonr.html#EONR.plot_modify_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#eonr.eonr.EONR.plot_modify_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Modifies the size of the last plot generated</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fig</strong> (<code class="docutils literal notranslate"><span class="pre">Matplotlib</span> <span class="pre">Figure</span></code>, optional) -- Matplotlib figure to modify
+(default: None)</p></li>
+<li><p><strong>plotsize_x</strong> (<code class="docutils literal notranslate"><span class="pre">float</span></code>, optional) -- Sets x size of plot in inches
+(default: 7)</p></li>
+<li><p><strong>plotsize_y</strong> (<code class="docutils literal notranslate"><span class="pre">float</span></code>, optional) -- Sets y size of plot in inches
+(default: 4)</p></li>
+<li><p><strong>labelsize</strong> (<code class="docutils literal notranslate"><span class="pre">float</span></code>, optional) -- Sets tick and label
+(defaulat: 11)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="eonr.eonr.EONR.plot_modify_title">
+<code class="descname">plot_modify_title</code><span class="sig-paren">(</span><em>title_text</em>, <em>g=None</em>, <em>size_font=12</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/eonr/eonr.html#EONR.plot_modify_title"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#eonr.eonr.EONR.plot_modify_title" title="Permalink to this definition">¶</a></dt>
+<dd><p>Allows user to replace the title text</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>title_text</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) -- New title text</p></li>
+<li><p><strong>g</strong> (<code class="docutils literal notranslate"><span class="pre">matplotlib.figure</span></code>) -- Matplotlib figure object to modify
+(default: None)</p></li>
+<li><p><strong>size_font</strong> (<code class="docutils literal notranslate"><span class="pre">float</span></code>) -- Font size to use (default: 12)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
 <dt id="eonr.eonr.EONR.plot_save">
 <code class="descname">plot_save</code><span class="sig-paren">(</span><em>fname=None</em>, <em>base_dir=None</em>, <em>fig=None</em>, <em>dpi=300</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/eonr/eonr.html#EONR.plot_save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#eonr.eonr.EONR.plot_save" title="Permalink to this definition">¶</a></dt>
 <dd><p>Saves a generated matplotlib figure to file</p>
@@ -430,7 +513,7 @@ per inch (default: 300)</p></li>
 
 <dl class="method">
 <dt id="eonr.eonr.EONR.plot_tau">
-<code class="descname">plot_tau</code><span class="sig-paren">(</span><em>y_axis='t_stat'</em>, <em>emphasis='profile-likelihood'</em>, <em>run_n=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/eonr/eonr.html#EONR.plot_tau"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#eonr.eonr.EONR.plot_tau" title="Permalink to this definition">¶</a></dt>
+<code class="descname">plot_tau</code><span class="sig-paren">(</span><em>y_axis='t_stat'</em>, <em>emphasis='profile-likelihood'</em>, <em>run_n=None</em>, <em>style='ggplot'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/eonr/eonr.html#EONR.plot_tau"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#eonr.eonr.EONR.plot_tau" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plots the test statistic as a function nitrogen rate</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -448,6 +531,8 @@ empahsize the Wald CIs;
 <li><p><strong>run_n</strong> (<code class="docutils literal notranslate"><span class="pre">int</span></code>, optional) -- The run number to plot, as indicated in
 <code class="docutils literal notranslate"><span class="pre">EONR.df_ci</span></code>; if <code class="docutils literal notranslate"><span class="pre">None</span></code>, uses the most recent, or maximum,
 run_n in <code class="docutils literal notranslate"><span class="pre">EONR.df_ci</span></code> (default: None).</p></li>
+<li><p><strong>style</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>, optional) -- The style of the plolt; can be any of
+the options supported by <code class="docutils literal notranslate"><span class="pre">matplotlib</span></code></p></li>
 </ul>
 </dd>
 </dl>
@@ -692,8 +777,83 @@ matrix and estimate confidence intervals for theta2 directly.</p>
 <em class="property">class </em><code class="descclassname">eonr.plotting_tools.</code><code class="descname">Plotting_tools</code><span class="sig-paren">(</span><em>EONR</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/eonr/plotting_tools.html#Plotting_tools"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#eonr.plotting_tools.Plotting_tools" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="method">
+<dt id="eonr.plotting_tools.Plotting_tools.modify_size">
+<code class="descname">modify_size</code><span class="sig-paren">(</span><em>fig=None</em>, <em>plotsize_x=7</em>, <em>plotsize_y=4</em>, <em>labelsize=11</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/eonr/plotting_tools.html#Plotting_tools.modify_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#eonr.plotting_tools.Plotting_tools.modify_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Modifies the size of the last plot generated</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fig</strong> (<code class="docutils literal notranslate"><span class="pre">Matplotlib</span> <span class="pre">Figure</span></code>, optional) -- Matplotlib figure to modify
+(default: None)</p></li>
+<li><p><strong>plotsize_x</strong> (<code class="docutils literal notranslate"><span class="pre">float</span></code>, optional) -- Sets x size of plot in inches
+(default: 7)</p></li>
+<li><p><strong>plotsize_y</strong> (<code class="docutils literal notranslate"><span class="pre">float</span></code>, optional) -- Sets y size of plot in inches
+(default: 4)</p></li>
+<li><p><strong>labelsize</strong> (<code class="docutils literal notranslate"><span class="pre">float</span></code>, optional) -- Sets tick and label
+(defaulat: 11)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="eonr.plotting_tools.Plotting_tools.modify_title">
+<code class="descname">modify_title</code><span class="sig-paren">(</span><em>title_text</em>, <em>g</em>, <em>size_font=12</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/eonr/plotting_tools.html#Plotting_tools.modify_title"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#eonr.plotting_tools.Plotting_tools.modify_title" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>title_text</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) -- New title text</p></li>
+<li><p><strong>g</strong> (<code class="docutils literal notranslate"><span class="pre">matplotlib.figure</span></code>) -- Matplotlib figure object to modify
+(default: None)</p></li>
+<li><p><strong>size_font</strong> (<code class="docutils literal notranslate"><span class="pre">float</span></code>) -- Font size to use (default: 12)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="eonr.plotting_tools.Plotting_tools.plot_delta_tstat">
+<code class="descname">plot_delta_tstat</code><span class="sig-paren">(</span><em>level_list=None</em>, <em>style='ggplot'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/eonr/plotting_tools.html#Plotting_tools.plot_delta_tstat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#eonr.plotting_tools.Plotting_tools.plot_delta_tstat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots the test statistic as a function nitrogen rate</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>level_list</strong> (<code class="docutils literal notranslate"><span class="pre">list</span></code>) -- The confidence levels to plot; should be a
+subset of items in EONR.ci_list (default: None).</p></li>
+<li><p><strong>style</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>, optional) -- The style of the plolt; can be any of
+the options supported by <code class="docutils literal notranslate"><span class="pre">matplotlib</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="eonr.plotting_tools.Plotting_tools.plot_derivative">
+<code class="descname">plot_derivative</code><span class="sig-paren">(</span><em>ci_type='profile-likelihood'</em>, <em>ci_level=None</em>, <em>style='ggplot'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/eonr/plotting_tools.html#Plotting_tools.plot_derivative"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#eonr.plotting_tools.Plotting_tools.plot_derivative" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots a zoomed up view of the ONR and the derivative</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ci_type</strong> (<em>str</em>) -- Indicates which confidence interval type should be
+plotted. Options are 'wald', to plot the Wald
+CIs; 'profile-likelihood', to plot the profile-likelihood
+CIs; or 'bootstrap', to plot the bootstrap CIs (default:
+'profile-likelihood').</p></li>
+<li><p><strong>ci_level</strong> (<em>float</em>) -- The confidence interval level to be plotted, and
+must be one of the values in EONR.ci_list. If None, uses the
+EONR.ci_level (default: None).</p></li>
+<li><p><strong>level</strong> (<code class="docutils literal notranslate"><span class="pre">float</span></code>) -- The confidence levels to plot; should be a
+value from EONR.ci_list (default: 0.90).</p></li>
+<li><p><strong>style</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>, optional) -- The style of the plolt; can be any of
+the options supported by <code class="docutils literal notranslate"><span class="pre">matplotlib</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
 <dt id="eonr.plotting_tools.Plotting_tools.plot_eonr">
-<code class="descname">plot_eonr</code><span class="sig-paren">(</span><em>ci_type='profile-likelihood'</em>, <em>ci_level=None</em>, <em>run_n=None</em>, <em>x_min=None</em>, <em>x_max=None</em>, <em>y_min=None</em>, <em>y_max=None</em>, <em>style='ggplot'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/eonr/plotting_tools.html#Plotting_tools.plot_eonr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#eonr.plotting_tools.Plotting_tools.plot_eonr" title="Permalink to this definition">¶</a></dt>
+<code class="descname">plot_eonr</code><span class="sig-paren">(</span><em>ci_type='profile-likelihood'</em>, <em>ci_level=None</em>, <em>run_n=None</em>, <em>x_min=None</em>, <em>x_max=None</em>, <em>y_min=None</em>, <em>y_max=None</em>, <em>fert_range=False</em>, <em>style='ggplot'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/eonr/plotting_tools.html#Plotting_tools.plot_eonr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#eonr.plotting_tools.Plotting_tools.plot_eonr" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plots EONR, MRTN, GRTN, net return, and nitrogen cost</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -713,6 +873,9 @@ run_n in EONR.df_results (default: None).</p></li>
 <li><p><strong>x_max</strong> (<em>int</em>) -- The maximum x-bounds of the plot (default: None)</p></li>
 <li><p><strong>y_min</strong> (<em>int</em>) -- The minimum y-bounds of the plot (default: None)</p></li>
 <li><p><strong>y_max</strong> (<em>int</em>) -- The maximum y-bounds of the plot (default: None)</p></li>
+<li><p><strong>fert_range</strong> (<em>bool</em>) -- Whether to include the recommended range in
+fertilizer rate; this is the 50% confidence interval (default:
+True)</p></li>
 <li><p><strong>style</strong> (<em>str</em>) -- The style of the plolt; can be any of the options
 supported by
 supported by
@@ -742,7 +905,7 @@ None)</p></li>
 
 <dl class="method">
 <dt id="eonr.plotting_tools.Plotting_tools.plot_tau">
-<code class="descname">plot_tau</code><span class="sig-paren">(</span><em>y_axis='t_stat'</em>, <em>emphasis='profile-likelihood'</em>, <em>run_n=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/eonr/plotting_tools.html#Plotting_tools.plot_tau"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#eonr.plotting_tools.Plotting_tools.plot_tau" title="Permalink to this definition">¶</a></dt>
+<code class="descname">plot_tau</code><span class="sig-paren">(</span><em>y_axis='t_stat'</em>, <em>emphasis='profile-likelihood'</em>, <em>run_n=None</em>, <em>style='ggplot'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/eonr/plotting_tools.html#Plotting_tools.plot_tau"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#eonr.plotting_tools.Plotting_tools.plot_tau" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plots the test statistic as a function nitrogen rate</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -759,6 +922,8 @@ empahsize no CI (default: 'profile-likelihood').</p></li>
 <li><p><strong>run_n</strong> (<em>int</em>) -- The run number to plot, as indicated in EONR.df_ci; if
 None, uses the most recent, or maximum, run_n in df_ci
 (default: None).</p></li>
+<li><p><strong>style</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>, optional) -- The style of the plolt; can be any of
+the options supported by <code class="docutils literal notranslate"><span class="pre">matplotlib</span></code></p></li>
 </ul>
 </dd>
 </dl>
@@ -811,7 +976,7 @@ relative to the economic scenario resulting in the highest EONR.</p>
 
 <dl class="method">
 <dt id="eonr.EONR.calculate_eonr">
-<code class="descname">calculate_eonr</code><span class="sig-paren">(</span><em>df</em>, <em>col_n_app=None</em>, <em>col_yld=None</em>, <em>col_crop_nup=None</em>, <em>col_n_avail=None</em>, <em>col_year=None</em>, <em>col_location=None</em>, <em>col_time_n=None</em>, <em>bootstrap_ci=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/eonr/eonr.html#EONR.calculate_eonr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#eonr.EONR.calculate_eonr" title="Permalink to this definition">¶</a></dt>
+<code class="descname">calculate_eonr</code><span class="sig-paren">(</span><em>df</em>, <em>col_n_app=None</em>, <em>col_yld=None</em>, <em>col_crop_nup=None</em>, <em>col_n_avail=None</em>, <em>col_year=None</em>, <em>col_location=None</em>, <em>col_time_n=None</em>, <em>bootstrap_ci=False</em>, <em>samples_boot=9999</em>, <em>delta_tstat=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/eonr/eonr.html#EONR.calculate_eonr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#eonr.EONR.calculate_eonr" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the EONR and its confidence intervals</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -838,7 +1003,14 @@ application timing (default: None).</p></li>
 confidence intervals are to be computed. If calculating the
 EONR for many sites and/or economic scenarios, it may be
 desirable to set to <code class="docutils literal notranslate"><span class="pre">False</span></code> because the bootstrap confidence
-intervals take the most time to compute (default: True).</p></li>
+intervals take the most time to compute (default: False).</p></li>
+<li><p><strong>samples_boot</strong> (<code class="docutils literal notranslate"><span class="pre">int</span></code>, optional) -- Number of samples in the
+bootstrap computation (default: 9999).</p></li>
+<li><p><strong>delta_tstat</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>, optional) -- Indicates whether the
+difference from the t-statistic will be computed (as a function
+of theta2/N rate). May be useful to observe what optimization
+method is best suited to reach convergence when computing the
+profile-likelihood CIs (default: False).</p></li>
 </ul>
 </dd>
 </dl>
@@ -860,6 +1032,46 @@ therefore, <code class="docutils literal notranslate"><span class="pre">EONR.cos
 <p><code class="docutils literal notranslate"><span class="pre">col_year</span></code>, <code class="docutils literal notranslate"><span class="pre">col_location</span></code>, and <code class="docutils literal notranslate"><span class="pre">col_time_n</span></code> are purely
 optional. They only affect the titles and axes labels of the plots.</p>
 </div>
+</dd></dl>
+
+<dl class="method">
+<dt id="eonr.EONR.plot_delta_tstat">
+<code class="descname">plot_delta_tstat</code><span class="sig-paren">(</span><em>level_list=None</em>, <em>style='ggplot'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/eonr/eonr.html#EONR.plot_delta_tstat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#eonr.EONR.plot_delta_tstat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots the test statistic as a function nitrogen rate</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>level_list</strong> (<code class="docutils literal notranslate"><span class="pre">list</span></code>) -- The confidence levels to plot; should be a
+subset of items in EONR.ci_list (default: None).</p></li>
+<li><p><strong>style</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>, optional) -- The style of the plolt; can be any of
+the options supported by <code class="docutils literal notranslate"><span class="pre">matplotlib</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="eonr.EONR.plot_derivative">
+<code class="descname">plot_derivative</code><span class="sig-paren">(</span><em>ci_type='profile-likelihood'</em>, <em>ci_level=None</em>, <em>style='ggplot'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/eonr/eonr.html#EONR.plot_derivative"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#eonr.EONR.plot_derivative" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots a zoomed up view of the ONR and the derivative</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ci_type</strong> (<em>str</em>) -- Indicates which confidence interval type should be
+plotted. Options are 'wald', to plot the Wald
+CIs; 'profile-likelihood', to plot the profile-likelihood
+CIs; or 'bootstrap', to plot the bootstrap CIs (default:
+'profile-likelihood').</p></li>
+<li><p><strong>ci_level</strong> (<em>float</em>) -- The confidence interval level to be plotted, and
+must be one of the values in EONR.ci_list. If None, uses the
+EONR.ci_level (default: None).</p></li>
+<li><p><strong>level</strong> (<code class="docutils literal notranslate"><span class="pre">float</span></code>) -- The confidence levels to plot; should be a
+value from EONR.ci_list (default: 0.90).</p></li>
+<li><p><strong>style</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>, optional) -- The style of the plolt; can be any of
+the options supported by <code class="docutils literal notranslate"><span class="pre">matplotlib</span></code></p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
@@ -902,6 +1114,42 @@ Matplotlib if left as <code class="docutils literal notranslate"><span class="pr
 </dd></dl>
 
 <dl class="method">
+<dt id="eonr.EONR.plot_modify_size">
+<code class="descname">plot_modify_size</code><span class="sig-paren">(</span><em>fig=None</em>, <em>plotsize_x=7</em>, <em>plotsize_y=4</em>, <em>labelsize=11</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/eonr/eonr.html#EONR.plot_modify_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#eonr.EONR.plot_modify_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Modifies the size of the last plot generated</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fig</strong> (<code class="docutils literal notranslate"><span class="pre">Matplotlib</span> <span class="pre">Figure</span></code>, optional) -- Matplotlib figure to modify
+(default: None)</p></li>
+<li><p><strong>plotsize_x</strong> (<code class="docutils literal notranslate"><span class="pre">float</span></code>, optional) -- Sets x size of plot in inches
+(default: 7)</p></li>
+<li><p><strong>plotsize_y</strong> (<code class="docutils literal notranslate"><span class="pre">float</span></code>, optional) -- Sets y size of plot in inches
+(default: 4)</p></li>
+<li><p><strong>labelsize</strong> (<code class="docutils literal notranslate"><span class="pre">float</span></code>, optional) -- Sets tick and label
+(defaulat: 11)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="eonr.EONR.plot_modify_title">
+<code class="descname">plot_modify_title</code><span class="sig-paren">(</span><em>title_text</em>, <em>g=None</em>, <em>size_font=12</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/eonr/eonr.html#EONR.plot_modify_title"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#eonr.EONR.plot_modify_title" title="Permalink to this definition">¶</a></dt>
+<dd><p>Allows user to replace the title text</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>title_text</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) -- New title text</p></li>
+<li><p><strong>g</strong> (<code class="docutils literal notranslate"><span class="pre">matplotlib.figure</span></code>) -- Matplotlib figure object to modify
+(default: None)</p></li>
+<li><p><strong>size_font</strong> (<code class="docutils literal notranslate"><span class="pre">float</span></code>) -- Font size to use (default: 12)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
 <dt id="eonr.EONR.plot_save">
 <code class="descname">plot_save</code><span class="sig-paren">(</span><em>fname=None</em>, <em>base_dir=None</em>, <em>fig=None</em>, <em>dpi=300</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/eonr/eonr.html#EONR.plot_save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#eonr.EONR.plot_save" title="Permalink to this definition">¶</a></dt>
 <dd><p>Saves a generated matplotlib figure to file</p>
@@ -922,7 +1170,7 @@ per inch (default: 300)</p></li>
 
 <dl class="method">
 <dt id="eonr.EONR.plot_tau">
-<code class="descname">plot_tau</code><span class="sig-paren">(</span><em>y_axis='t_stat'</em>, <em>emphasis='profile-likelihood'</em>, <em>run_n=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/eonr/eonr.html#EONR.plot_tau"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#eonr.EONR.plot_tau" title="Permalink to this definition">¶</a></dt>
+<code class="descname">plot_tau</code><span class="sig-paren">(</span><em>y_axis='t_stat'</em>, <em>emphasis='profile-likelihood'</em>, <em>run_n=None</em>, <em>style='ggplot'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/eonr/eonr.html#EONR.plot_tau"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#eonr.EONR.plot_tau" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plots the test statistic as a function nitrogen rate</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -940,6 +1188,8 @@ empahsize the Wald CIs;
 <li><p><strong>run_n</strong> (<code class="docutils literal notranslate"><span class="pre">int</span></code>, optional) -- The run number to plot, as indicated in
 <code class="docutils literal notranslate"><span class="pre">EONR.df_ci</span></code>; if <code class="docutils literal notranslate"><span class="pre">None</span></code>, uses the most recent, or maximum,
 run_n in <code class="docutils literal notranslate"><span class="pre">EONR.df_ci</span></code> (default: None).</p></li>
+<li><p><strong>style</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>, optional) -- The style of the plolt; can be any of
+the options supported by <code class="docutils literal notranslate"><span class="pre">matplotlib</span></code></p></li>
 </ul>
 </dd>
 </dl>
@@ -1176,8 +1426,83 @@ matrix and estimate confidence intervals for theta2 directly.</p>
 <em class="property">class </em><code class="descclassname">eonr.</code><code class="descname">Plotting_tools</code><span class="sig-paren">(</span><em>EONR</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/eonr/plotting_tools.html#Plotting_tools"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#eonr.Plotting_tools" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="method">
+<dt id="eonr.Plotting_tools.modify_size">
+<code class="descname">modify_size</code><span class="sig-paren">(</span><em>fig=None</em>, <em>plotsize_x=7</em>, <em>plotsize_y=4</em>, <em>labelsize=11</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/eonr/plotting_tools.html#Plotting_tools.modify_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#eonr.Plotting_tools.modify_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Modifies the size of the last plot generated</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fig</strong> (<code class="docutils literal notranslate"><span class="pre">Matplotlib</span> <span class="pre">Figure</span></code>, optional) -- Matplotlib figure to modify
+(default: None)</p></li>
+<li><p><strong>plotsize_x</strong> (<code class="docutils literal notranslate"><span class="pre">float</span></code>, optional) -- Sets x size of plot in inches
+(default: 7)</p></li>
+<li><p><strong>plotsize_y</strong> (<code class="docutils literal notranslate"><span class="pre">float</span></code>, optional) -- Sets y size of plot in inches
+(default: 4)</p></li>
+<li><p><strong>labelsize</strong> (<code class="docutils literal notranslate"><span class="pre">float</span></code>, optional) -- Sets tick and label
+(defaulat: 11)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="eonr.Plotting_tools.modify_title">
+<code class="descname">modify_title</code><span class="sig-paren">(</span><em>title_text</em>, <em>g</em>, <em>size_font=12</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/eonr/plotting_tools.html#Plotting_tools.modify_title"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#eonr.Plotting_tools.modify_title" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>title_text</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) -- New title text</p></li>
+<li><p><strong>g</strong> (<code class="docutils literal notranslate"><span class="pre">matplotlib.figure</span></code>) -- Matplotlib figure object to modify
+(default: None)</p></li>
+<li><p><strong>size_font</strong> (<code class="docutils literal notranslate"><span class="pre">float</span></code>) -- Font size to use (default: 12)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="eonr.Plotting_tools.plot_delta_tstat">
+<code class="descname">plot_delta_tstat</code><span class="sig-paren">(</span><em>level_list=None</em>, <em>style='ggplot'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/eonr/plotting_tools.html#Plotting_tools.plot_delta_tstat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#eonr.Plotting_tools.plot_delta_tstat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots the test statistic as a function nitrogen rate</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>level_list</strong> (<code class="docutils literal notranslate"><span class="pre">list</span></code>) -- The confidence levels to plot; should be a
+subset of items in EONR.ci_list (default: None).</p></li>
+<li><p><strong>style</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>, optional) -- The style of the plolt; can be any of
+the options supported by <code class="docutils literal notranslate"><span class="pre">matplotlib</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="eonr.Plotting_tools.plot_derivative">
+<code class="descname">plot_derivative</code><span class="sig-paren">(</span><em>ci_type='profile-likelihood'</em>, <em>ci_level=None</em>, <em>style='ggplot'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/eonr/plotting_tools.html#Plotting_tools.plot_derivative"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#eonr.Plotting_tools.plot_derivative" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots a zoomed up view of the ONR and the derivative</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ci_type</strong> (<em>str</em>) -- Indicates which confidence interval type should be
+plotted. Options are 'wald', to plot the Wald
+CIs; 'profile-likelihood', to plot the profile-likelihood
+CIs; or 'bootstrap', to plot the bootstrap CIs (default:
+'profile-likelihood').</p></li>
+<li><p><strong>ci_level</strong> (<em>float</em>) -- The confidence interval level to be plotted, and
+must be one of the values in EONR.ci_list. If None, uses the
+EONR.ci_level (default: None).</p></li>
+<li><p><strong>level</strong> (<code class="docutils literal notranslate"><span class="pre">float</span></code>) -- The confidence levels to plot; should be a
+value from EONR.ci_list (default: 0.90).</p></li>
+<li><p><strong>style</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>, optional) -- The style of the plolt; can be any of
+the options supported by <code class="docutils literal notranslate"><span class="pre">matplotlib</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
 <dt id="eonr.Plotting_tools.plot_eonr">
-<code class="descname">plot_eonr</code><span class="sig-paren">(</span><em>ci_type='profile-likelihood'</em>, <em>ci_level=None</em>, <em>run_n=None</em>, <em>x_min=None</em>, <em>x_max=None</em>, <em>y_min=None</em>, <em>y_max=None</em>, <em>style='ggplot'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/eonr/plotting_tools.html#Plotting_tools.plot_eonr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#eonr.Plotting_tools.plot_eonr" title="Permalink to this definition">¶</a></dt>
+<code class="descname">plot_eonr</code><span class="sig-paren">(</span><em>ci_type='profile-likelihood'</em>, <em>ci_level=None</em>, <em>run_n=None</em>, <em>x_min=None</em>, <em>x_max=None</em>, <em>y_min=None</em>, <em>y_max=None</em>, <em>fert_range=False</em>, <em>style='ggplot'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/eonr/plotting_tools.html#Plotting_tools.plot_eonr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#eonr.Plotting_tools.plot_eonr" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plots EONR, MRTN, GRTN, net return, and nitrogen cost</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1197,6 +1522,9 @@ run_n in EONR.df_results (default: None).</p></li>
 <li><p><strong>x_max</strong> (<em>int</em>) -- The maximum x-bounds of the plot (default: None)</p></li>
 <li><p><strong>y_min</strong> (<em>int</em>) -- The minimum y-bounds of the plot (default: None)</p></li>
 <li><p><strong>y_max</strong> (<em>int</em>) -- The maximum y-bounds of the plot (default: None)</p></li>
+<li><p><strong>fert_range</strong> (<em>bool</em>) -- Whether to include the recommended range in
+fertilizer rate; this is the 50% confidence interval (default:
+True)</p></li>
 <li><p><strong>style</strong> (<em>str</em>) -- The style of the plolt; can be any of the options
 supported by
 supported by
@@ -1226,7 +1554,7 @@ None)</p></li>
 
 <dl class="method">
 <dt id="eonr.Plotting_tools.plot_tau">
-<code class="descname">plot_tau</code><span class="sig-paren">(</span><em>y_axis='t_stat'</em>, <em>emphasis='profile-likelihood'</em>, <em>run_n=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/eonr/plotting_tools.html#Plotting_tools.plot_tau"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#eonr.Plotting_tools.plot_tau" title="Permalink to this definition">¶</a></dt>
+<code class="descname">plot_tau</code><span class="sig-paren">(</span><em>y_axis='t_stat'</em>, <em>emphasis='profile-likelihood'</em>, <em>run_n=None</em>, <em>style='ggplot'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/eonr/plotting_tools.html#Plotting_tools.plot_tau"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#eonr.Plotting_tools.plot_tau" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plots the test statistic as a function nitrogen rate</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1243,6 +1571,8 @@ empahsize no CI (default: 'profile-likelihood').</p></li>
 <li><p><strong>run_n</strong> (<em>int</em>) -- The run number to plot, as indicated in EONR.df_ci; if
 None, uses the most recent, or maximum, run_n in df_ci
 (default: None).</p></li>
+<li><p><strong>style</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>, optional) -- The style of the plolt; can be any of
+the options supported by <code class="docutils literal notranslate"><span class="pre">matplotlib</span></code></p></li>
 </ul>
 </dd>
 </dl>
