@@ -32,6 +32,7 @@ class Models(object):
         self.R = EONR.R
         self.coefs_grtn = EONR.coefs_grtn
         self.cost_n_fert = EONR.cost_n_fert
+        self.costs_fixed = EONR.costs_fixed
         self.coefs_social = EONR.coefs_social
 
     def update_eonr(self, EONR):
@@ -39,6 +40,7 @@ class Models(object):
         self.R = EONR.R
         self.coefs_grtn = EONR.coefs_grtn
         self.cost_n_fert = EONR.cost_n_fert
+        self.costs_fixed = EONR.costs_fixed
         self.coefs_social = EONR.coefs_social
 
     def exp(self, x, a, b, c):
@@ -140,7 +142,7 @@ class Models(object):
             exp_b = self.coefs_social['exp_gamma1']
             exp_c = self.coefs_social['exp_gamma2']
             social_cost = self.exp(x, a=exp_a, b=exp_b, c=exp_c)
-        result = gross_rtn - fert_cost - social_cost
+        result = gross_rtn - fert_cost - social_cost - self.costs_fixed
         return -result
 
     def qp_gross_theta2(self, x, b0, theta2, b2):

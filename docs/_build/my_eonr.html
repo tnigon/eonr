@@ -159,6 +159,13 @@ experimental yield response to nitrogen for other crops.</p>
 <dt class="field-even">type cost_n_social</dt>
 <dd class="field-even"><p>float, optional</p>
 </dd>
+<dt class="field-odd">param costs_fixed</dt>
+<dd class="field-odd"><p>Fixed costs on a per area basis (default:
+0.00)</p>
+</dd>
+<dt class="field-even">type costs_fixed</dt>
+<dd class="field-even"><p>float, optional</p>
+</dd>
 <dt class="field-odd">param price_grain</dt>
 <dd class="field-odd"><p>Price of grain (default: 3.00)</p>
 </dd>
@@ -301,7 +308,7 @@ probably be replicated).</p>
 <p><em>Class methods available for any instance of</em> <code class="docutils literal notranslate"><span class="pre">EONR</span></code>. <em>Run</em> <code class="docutils literal notranslate"><span class="pre">my_eonr</span> <span class="pre">=</span> <span class="pre">EONR([options])</span></code> <em>to create a new</em> <code class="docutils literal notranslate"><span class="pre">EONR</span></code> <em>instance, then you'll have access to any of the following methods.</em></p>
 <dl class="class">
 <dt id="eonr.EONR">
-<em class="property">class </em><code class="descclassname">eonr.</code><code class="descname">EONR</code><span class="sig-paren">(</span><em>cost_n_fert=0.5</em>, <em>cost_n_social=0</em>, <em>price_grain=3.0</em>, <em>col_n_app='rate_n_applied_lbac'</em>, <em>col_yld='yld_grain_dry_buac'</em>, <em>col_crop_nup='nup_total_lbac'</em>, <em>col_n_avail='soil_plus_fert_n_lbac'</em>, <em>col_year='year'</em>, <em>col_location='location'</em>, <em>col_time_n='time_n'</em>, <em>unit_currency='$'</em>, <em>unit_fert='lbs'</em>, <em>unit_grain='bu'</em>, <em>unit_area='ac'</em>, <em>model='quad_plateau'</em>, <em>ci_level=0.9</em>, <em>base_dir=None</em>, <em>base_zero=True</em>, <em>print_out=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/eonr/eonr.html#EONR"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#eonr.EONR" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">eonr.</code><code class="descname">EONR</code><span class="sig-paren">(</span><em>cost_n_fert=0.5</em>, <em>cost_n_social=0.0</em>, <em>costs_fixed=0.0</em>, <em>price_grain=3.0</em>, <em>col_n_app='rate_n_applied_lbac'</em>, <em>col_yld='yld_grain_dry_buac'</em>, <em>col_crop_nup='nup_total_lbac'</em>, <em>col_n_avail='soil_plus_fert_n_lbac'</em>, <em>col_year='year'</em>, <em>col_location='location'</em>, <em>col_time_n='time_n'</em>, <em>unit_currency='$'</em>, <em>unit_fert='lbs'</em>, <em>unit_grain='bu'</em>, <em>unit_area='ac'</em>, <em>model='quad_plateau'</em>, <em>ci_level=0.9</em>, <em>base_dir=None</em>, <em>base_zero=True</em>, <em>print_out=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/eonr/eonr.html#EONR"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#eonr.EONR" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="method">
 <dt id="eonr.EONR.calc_delta">
 <code class="descname">calc_delta</code><span class="sig-paren">(</span><em>df_results=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/eonr/eonr.html#EONR.calc_delta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#eonr.EONR.calc_delta" title="Permalink to this definition">¶</a></dt>
@@ -609,7 +616,7 @@ for plotting).</p>
 
 <dl class="method">
 <dt id="eonr.EONR.update_econ">
-<code class="descname">update_econ</code><span class="sig-paren">(</span><em>cost_n_fert=None</em>, <em>cost_n_social=None</em>, <em>price_grain=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/eonr/eonr.html#EONR.update_econ"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#eonr.EONR.update_econ" title="Permalink to this definition">¶</a></dt>
+<code class="descname">update_econ</code><span class="sig-paren">(</span><em>cost_n_fert=None</em>, <em>cost_n_social=None</em>, <em>costs_fixed=None</em>, <em>price_grain=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/eonr/eonr.html#EONR.update_econ"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#eonr.EONR.update_econ" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sets or resets the nitrogen costs or grain price</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -618,6 +625,8 @@ for plotting).</p>
 (default: None).</p></li>
 <li><p><strong>cost_n_social</strong> (<code class="docutils literal notranslate"><span class="pre">float</span></code>, optional) -- Cost of pollution caused by
 excess nitrogen (default: None).</p></li>
+<li><p><strong>costs_fixed</strong> (<em>float</em><em>, </em><em>optional</em>) -- Fixed costs on a per area basis</p></li>
+<li><p><strong>(</strong><strong>default</strong> -- None)</p></li>
 <li><p><strong>price_grain</strong> (<code class="docutils literal notranslate"><span class="pre">float</span></code>, optional) -- Price of grain (default: None).</p></li>
 </ul>
 </dd>

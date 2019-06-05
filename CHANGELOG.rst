@@ -1,9 +1,10 @@
 Release: 0.1.4
 ***************
-**Date**: 2019 May 31
+**Date**: 2019 June 04
 
 **Description**: Several feature additions and enhancements
 
+* Consider fixed costs by setting ``EONR.costs_fixed``
 * Added feature to use custom plot title (e.g., ``EONR.plot_modify_title("My New Title")``)
 * Added feature to plot only the NRTN and cost_n_fert line if cost_n_fert is not zero
 * Assert that user has EONR.price_grain > 0 before calculating EONR

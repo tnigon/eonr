@@ -18,6 +18,8 @@ experimental yield response to nitrogen for other crops.
 Parameters:
     cost_n_fert (float, optional): Cost of N fertilizer (default: 0.50)
     cost_n_social (float, optional): Social cost of N fertilier (default: 0.00)
+    costs_fixed (float, optional): Fixed costs on a per area basis (default:
+        0.00)
     price_grain (float, optional): Price of grain (default: 3.00)
     col_n_app (str, optional): Column name pointing to the rate of applied N
         fertilizer data (default: 'rate_n_applied_lbac')
@@ -91,7 +93,8 @@ from eonr import Plotting_tools
 class EONR(object):
     def __init__(self,
                  cost_n_fert=0.5,
-                 cost_n_social=0,
+                 cost_n_social=0.0,
+                 costs_fixed=0.0,
                  price_grain=3.00,
                  col_n_app='rate_n_applied_lbac',
                  col_yld='yld_grain_dry_buac',
@@ -105,6 +108,7 @@ class EONR(object):
         self.df_data = None
         self.cost_n_fert = cost_n_fert
         self.cost_n_social = cost_n_social
+        self.costs_fixed = costs_fixed
         self.price_grain = price_grain
         self.price_ratio = ((self.cost_n_fert + self.cost_n_social) /
                             self.price_grain)
@@ -152,12 +156,12 @@ class EONR(object):
         self.fig_derivative = None
         self.fig_eonr = None
         self.fig_tau = None
-        self.df_ci_temp = None
         self.ci_list = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.667, 0.7, 0.8, 0.9,
                         0.95, 0.99]
         self.alpha_list = [1 - xi for xi in self.ci_list]
         self.df_results = pd.DataFrame(columns=['price_grain', 'cost_n_fert',
-                                                'cost_n_social', 'price_ratio',
+                                                'cost_n_social', 'costs_fixed',
+                                                'price_ratio',
                                                 'unit_price_grain',
                                                 'unit_cost_n',
                                                 'location', 'year', 'time_n',
@@ -282,11 +286,14 @@ class EONR(object):
         '''
         self.df_data = df.copy()
         self._find_trial_details()
-        print('\nComputing {0} for {1} {2} {3}\nCost of N fertilizer: '
-              '{4}{5:.2f} per {6}\nPrice grain: {7}{8:.2f} per {9}'
+        print('\nComputing {0} for {1} {2} {3}'
+              '\nCost of N fertilizer: {4}{5:.2f} per {6}'
+              '\nPrice grain: {4}{7:.2f} per {8}'
+              '\nFixed costs: {4}{9:.2f} per {10}'
               ''.format(self.onr_acr, self.location, self.year, self.time_n,
                         self.unit_currency, self.cost_n_fert, self.unit_fert,
-                        self.unit_currency, self.price_grain, self.unit_grain))
+                        self.price_grain, self.unit_grain,
+                        self.costs_fixed, self.unit_area))
         if self.cost_n_social > 0:
             print('Social cost of N: {0}{1:.2f} per {2}'
                   ''.format(self.unit_currency, self.cost_n_social,
@@ -690,13 +697,19 @@ class EONR(object):
         df_der_right = df_trim[df_trim['x'] > self.eonr]
         slope_coef = (len(df_trim['x']) /
                       (df_trim['x'].max() - df_trim['x'].min()))
-        slope_l, _, _, _, _ = stats.linregress(df_der_left['x'],
-                                               df_der_left['rtn_der'])
-        slope_u, _, _, _, _ = stats.linregress(df_der_right['x'],
-                                               df_der_right['rtn_der'])
-#        slope_l, slope_u = abs(slope_l), abs(slope_u)
-        self.coefs_nrtn['der_slope_lower'] = slope_l * slope_coef
-        self.coefs_nrtn['der_slope_upper'] = slope_u * slope_coef
+        try:
+            slope_l, _, _, _, _ = stats.linregress(df_der_left['x'],
+                                                   df_der_left['rtn_der'])
+            self.coefs_nrtn['der_slope_lower'] = slope_l * slope_coef
+        except ValueError:
+            self.coefs_nrtn['der_slope_lower'] = np.nan
+
+        try:
+            slope_u, _, _, _, _ = stats.linregress(df_der_right['x'],
+                                                   df_der_right['rtn_der'])
+            self.coefs_nrtn['der_slope_upper'] = slope_u * slope_coef
+        except ValueError:
+            self.coefs_nrtn['der_slope_upper'] = np.nan
 
     def _build_social_curve(self, x1, fixed=False):
         '''
@@ -842,18 +855,21 @@ class EONR(object):
         '''
         Prints results of Economic Optimum N Rate calculation
         '''
-        df_ci = self.df_ci[self.df_ci['run_n'] == self.df_ci['run_n'].max()]
-        fert_l = df_ci[df_ci['level'] == 0.5]['pl_l'].item()
-        fert_u = df_ci[df_ci['level'] == 0.5]['pl_u'].item()
+        last_run_n = self.df_ci['run_n'].max()
+        df_ci_last_all = self.df_ci[self.df_ci['run_n'] == last_run_n]
+        fert_l = df_ci_last_all[df_ci_last_all['level'] == 0.5]['pl_l'].item()
+        fert_u = df_ci_last_all[df_ci_last_all['level'] == 0.5]['pl_u'].item()
 
+        df_ci_last = self.df_ci[(self.df_ci['run_n'] == last_run_n) &
+                                (self.df_ci['level'] == self.ci_level)]
         try:
-            pl_l = self.df_ci_temp['pl_l'].item()
-            pl_u = self.df_ci_temp['pl_u'].item()
-            wald_l = self.df_ci_temp['wald_l'].item()
-            wald_u = self.df_ci_temp['wald_u'].item()
+            pl_l = df_ci_last['pl_l'].item()
+            pl_u = df_ci_last['pl_u'].item()
+            wald_l = df_ci_last['wald_l'].item()
+            wald_u = df_ci_last['wald_u'].item()
             if self.bootstrap_ci is True:
-                boot_l = self.df_ci_temp['boot_l'].item()
-                boot_u = self.df_ci_temp['boot_u'].item()
+                boot_l = df_ci_last['boot_l'].item()
+                boot_u = df_ci_last['boot_u'].item()
         except TypeError as err:
             print(err)
         print('{0} optimum N rate ({1}): {2:.1f} {3} [{4:.1f}, '
@@ -975,7 +991,7 @@ class EONR(object):
                                num=n_steps-num_thresh,
                                retstep=True)
         x1 = np.concatenate((x1a, x1b))
-        y_fert_n = x1 * self.cost_n_fert
+        y_fert_n = (x1 * self.cost_n_fert) + self.costs_fixed
         return x1, y_fert_n, x1a  # x1a used in _setup_grtn_curve()
 
     def _setup_grtn_curve(self, x1, x1a, n_steps):
@@ -1025,23 +1041,27 @@ class EONR(object):
                             self.coefs_grtn['b1'].n,
                             self.coefs_grtn['b0'].n])
         if self.cost_n_social > 0:
-            if self.coefs_social['lin_r2'] > self.coefs_social['exp_r2']:
-                # subtract only cost of fertilizer
-                first_order = self.cost_n_fert + self.coefs_social['lin_mx']
-                f_eonr1 = self._modify_poly1d(f_eonr1, 1,
-                                              f_eonr1.coef[1] - first_order)
-                f_eonr1 = self._modify_poly1d(f_eonr1, 0,
-                                              self.coefs_social['lin_b'])
-                result = minimize_scalar(-f_eonr1)
-                self.f_eonr = f_eonr1
-            else:  # add together the cost of fertilizer and cost of social N
-                x_max = self.df_data[self.col_n_app].max()
-                result = minimize_scalar(self.models.combine_rtn_cost,
-                                         bounds=[-100, x_max+100],
-                                         method='bounded')
+#            if self.coefs_social['lin_r2'] > self.coefs_social['exp_r2']:
+#                print('method 1')
+#                # subtract only cost of fertilizer
+#                first_order = self.cost_n_fert + self.coefs_social['lin_mx']
+#                f_eonr1 = self._modify_poly1d(f_eonr1, 1,
+#                                              f_eonr1.coef[1] - first_order)
+#                f_eonr1 = self._modify_poly1d(f_eonr1, 0,
+#                                              self.coefs_social['lin_b'])
+#                result = minimize_scalar(-f_eonr1)
+#                self.f_eonr = f_eonr1
+#            else:  # add together the cost of fertilizer and cost of social N
+#                print('method 2')
+            x_max = self.df_data[self.col_n_app].max()
+            result = minimize_scalar(self.models.combine_rtn_cost,
+                                     bounds=[-100, x_max+100],
+                                     method='bounded')
         else:
             first_order = self.coefs_grtn['b1'].n - self.cost_n_fert
             f_eonr2 = self._modify_poly1d(f_eonr2, 1, first_order)
+            f_eonr2 = self._modify_poly1d(
+                    f_eonr2, 0, self.coefs_grtn['b0'].n-self.costs_fixed)
             result = minimize_scalar(-f_eonr2)
         # theta2 is EOR (minimum) only if total cost of N increases linearly
         # at a first order with an intercept of zero..
@@ -1249,7 +1269,7 @@ class EONR(object):
 
 
 #            if df_row['level'].item() == self.ci_level:
-#                self.df_ci_temp = df_row
+#                df_ci_last = df_row
 #        if bootstrap_ci is True:
 ##            df_ci = self._run_bootstrap(df_ci, alpha_list, n_samples=9999)
 #            pctle_list = self._parse_alpha_list(alpha_list)
@@ -1265,8 +1285,8 @@ class EONR(object):
             df_ci.insert(loc=0, column='run_n', value=last_run_n+1)
             self.df_ci = self.df_ci.append(df_ci, ignore_index=True)
         last_run_n = self.df_ci.iloc[-1, :]['run_n']
-        self.df_ci_temp = self.df_ci[(self.df_ci['run_n'] == last_run_n) &
-                                     (self.df_ci['level'] == self.ci_level)]
+#        self.df_ci_last = self.df_ci[(self.df_ci['run_n'] == last_run_n) &
+#                                     (self.df_ci['level'] == self.ci_level)]
 
     def _compute_residuals(self):
         '''
@@ -1782,8 +1802,8 @@ class EONR(object):
             df_ci.insert(loc=0, column='run_n', value=last_run_n+1)
             self.df_ci = self.df_ci.append(df_ci, ignore_index=True)
         last_run_n = self.df_ci.iloc[-1, :]['run_n']
-        self.df_ci_last = self.df_ci[(self.df_ci['run_n'] == last_run_n) &
-                                     (self.df_ci['level'] == self.ci_level)]
+#        self.df_ci_last = self.df_ci[(self.df_ci['run_n'] == last_run_n) &
+#                                     (self.df_ci['level'] == self.ci_level)]
 
     def _modify_poly1d(self, f, idx, new_val):
         '''
@@ -2001,19 +2021,22 @@ class EONR(object):
         unit_price_grain = self.unit_rtn
         unit_cost_n = '{0} per {1}'.format(self.unit_currency,
                                            self.unit_fert)
-        df_ci_level = self.df_ci[self.df_ci['level'] == self.ci_level]
+        last_run_n = self.df_ci['run_n'].max()
+        df_ci_last = self.df_ci[(self.df_ci['run_n'] == last_run_n) &
+                                (self.df_ci['level'] == self.ci_level)]
         results = [[self.price_grain, self.cost_n_fert, self.cost_n_social,
+                    self.costs_fixed,
                     self.price_ratio, unit_price_grain, unit_cost_n,
                     self.location, self.year, self.time_n,
                     base_zero, self.eonr,
                     self.coefs_nrtn['eonr_bias'],
                     self.R, self.costs_at_onr,
-                    self.ci_level, self.df_ci_temp['wald_l'].item(),
-                    self.df_ci_temp['wald_u'].item(),
-                    self.df_ci_temp['pl_l'].item(),
-                    self.df_ci_temp['pl_u'].item(),
-                    self.df_ci_temp['boot_l'].item(),
-                    self.df_ci_temp['boot_u'].item(),
+                    self.ci_level, df_ci_last['wald_l'].item(),
+                    df_ci_last['wald_u'].item(),
+                    df_ci_last['pl_l'].item(),
+                    df_ci_last['pl_u'].item(),
+                    df_ci_last['boot_l'].item(),
+                    df_ci_last['boot_u'].item(),
                     self.mrtn, self.coefs_grtn['r2_adj'],
                     self.coefs_grtn['rmse'],
                     self.coefs_grtn['max_y'],
@@ -2268,7 +2291,7 @@ class EONR(object):
             self.n_timing = n_timing
 
     def update_econ(self, cost_n_fert=None, cost_n_social=None,
-                    price_grain=None):
+                    costs_fixed=None, price_grain=None):
         '''Sets or resets the nitrogen costs or grain price
 
         Parameters:
@@ -2276,6 +2299,8 @@ class EONR(object):
                 (default: None).
             cost_n_social (``float``, optional): Cost of pollution caused by
                 excess nitrogen (default: None).
+            costs_fixed (float, optional): Fixed costs on a per area basis
+            (default: None)
             price_grain (``float``, optional): Price of grain (default: None).
 
         Note:
@@ -2303,6 +2328,8 @@ class EONR(object):
             self.cost_n_fert = cost_n_fert  # in USD per lb
         if cost_n_social is not None:
             self.cost_n_social = cost_n_social  # in USD per lb lost
+        if costs_fixed is not None:
+            self.costs_fixed = costs_fixed  # in USD per lb lost
         if price_grain is not None:
             self.price_grain = price_grain  # in USD
         self.price_ratio = ((self.cost_n_fert + self.cost_n_social) /

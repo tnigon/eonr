@@ -28,15 +28,15 @@ Table of Contents
    license
    changelog
 
-.. image:: _images/eonr_logo.png
-   :width: 300
-   :align: left
-   :alt: EONR Python package
-
 ##################
 Troubleshooting
 ##################
 Please report any issues you encounter through the `Github issue tracker <https://github.com/tnigon/eonr/issues>`_.
+
+.. image:: _images/eonr_logo.png
+   :width: 300
+   :align: right
+   :alt: EONR Python package
 
 #######
 About

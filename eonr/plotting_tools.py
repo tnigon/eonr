@@ -20,6 +20,7 @@ class Plotting_tools(object):
         self.df_delta_tstat = EONR.df_delta_tstat
         self.cost_n_fert = EONR.cost_n_fert
         self.cost_n_social = EONR.cost_n_social
+        self.costs_fixed = EONR.costs_fixed
         self.price_grain = EONR.price_grain
         self.price_ratio = EONR.price_ratio
         self.col_n_app = EONR.col_n_app
@@ -62,11 +63,6 @@ class Plotting_tools(object):
         self.fig_derivative = EONR.fig_derivative
         self.fig_eonr = EONR.fig_eonr
         self.fig_tau = EONR.fig_tau
-#        self.linspace_cost_n_fert = EONR.linspace_cost_n_fert
-#        self.linspace_cost_n_social = EONR.linspace_cost_n_social
-#        self.linspace_qp = EONR.linspace_qp
-#        self.linspace_rtn = EONR.linspace_rtn
-        self.df_ci_temp = EONR.df_ci_temp
         self.ci_list = EONR.ci_list
         self.alpha_list = EONR.alpha_list
         self.df_results = EONR.df_results
@@ -132,6 +128,9 @@ class Plotting_tools(object):
         label_econ = ('Grain price: ${0:.2f}\nN fertilizer cost: ${1:.2f}'
                       ''.format(self.price_grain, self.cost_n_fert))
 
+        if self.costs_fixed != 0.0:
+            label_econ = ('{0}\nFixed costs: ${1:.2f}'
+                          ''.format(label_econ, self.costs_fixed))
         if self.cost_n_social > 0 and self.metric is True:
             label_econ = ('{0}\nSocial cost of N: ${1:.2f}\nPrice ratio: '
                           '{2:.2f}'.format(label_econ, self.cost_n_social,
@@ -203,15 +202,21 @@ class Plotting_tools(object):
                '<ci_type>')
         ci_types = ['profile-likelihood', 'wald', 'bootstrap']
         assert ci_type.lower() in ci_types, msg
+        if ci_level is None:
+            ci_level = self.ci_level
+        last_run_n = self.df_ci['run_n'].max()
+        df_ci_last = self.df_ci[(self.df_ci['run_n'] == last_run_n) &
+                                (self.df_ci['level'] == ci_level)]
+
         if ci_type == 'profile-likelihood':
-            ci_l = self.df_ci_temp['pl_l'].item()
-            ci_u = self.df_ci_temp['pl_u'].item()
+            ci_l = df_ci_last['pl_l'].item()
+            ci_u = df_ci_last['pl_u'].item()
         elif ci_type == 'wald':
-            ci_l = self.df_ci_temp['wald_l'].item()
-            ci_u = self.df_ci_temp['wald_u'].item()
+            ci_l = df_ci_last['wald_l'].item()
+            ci_u = df_ci_last['wald_u'].item()
         elif ci_type == 'bootstrap':
-            ci_l = self.df_ci_temp['boot_l'].item()
-            ci_u = self.df_ci_temp['boot_u'].item()
+            ci_l = df_ci_last['boot_l'].item()
+            ci_u = df_ci_last['boot_u'].item()
 
         g.ax.axvspan(ci_l, ci_u, alpha=0.1, color='#7b7b7b')  # alpha is trans
         if ci_level is None:
@@ -466,14 +471,18 @@ class Plotting_tools(object):
             print('Using "ggplot" style instead..'.format(style))
             plt.style.use('ggplot')
 
-    def _der_draw_lines(self, g, level):
+    def _der_draw_lines(self, g, ci_level=None):
         '''
         Adds the lineplot to each axes
         '''
         ax1, ax2 = g.axes[0], g.axes[1]
-        df_ci = self.df_ci.copy()
-        pl_l = df_ci[df_ci['level'] == level]['pl_l'].item()
-        pl_u = df_ci[df_ci['level'] == level]['pl_u'].item()
+        if ci_level is None:
+            ci_level = self.ci_level
+        last_run_n = self.df_ci['run_n'].max()
+        df_ci_last = self.df_ci[(self.df_ci['run_n'] == last_run_n) &
+                                (self.df_ci['level'] == ci_level)]
+        pl_l = df_ci_last[df_ci_last['level'] == ci_level]['pl_l'].item()
+        pl_u = df_ci_last[df_ci_last['level'] == ci_level]['pl_u'].item()
 
         df_opt = self.df_linspace[(self.df_linspace['x'] >= pl_l) &
                                   (self.df_linspace['x'] <= pl_u)]
@@ -508,19 +517,24 @@ class Plotting_tools(object):
                '<ci_type>')
         ci_types = ['profile-likelihood', 'wald', 'bootstrap']
         assert ci_type.lower() in ci_types, msg
-        if ci_type == 'profile-likelihood':
-            ci_l = self.df_ci_temp['pl_l'].item()
-            ci_u = self.df_ci_temp['pl_u'].item()
-        elif ci_type == 'wald':
-            ci_l = self.df_ci_temp['wald_l'].item()
-            ci_u = self.df_ci_temp['wald_u'].item()
-        elif ci_type == 'bootstrap':
-            ci_l = self.df_ci_temp['boot_l'].item()
-            ci_u = self.df_ci_temp['boot_u'].item()
-
-        g.axes[0].axvspan(ci_l, ci_u, alpha=0.1, color='#7b7b7b')  # alpha is trans
         if ci_level is None:
             ci_level = self.ci_level
+        last_run_n = self.df_ci['run_n'].max()
+        df_ci_last = self.df_ci[(self.df_ci['run_n'] == last_run_n) &
+                                (self.df_ci['level'] == ci_level)]
+
+        if ci_type == 'profile-likelihood':
+            ci_l = df_ci_last['pl_l'].item()
+            ci_u = df_ci_last['pl_u'].item()
+        elif ci_type == 'wald':
+            ci_l = df_ci_last['wald_l'].item()
+            ci_u = df_ci_last['wald_u'].item()
+        elif ci_type == 'bootstrap':
+            ci_l = df_ci_last['boot_l'].item()
+            ci_u = df_ci_last['boot_u'].item()
+
+        g.axes[0].axvspan(ci_l, ci_u, alpha=0.1, color='#7b7b7b')  # alpha is trans
+
         label_ci = ('Confidence ({0:.2f})'.format(ci_level))
 
         if self.eonr <= self.df_data[self.col_n_app].max():
@@ -602,6 +616,9 @@ class Plotting_tools(object):
         label_econ = ('Grain price: ${0:.2f}\nN fertilizer cost: ${1:.2f}'
                       ''.format(self.price_grain, self.cost_n_fert))
 
+        if self.costs_fixed != 0.0:
+            label_econ = ('{0}\nFixed costs: ${1:.2f}'
+                          ''.format(label_econ, self.costs_fixed))
         if self.cost_n_social > 0 and self.metric is True:
             label_econ = ('{0}\nSocial cost of N: ${1:.2f}\nPrice ratio: '
                           '{2:.2f}'.format(label_econ, self.cost_n_social,
@@ -1032,6 +1049,8 @@ class Plotting_tools(object):
                 (defaulat: 11)
         '''
         if fig is None:
+            print('<fig> is None, so adjusting the current (most recent) '
+                  'figure\n.')
             fig = plt.gcf()
         fig.set_size_inches(plotsize_x, plotsize_y)
         plt.rcParams['font.weight'] = 'bold'
@@ -1152,7 +1171,7 @@ class Plotting_tools(object):
                           linewidth=1.5,
                           color='#555555',
                           label='EONR')
-        g = self._der_draw_lines(g, level=0.99)
+        g = self._der_draw_lines(g, ci_level=0.99)
         g = self._der_add_onr(g)
 #        g = self._modify_axes_pos(g)
         g = self._der_place_legend(g, loc='lower right')
@@ -1228,16 +1247,14 @@ class Plotting_tools(object):
             fname (str): Filename to save plot to (default: None)
             base_dir (str): Base file directory when saving results (default:
                 None)
-            fig (eonr.fig): EONR figure object to save (default: None)
+            fig (Matplotlib Figure): Matplotlib figure object to save
             dpi (int): Resolution to save the figure to in dots per inch
                 (default: 300)
         '''
-        if fig is None and self.fig_eonr is not None:
-            fig = self.fig_eonr
-        elif fig is None and self.fig_tau is not None:
-            fig = self.fig_eonr
-        else:  # fig is None, will get caught by assert statement
-            pass
+        if fig is None:
+            print('<fig> is None, so saving the current (most recent) '
+                  'figure\n.')
+            fig = plt.gcf()
         msg = ('A figure must be generated first. Please execute '
                'EONR.plot_eonr() or EONR.plot_tau() first..\n')
         assert fig is not None, msg
@@ -1359,6 +1376,7 @@ class Plotting_tools(object):
         self.df_delta_tstat = EONR.df_delta_tstat
         self.cost_n_fert = EONR.cost_n_fert
         self.cost_n_social = EONR.cost_n_social
+        self.costs_fixed = EONR.costs_fixed
         self.price_grain = EONR.price_grain
         self.price_ratio = EONR.price_ratio
         self.col_n_app = EONR.col_n_app
@@ -1396,11 +1414,6 @@ class Plotting_tools(object):
         self.fig_derivative = EONR.fig_derivative
         self.fig_eonr = EONR.fig_eonr
         self.fig_tau = EONR.fig_tau
-#        self.linspace_cost_n_fert = EONR.linspace_cost_n_fert
-#        self.linspace_cost_n_social = EONR.linspace_cost_n_social
-#        self.linspace_qp = EONR.linspace_qp
-#        self.linspace_rtn = EONR.linspace_rtn
-        self.df_ci_temp = EONR.df_ci_temp
         self.ci_list = EONR.ci_list
         self.alpha_list = EONR.alpha_list
         self.df_results = EONR.df_results

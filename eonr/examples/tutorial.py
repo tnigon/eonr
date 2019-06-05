@@ -17,6 +17,7 @@
 
 import pandas as pd
 import eonr
+print('EONR version: {0}'.format(eonr.__version__))
 
 
 # - - -
@@ -110,7 +111,7 @@ my_eonr = eonr.EONR(cost_n_fert=cost_n_fert,
 my_eonr.calculate_eonr(df_data)
 
 
-# It may take several seconds to run - this is because it computes the profile-likelihood and bootstrap confidence intervals by default (and as described in the [Background section](background.html#Confidence-intervals) this is the real novelty of `EONR` package).
+# It may take a few seconds to run, but it will take much longer if you choose to compute the bootstrap confidence intervals in addition to the profile-likelihood confidence intervals. Please see the [Advanced tutorial](advanced_tutorial.html#Bootstrap-confidence-intervals) describing how to compute the bootstrap CIs `EONR` does not run the bootstrap CIs by default).
 
 # And that's it! The economic optimum for this dataset and economic scenario was **162 kg nitrogen per ha** (with 90% confidence bounds at **131** and **208 kg per ha**) and resulted in a maximum net return of nearly **$770 per ha**.
 # 
@@ -205,16 +206,30 @@ my_eonr.update_econ(cost_n_social=cost_n_social)
 
 
 # - - -
-# ### Set column names *(post-init)*
-# You may have noticed that [the loaded data](tutorial.html#Load-the-data) for this tutorial contains columns for nitrogen uptake ("nup_total_kgha") and available nitrogen ("soil_plus_fert_n_kgha"). This data can be used to calculate the **SONR** as long as the column names are correctly set. 
+# ### Calculate mineralization
+# You may have noticed that [the loaded data](tutorial.html#Load-the-data) for this tutorial contains columns for nitrogen uptake ("nup_total_kgha") and available nitrogen ("soil_plus_fert_n_kgha"). This data can be used to calculate the approximate net mineralization for the zero rate, which can be assumed to consistent across all rates. Total crop available nitrogen can then be assumed to be the sum of fertilizer, soil, and net mineralized nitrogen. We can then calculate the **SONR** as long as the column names are correctly set. 
 # 
 # The column names were set for nitrogen fertilizer rate (`col_n_app`) and grain yield (`col_yld`) during the initialization of `EONR`, but they haven't been set for the nitrogen uptake or available nitrogen columns. This can be done (even after initilization of `EONR`) using `EONR.set_column_names()`:
 
 # In[14]:
 
 
+def calc_mineralization(df_data, units_fert='kgha'):
+    '''
+    Calculates mineralization and adds "crop_available_n" to df
+    '''
+    df_trt0 = df_data[df_data['rate_n_applied_kgha']==0]
+    df_trt0['mineralize_n'] =  (df_trt0['nup_total_kgha'] -
+                                df_trt0['soil_plus_fert_n_kgha'])
+    trt0_mineralize = df_trt0['mineralize_n'].mean()
+    crop_n_label = 'crop_n_available_' + units_fert
+    df_data[crop_n_label] = df_data['soil_plus_fert_n_kgha'] + trt0_mineralize
+    return df_data
+
+df_data = calc_mineralization(df_data)
+
 col_crop_nup = 'nup_total_kgha'
-col_n_avail = 'soil_plus_fert_n_kgha'
+col_n_avail = 'crop_n_available_kgha'
 
 my_eonr.set_column_names(col_crop_nup=col_crop_nup,
                          col_n_avail=col_n_avail)
@@ -247,7 +262,7 @@ my_eonr.df_results
 
 my_eonr.plot_eonr(x_min=-5, x_max=300, y_min=-200, y_max=1400)
 my_eonr.plot_tau()
-my_eonr.fig_tau = my_eonr.plot_modify_size(fig=my_eonr.fig_tau.fig, plotsize_x=5, plotsize_y=4.0)
+fig_tau = my_eonr.plot_modify_size(fig=my_eonr.fig_tau.fig, plotsize_x=5, plotsize_y=4.0)
 
 
 # Notice the added data in the nitrogen response plot:

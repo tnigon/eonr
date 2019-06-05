@@ -122,9 +122,10 @@
 <li><a class="reference internal" href="#Initialize-EONR">3.7. Initialize <code class="docutils literal notranslate"><span class="pre">EONR</span></code></a></li>
 <li><a class="reference internal" href="#Calculate-the-AONR">3.8. Calculate the <em>AONR</em></a></li>
 <li><a class="reference internal" href="#Bootstrap-confidence-intervals">3.9. Bootstrap confidence intervals</a></li>
-<li><a class="reference internal" href="#Loop-through-several-economic-conditions">3.10. Loop through several economic conditions</a></li>
-<li><a class="reference internal" href="#View-results">3.11. View results</a></li>
-<li><a class="reference internal" href="#Save-the-data">3.12. Save the data</a></li>
+<li><a class="reference internal" href="#Set-fixed-costs">3.10. Set fixed costs</a></li>
+<li><a class="reference internal" href="#Loop-through-several-economic-conditions">3.11. Loop through several economic conditions</a></li>
+<li><a class="reference internal" href="#View-results">3.12. View results</a></li>
+<li><a class="reference internal" href="#Save-the-data">3.13. Save the data</a></li>
 </ul>
 </li>
 </ul>
@@ -853,7 +854,7 @@ EONR version: 0.1.4
 <p><em>The table containing the experimental data</em> <strong>must</strong> <em>have a minimum of two columns:</em> * Nitrogen fertilizer rate * Grain yield</p>
 <p>We’ll also set <em>nitrogen uptake</em> and <em>available nitrogen</em> columns right away for calculating the socially optimum nitrogen rate.</p>
 <p>As a reminder, we are declaring the names of these columns and units because they will be passed to <code class="docutils literal notranslate"><span class="pre">EONR</span></code> later.</p>
-<div class="nbinput nblast docutils container">
+<div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
@@ -861,14 +862,40 @@ EONR version: 0.1.4
 <span></span><span class="n">col_n_app</span> <span class="o">=</span> <span class="s1">&#39;rate_n_applied_kgha&#39;</span>
 <span class="n">col_yld</span> <span class="o">=</span> <span class="s1">&#39;yld_grain_dry_kgha&#39;</span>
 <span class="n">col_crop_nup</span> <span class="o">=</span> <span class="s1">&#39;nup_total_kgha&#39;</span>
-<span class="n">col_n_avail</span> <span class="o">=</span> <span class="s1">&#39;soil_plus_fert_n_kgha&#39;</span>
+<span class="n">col_n_avail</span> <span class="o">=</span> <span class="s1">&#39;crop_n_available_kgha&#39;</span>
 
 <span class="n">unit_currency</span> <span class="o">=</span> <span class="s1">&#39;$&#39;</span>
 <span class="n">unit_fert</span> <span class="o">=</span> <span class="s1">&#39;kg&#39;</span>
 <span class="n">unit_grain</span> <span class="o">=</span> <span class="s1">&#39;kg&#39;</span>
 <span class="n">unit_area</span> <span class="o">=</span> <span class="s1">&#39;ha&#39;</span>
+
+<span class="k">def</span> <span class="nf">calc_mineralization</span><span class="p">(</span><span class="n">df_data</span><span class="p">,</span> <span class="n">units_fert</span><span class="o">=</span><span class="s1">&#39;kgha&#39;</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Calculates mineralization and adds &quot;crop_available_n&quot; to df</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">df_trt0</span> <span class="o">=</span> <span class="n">df_data</span><span class="p">[</span><span class="n">df_data</span><span class="p">[</span><span class="s1">&#39;rate_n_applied_kgha&#39;</span><span class="p">]</span><span class="o">==</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">df_trt0</span><span class="p">[</span><span class="s1">&#39;mineralize_n&#39;</span><span class="p">]</span> <span class="o">=</span>  <span class="p">(</span><span class="n">df_trt0</span><span class="p">[</span><span class="s1">&#39;nup_total_kgha&#39;</span><span class="p">]</span> <span class="o">-</span>
+                                <span class="n">df_trt0</span><span class="p">[</span><span class="s1">&#39;soil_plus_fert_n_kgha&#39;</span><span class="p">])</span>
+    <span class="n">trt0_mineralize</span> <span class="o">=</span> <span class="n">df_trt0</span><span class="p">[</span><span class="s1">&#39;mineralize_n&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+    <span class="n">crop_n_label</span> <span class="o">=</span> <span class="s1">&#39;crop_n_available_&#39;</span> <span class="o">+</span> <span class="n">units_fert</span>
+    <span class="n">df_data</span><span class="p">[</span><span class="n">crop_n_label</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_data</span><span class="p">[</span><span class="s1">&#39;soil_plus_fert_n_kgha&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">trt0_mineralize</span>
+    <span class="k">return</span> <span class="n">df_data</span>
+
+<span class="n">df_data</span> <span class="o">=</span> <span class="n">calc_mineralization</span><span class="p">(</span><span class="n">df_data</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+C:\Anaconda3\lib\site-packages\ipykernel_launcher.py:17: SettingWithCopyWarning:
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: http://pandas.pydata.org/pandas-docs/stable/indexing.html#indexing-view-versus-copy
+</pre></div></div>
 </div>
 </div>
 <hr class="docutils" />
@@ -891,7 +918,7 @@ EONR version: 0.1.4
 <hr class="docutils" />
 <div class="section" id="Initialize-EONR">
 <h2>3.7. Initialize <code class="docutils literal notranslate"><span class="pre">EONR</span></code><a class="headerlink" href="#Initialize-EONR" title="Permalink to this headline">¶</a></h2>
-<p>Let’s set the base directory and initialize an instance of <code class="docutils literal notranslate"><span class="pre">EONR</span></code>, setting <code class="docutils literal notranslate"><span class="pre">cost_n_fert</span> <span class="pre">=</span> <span class="pre">0</span></code> and <code class="docutils literal notranslate"><span class="pre">price_grain</span> <span class="pre">=</span> <span class="pre">1.0</span></code> ($1.00 per kg) as the default values (we will adjust them later on in the tutorial):</p>
+<p>Let’s set the base directory and initialize an instance of <code class="docutils literal notranslate"><span class="pre">EONR</span></code>, setting <code class="docutils literal notranslate"><span class="pre">cost_n_fert</span> <span class="pre">=</span> <span class="pre">0</span></code>, <code class="docutils literal notranslate"><span class="pre">costs_fixed</span> <span class="pre">=</span> <span class="pre">0</span></code>, and <code class="docutils literal notranslate"><span class="pre">price_grain</span> <span class="pre">=</span> <span class="pre">1.0</span></code> ($1.00 per kg) as the default values (we will adjust them later on in the tutorial):</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
@@ -901,6 +928,7 @@ EONR version: 0.1.4
 <span class="n">base_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="s1">&#39;eonr_advanced_tutorial&#39;</span><span class="p">)</span>
 
 <span class="n">my_eonr</span> <span class="o">=</span> <span class="n">eonr</span><span class="o">.</span><span class="n">EONR</span><span class="p">(</span><span class="n">cost_n_fert</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                    <span class="n">costs_fixed</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
                     <span class="n">price_grain</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
                     <span class="n">col_n_app</span><span class="o">=</span><span class="n">col_n_app</span><span class="p">,</span>
                     <span class="n">col_yld</span><span class="o">=</span><span class="n">col_yld</span><span class="p">,</span>
@@ -941,6 +969,7 @@ ha when ploting via <code class="docutils literal notranslate"><span class="pre"
 Computing AONR for Minnesota 2012 Pre
 Cost of N fertilizer: $0.00 per kg
 Price grain: $1.00 per kg
+Fixed costs: $0.00 per ha
 Agronomic optimum N rate (AONR): 177.4 kg per ha [139.9, 234.0] (90.0% confidence)
 Maximum return to N (MRTN): $13579.23 per ha
 </pre></div></div>
@@ -985,6 +1014,7 @@ Maximum return to N (MRTN): $13579.23 per ha
 Computing AONR for Minnesota 2012 Pre
 Cost of N fertilizer: $0.00 per kg
 Price grain: $1.00 per kg
+Fixed costs: $0.00 per ha
 Agronomic optimum N rate (AONR): 177.4 kg per ha [139.9, 234.0] (90.0% confidence)
 Maximum return to N (MRTN): $13579.23 per ha
 </pre></div></div>
@@ -998,12 +1028,27 @@ Maximum return to N (MRTN): $13579.23 per ha
 </div>
 </div>
 <hr class="docutils" />
+<div class="section" id="Set-fixed-costs">
+<h2>3.10. Set fixed costs<a class="headerlink" href="#Set-fixed-costs" title="Permalink to this headline">¶</a></h2>
+<p>Fixed costs (on a per area basis) can be considered by <code class="docutils literal notranslate"><span class="pre">EONR</span></code>. Simply set the fixed costs (using <code class="docutils literal notranslate"><span class="pre">EONR.update_econ()</span></code>) before calculating the EONR:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">costs_fixed</span> <span class="o">=</span> <span class="mf">12.00</span>  <span class="c1"># set to $12 per hectare</span>
+<span class="n">my_eonr</span><span class="o">.</span><span class="n">update_econ</span><span class="p">(</span><span class="n">costs_fixed</span><span class="o">=</span><span class="n">costs_fixed</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<hr class="docutils" />
 <div class="section" id="Loop-through-several-economic-conditions">
-<h2>3.10. Loop through several economic conditions<a class="headerlink" href="#Loop-through-several-economic-conditions" title="Permalink to this headline">¶</a></h2>
+<h2>3.11. Loop through several economic conditions<a class="headerlink" href="#Loop-through-several-economic-conditions" title="Permalink to this headline">¶</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">EONR</span></code> computes the optimum nitrogen rate for any economic scenario that we define. The <code class="docutils literal notranslate"><span class="pre">EONR</span></code> class is designed so the economic conditions can be adjusted, calculating the optimum nitrogen rate after each adjustment. We just have to set up a simple loop to update the economic scenario (using <code class="docutils literal notranslate"><span class="pre">EONR.update_econ()</span></code>) and calculate the EONR (using <code class="docutils literal notranslate"><span class="pre">EONR.calculate_eonr()</span></code>).</p>
 <p>We will also generate plots and save them to our base directory right away:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1031,46 +1076,49 @@ Maximum return to N (MRTN): $13579.23 per ha
 Computing EONR for Minnesota 2012 Pre
 Cost of N fertilizer: $0.44 per kg
 Price grain: $0.16 per kg
+Fixed costs: $12.00 per ha
 Economic optimum N rate (EONR): 169.9 kg per ha [135.2, 220.9] (90.0% confidence)
-Maximum return to N (MRTN): $2055.53 per ha
+Maximum return to N (MRTN): $2043.53 per ha
 
 Computing EONR for Minnesota 2012 Pre
 Cost of N fertilizer: $1.32 per kg
 Price grain: $0.16 per kg
+Fixed costs: $12.00 per ha
 Economic optimum N rate (EONR): 154.8 kg per ha [125.7, 195.0] (90.0% confidence)
-Maximum return to N (MRTN): $1912.67 per ha
+Maximum return to N (MRTN): $1900.67 per ha
 
 Computing EONR for Minnesota 2012 Pre
 Cost of N fertilizer: $2.20 per kg
 Price grain: $0.16 per kg
+Fixed costs: $12.00 per ha
 Economic optimum N rate (EONR): 139.7 kg per ha [115.9, 170.1] (90.0% confidence)
-Maximum return to N (MRTN): $1783.10 per ha
+Maximum return to N (MRTN): $1771.10 per ha
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/advanced_tutorial_17_1.png" src="_images/advanced_tutorial_17_1.png" />
+<img alt="_images/advanced_tutorial_19_1.png" src="_images/advanced_tutorial_19_1.png" />
 </div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/advanced_tutorial_17_2.png" src="_images/advanced_tutorial_17_2.png" />
+<img alt="_images/advanced_tutorial_19_2.png" src="_images/advanced_tutorial_19_2.png" />
 </div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/advanced_tutorial_17_3.png" src="_images/advanced_tutorial_17_3.png" />
+<img alt="_images/advanced_tutorial_19_3.png" src="_images/advanced_tutorial_19_3.png" />
 </div>
 </div>
 <p>A similar loop can be made adjusting the social cost of nitrogen. <code class="docutils literal notranslate"><span class="pre">my_eonr.base_zero</span></code> is set to <code class="docutils literal notranslate"><span class="pre">True</span></code> to compare the graphs:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1102,68 +1150,72 @@ Maximum return to N (MRTN): $1783.10 per ha
 Computing SONR for Minnesota 2012 Pre
 Cost of N fertilizer: $0.88 per kg
 Price grain: $0.16 per kg
+Fixed costs: $12.00 per ha
 Social cost of N: $0.44 per kg
-Socially optimum N rate (SONR): 158.7 kg per ha [128.1, 201.5] (90.0% confidence)
-Maximum return to N (MRTN): $777.57 per ha
+Socially optimum N rate (SONR): 160.1 kg per ha [129.0, 204.0] (90.0% confidence)
+Maximum return to N (MRTN): $749.35 per ha
 
 Computing SONR for Minnesota 2012 Pre
 Cost of N fertilizer: $0.88 per kg
 Price grain: $0.16 per kg
+Fixed costs: $12.00 per ha
 Social cost of N: $1.32 per kg
-Socially optimum N rate (SONR): 151.9 kg per ha [123.8, 190.1] (90.0% confidence)
-Maximum return to N (MRTN): $799.07 per ha
+Socially optimum N rate (SONR): 155.8 kg per ha [126.3, 196.7] (90.0% confidence)
+Maximum return to N (MRTN): $737.04 per ha
 
 Computing SONR for Minnesota 2012 Pre
 Cost of N fertilizer: $0.88 per kg
 Price grain: $0.16 per kg
+Fixed costs: $12.00 per ha
 Social cost of N: $2.20 per kg
-Socially optimum N rate (SONR): 145.8 kg per ha [119.9, 180.0] (90.0% confidence)
-Maximum return to N (MRTN): $823.17 per ha
+Socially optimum N rate (SONR): 151.8 kg per ha [123.8, 189.9] (90.0% confidence)
+Maximum return to N (MRTN): $725.79 per ha
 
 Computing SONR for Minnesota 2012 Pre
 Cost of N fertilizer: $0.88 per kg
 Price grain: $0.16 per kg
+Fixed costs: $12.00 per ha
 Social cost of N: $4.40 per kg
-Socially optimum N rate (SONR): 132.7 kg per ha [111.2, 159.1] (90.0% confidence)
-Maximum return to N (MRTN): $892.67 per ha
+Socially optimum N rate (SONR): 142.8 kg per ha [117.9, 175.0] (90.0% confidence)
+Maximum return to N (MRTN): $701.67 per ha
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/advanced_tutorial_19_1.png" src="_images/advanced_tutorial_19_1.png" />
+<img alt="_images/advanced_tutorial_21_1.png" src="_images/advanced_tutorial_21_1.png" />
 </div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/advanced_tutorial_19_2.png" src="_images/advanced_tutorial_19_2.png" />
+<img alt="_images/advanced_tutorial_21_2.png" src="_images/advanced_tutorial_21_2.png" />
 </div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/advanced_tutorial_19_3.png" src="_images/advanced_tutorial_19_3.png" />
+<img alt="_images/advanced_tutorial_21_3.png" src="_images/advanced_tutorial_21_3.png" />
 </div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/advanced_tutorial_19_4.png" src="_images/advanced_tutorial_19_4.png" />
+<img alt="_images/advanced_tutorial_21_4.png" src="_images/advanced_tutorial_21_4.png" />
 </div>
 </div>
 <p>Notice that we used the same <code class="docutils literal notranslate"><span class="pre">EONR</span></code> instance (<code class="docutils literal notranslate"><span class="pre">my_eonr</span></code>) for all runs. This is convenient if there are many combinations of economic scenarios (or many experimental datasets) that you’d like to loop through. If you’d like the results to be saved separate (perhaps to separate results depending if a social cost is considered) that’s fine too. Simply create a new instance of <code class="docutils literal notranslate"><span class="pre">EONR</span></code> and customize how you’d like.</p>
 </div>
 <hr class="docutils" />
 <div class="section" id="View-results">
-<h2>3.11. View results<a class="headerlink" href="#View-results" title="Permalink to this headline">¶</a></h2>
+<h2>3.12. View results<a class="headerlink" href="#View-results" title="Permalink to this headline">¶</a></h2>
 <p>All eight runs can be viewed in the dataframe:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1172,7 +1224,7 @@ Maximum return to N (MRTN): $892.67 per ha
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -1197,13 +1249,13 @@ Maximum return to N (MRTN): $892.67 per ha
       <th>price_grain</th>
       <th>cost_n_fert</th>
       <th>cost_n_social</th>
+      <th>costs_fixed</th>
       <th>price_ratio</th>
       <th>unit_price_grain</th>
       <th>unit_cost_n</th>
       <th>location</th>
       <th>year</th>
       <th>time_n</th>
-      <th>base_zero</th>
       <th>...</th>
       <th>mrtn</th>
       <th>grtn_r2_adj</th>
@@ -1222,6 +1274,7 @@ Maximum return to N (MRTN): $892.67 per ha
       <th>0</th>
       <td>1.000</td>
       <td>0</td>
+      <td>0.00</td>
       <td>0</td>
       <td>0.000000</td>
       <td>$ per ha</td>
@@ -1229,7 +1282,6 @@ Maximum return to N (MRTN): $892.67 per ha
       <td>Minnesota</td>
       <td>2012</td>
       <td>Pre</td>
-      <td>NaN</td>
       <td>...</td>
       <td>13579.232456</td>
       <td>0.728926</td>
@@ -1246,6 +1298,7 @@ Maximum return to N (MRTN): $892.67 per ha
       <th>1</th>
       <td>1.000</td>
       <td>0</td>
+      <td>0.00</td>
       <td>0</td>
       <td>0.000000</td>
       <td>$ per ha</td>
@@ -1253,7 +1306,6 @@ Maximum return to N (MRTN): $892.67 per ha
       <td>Minnesota</td>
       <td>2012</td>
       <td>Pre</td>
-      <td>NaN</td>
       <td>...</td>
       <td>13579.232456</td>
       <td>0.728926</td>
@@ -1270,16 +1322,16 @@ Maximum return to N (MRTN): $892.67 per ha
       <th>2</th>
       <td>0.157</td>
       <td>0.44</td>
-      <td>0</td>
+      <td>0.00</td>
+      <td>12</td>
       <td>2.802548</td>
       <td>$ per ha</td>
       <td>$ per kg</td>
       <td>Minnesota</td>
       <td>2012</td>
       <td>Pre</td>
-      <td>NaN</td>
       <td>...</td>
-      <td>2055.528038</td>
+      <td>2043.528038</td>
       <td>0.728926</td>
       <td>181.225993</td>
       <td>2131.939496</td>
@@ -1294,16 +1346,16 @@ Maximum return to N (MRTN): $892.67 per ha
       <th>3</th>
       <td>0.157</td>
       <td>1.32</td>
-      <td>0</td>
+      <td>0.00</td>
+      <td>12</td>
       <td>8.407643</td>
       <td>$ per ha</td>
       <td>$ per kg</td>
       <td>Minnesota</td>
       <td>2012</td>
       <td>Pre</td>
-      <td>NaN</td>
       <td>...</td>
-      <td>1912.670950</td>
+      <td>1900.670950</td>
       <td>0.728926</td>
       <td>181.225993</td>
       <td>2131.939496</td>
@@ -1318,16 +1370,16 @@ Maximum return to N (MRTN): $892.67 per ha
       <th>4</th>
       <td>0.157</td>
       <td>2.2</td>
-      <td>0</td>
+      <td>0.00</td>
+      <td>12</td>
       <td>14.012739</td>
       <td>$ per ha</td>
       <td>$ per kg</td>
       <td>Minnesota</td>
       <td>2012</td>
       <td>Pre</td>
-      <td>NaN</td>
       <td>...</td>
-      <td>1783.101634</td>
+      <td>1771.101634</td>
       <td>0.728926</td>
       <td>181.225993</td>
       <td>2131.939496</td>
@@ -1343,15 +1395,15 @@ Maximum return to N (MRTN): $892.67 per ha
       <td>0.157</td>
       <td>0.88</td>
       <td>0.44</td>
+      <td>12</td>
       <td>8.407643</td>
       <td>$ per ha</td>
       <td>$ per kg</td>
       <td>Minnesota</td>
       <td>2012</td>
       <td>Pre</td>
-      <td>1214.508882</td>
       <td>...</td>
-      <td>777.565087</td>
+      <td>749.347111</td>
       <td>0.728926</td>
       <td>181.225993</td>
       <td>917.433580</td>
@@ -1367,15 +1419,15 @@ Maximum return to N (MRTN): $892.67 per ha
       <td>0.157</td>
       <td>0.88</td>
       <td>1.32</td>
+      <td>12</td>
       <td>14.012739</td>
       <td>$ per ha</td>
       <td>$ per kg</td>
       <td>Minnesota</td>
       <td>2012</td>
       <td>Pre</td>
-      <td>1214.508882</td>
       <td>...</td>
-      <td>799.068544</td>
+      <td>737.042610</td>
       <td>0.728926</td>
       <td>181.225993</td>
       <td>917.433580</td>
@@ -1390,16 +1442,16 @@ Maximum return to N (MRTN): $892.67 per ha
       <th>7</th>
       <td>0.157</td>
       <td>0.88</td>
-      <td>2.2</td>
+      <td>2.20</td>
+      <td>12</td>
       <td>19.617834</td>
       <td>$ per ha</td>
       <td>$ per kg</td>
       <td>Minnesota</td>
       <td>2012</td>
       <td>Pre</td>
-      <td>1214.508882</td>
       <td>...</td>
-      <td>823.174583</td>
+      <td>725.792236</td>
       <td>0.728926</td>
       <td>181.225993</td>
       <td>917.433580</td>
@@ -1414,16 +1466,16 @@ Maximum return to N (MRTN): $892.67 per ha
       <th>8</th>
       <td>0.157</td>
       <td>0.88</td>
-      <td>4.4</td>
+      <td>4.40</td>
+      <td>12</td>
       <td>33.630573</td>
       <td>$ per ha</td>
       <td>$ per kg</td>
       <td>Minnesota</td>
       <td>2012</td>
       <td>Pre</td>
-      <td>1214.508882</td>
       <td>...</td>
-      <td>892.669963</td>
+      <td>701.669696</td>
       <td>0.728926</td>
       <td>181.225993</td>
       <td>917.433580</td>
@@ -1436,7 +1488,7 @@ Maximum return to N (MRTN): $892.67 per ha
     </tr>
   </tbody>
 </table>
-<p>9 rows × 31 columns</p>
+<p>9 rows × 32 columns</p>
 </div></div>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">EONR.df_results</span></code> contains the following data columns (some columns are hidden by Jupyter in the table above):</p>
@@ -1476,10 +1528,10 @@ Maximum return to N (MRTN): $892.67 per ha
 </div>
 <hr class="docutils" />
 <div class="section" id="Save-the-data">
-<h2>3.12. Save the data<a class="headerlink" href="#Save-the-data" title="Permalink to this headline">¶</a></h2>
+<h2>3.13. Save the data<a class="headerlink" href="#Save-the-data" title="Permalink to this headline">¶</a></h2>
 <p>The results generated by <code class="docutils literal notranslate"><span class="pre">EONR</span></code> can be saved to the <code class="docutils literal notranslate"><span class="pre">EONR.base_dir</span></code> using the <code class="docutils literal notranslate"><span class="pre">Pandas</span></code> <code class="docutils literal notranslate"><span class="pre">df.to_csv()</span></code> function. A folder will be created in the base_dir whose name is determined by the <strong>current economic scenario</strong> of <code class="docutils literal notranslate"><span class="pre">my_eonr</span></code> (in this case “social_336_4400”, corresponding to <code class="docutils literal notranslate"><span class="pre">cost_n_social</span> <span class="pre">&gt;</span> <span class="pre">0</span></code>, <code class="docutils literal notranslate"><span class="pre">price_ratio</span> <span class="pre">==</span> <span class="pre">33.6</span></code>, and <code class="docutils literal notranslate"><span class="pre">cost_n_social</span> <span class="pre">==</span> <span class="pre">4.40</span></code> for “social”, “336”, and “4400” in the folder name, respectively):</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
