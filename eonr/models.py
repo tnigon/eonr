@@ -55,6 +55,51 @@ class Models(object):
             a = 0
         return a*x**2 + b*x + c
 
+    def quadratic(self, x, b0, b1, b2):
+        '''
+        Quadratic function
+
+        Y =     b0 + b1*x + b2*(x^2) + error
+        '''
+        if isinstance(x, int) or isinstance(x, float):
+            y = 0
+#            y += (b0 + b1*x + b2*(x**2)) * x
+            y += (b0 + b1*x + b2*(x**2))
+            return y
+        else:
+            array_temp = np.zeros(len(x))
+#            array_temp += (b0 + b1*x + b2*(x**2)) * (x)
+            array_temp += (b0 + b1*x + b2*(x**2))
+            return array_temp
+
+    def q_theta2(self, x, b0, theta2, b2):
+        '''
+        Quadratic function using theta2 (EOR) as one of the parameters
+
+        theta2 = (R-b1)/(2*b2) = EOR
+            where R is the price ratio and b2 = beta2
+        rearrange to get:
+
+        b1_hat = -(2*theta2*b2-R)
+
+        b1_hat can replace b1 in the original quadratic model to
+        incorporate theta2 (EOR) as one of the parameters. This is desireable
+        because we can use scipy.optimize.curve_fit() to compute the covariance
+        matrix and estimate confidence intervals for theta2 directly.
+        '''
+        R = self.R
+#        crit_x = self.coefs_grtn['crit_x']  # and we know it's accurate
+        if isinstance(x, int) or isinstance(x, float):
+            y = 0
+#            y += (b0 - ((2*theta2*b2) - R)*x + b2*(x**2)) * (x)
+            y += (b0 - ((2*theta2*b2) - R)*x + b2*(x**2))
+            return y
+        else:
+            array_temp = np.zeros(len(x))
+#            array_temp += ((b0 - ((2*theta2*b2) - R)*x + b2*(x**2)) * (x))
+            array_temp += (b0 - ((2*theta2*b2) - R)*x + b2*(x**2))
+            return array_temp
+
     def quad_plateau(self, x, b0, b1, b2):
         '''
         Quadratic plateau function

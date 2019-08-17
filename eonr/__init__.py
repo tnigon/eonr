@@ -38,7 +38,7 @@ from eonr.plotting_tools import Plotting_tools
 from eonr.eonr import EONR
 
 name = 'eonr'
-__version__ = '0.1.4'
+__version__ = '0.2.0'
 
 __all__ = ['EONR',
            'Models',

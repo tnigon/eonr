@@ -1,3 +1,12 @@
+Release: 0.2.0
+***************
+**Date**: 2019 August 07
+
+**Description**: Support for a quadratic model
+
+* If model is not specified, both quadratic and quadratic-plateau models are fit, and the model with the highest R^2 is used
+* Model can be specified using ``EONR.model`` (e.g., 'quadratic' or 'quad_plateau')
+
 Release: 0.1.4
 ***************
 **Date**: 2019 June 04

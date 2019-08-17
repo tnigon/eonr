@@ -5,7 +5,7 @@ EONR Documentation
 
 *A Python tool for computing the optimum nitrogen rate and its confidence intervals from agricultural research data*
 
-.. |version_current| replace:: 0.1.4
+.. |version_current| replace:: 0.2.0
 Current version: |version_current|
 
 ##################
@@ -42,11 +42,11 @@ Please report any issues you encounter through the `Github issue tracker <https:
 About
 #######
 ``EONR`` is a Python package for computing the economic optimum nitrogen fertilizer rate using data from agronomic field trials under economic conditions defined by the user (i.e., grain price and fertilizer cost).
-It can be used for any crop (e.g., corn, wheat, potatoes, etc.), but the current version (|version_current|) only supports use of the quadratic-plateau piecewise model.
+It can be used for any crop (e.g., corn, wheat, potatoes, etc.), but the current version (|version_current|) only supports use of the quadratic and quadratic-plateau piecewise model.
 
-**Therefore, use caution in making sure that a quadratic-plateau model is appropriate for your application.**
+**Therefore, use caution in making sure that either model is appropriate for your application.**
 
-*Future versions should add support for other models (quadratic, spherical, etc.) that may improve the fit of experimental yield response to nitrogen for other crops.*
+*Future versions could add support for any other models that may improve the fit of experimental yield response to nitrogen for other crops. Please reach out or contribute to the project if you would like to see support for a particular model.*
 
 Data requirements
 ******************

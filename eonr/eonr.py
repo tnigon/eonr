@@ -165,7 +165,7 @@ class EONR(object):
                                                 'unit_price_grain',
                                                 'unit_cost_n',
                                                 'location', 'year', 'time_n',
-                                                'base_zero', 'eonr',
+                                                'model', 'base_zero', 'eonr',
                                                 'eonr_bias', 'R*',
                                                 'costs_at_onr', 'ci_level',
                                                 'ci_wald_l', 'ci_wald_u',
@@ -508,8 +508,16 @@ class EONR(object):
             guess = (self.coefs_grtn['b0'].n,
                      self.eonr,
                      self.coefs_grtn['b2'].n)
-            popt, pcov = self._curve_fit_runtime(self.models.qp_theta2, x,
-                                                 y, guess, maxfev=800)
+            if self.model is 'quadratic':
+                f_model = self.models.quadratic
+                f_model_theta2 = self.models.q_theta2
+            elif self.model is 'quad_plateau':
+                f_model = self.models.quad_plateau
+                f_model_theta2 = self.models.qp_theta2
+            info = ('func = {0}\ncol_x = {1}\ncol_y = {2}\n'
+                    ''.format(f_model, col_x, col_y))
+            popt, pcov = self._curve_fit_runtime(f_model_theta2, x, y, guess,
+                                                 maxfev=800)
             dif = abs(popt[1] - self.eonr)
             count = 0
             while dif > epsilon:
@@ -533,10 +541,10 @@ class EONR(object):
                     step_size *= 0.1  # change step_size
                     self.R += step_size
                 self.models.update_eonr(self)
-                popt, pcov = self._curve_fit_runtime(self.models.qp_theta2,
+                popt, pcov = self._curve_fit_runtime(f_model_theta2,
                                                      x, y, guess, maxfev=800)
                 dif = abs(popt[1] - self.eonr)
-            res = y - self.models.qp_theta2(x, *popt)
+            res = y - f_model_theta2(x, *popt)
             ss_res = np.sum(res**2)
             if (popt is None or np.any(popt == np.inf) or
                     np.any(pcov == np.inf)):
@@ -546,10 +554,10 @@ class EONR(object):
             else:
                 b0, theta2, b2 = unc.correlated_values(popt, pcov)
             info = ('func = {0}\ncol_x = {1}\ncol_y = {2}\n'
-                    ''.format('_compute_R() -> _f_quad_plateau', col_x,
+                    ''.format(f_model, col_x,
                               col_y + ' (residuals)'))
-            func = self.models.quad_plateau
-            popt, pcov = self._curve_fit_opt(lambda x, b1: func(
+#            func = self.models.quad_plateau
+            popt, pcov = self._curve_fit_opt(lambda x, b1: f_model(
                     x, b0.n, b1, b2.n), x, y, info=info)
             popt = np.insert(popt, 0, b2.n)
             popt = np.insert(popt, 2, b0.n)
@@ -738,35 +746,30 @@ class EONR(object):
                 ci_u = (y_social_n - 2 * std)
         return y_social_n, eonr_social_n, ci_l, ci_u
 
-    def _calc_grtn(self, model='quad_plateau'):
+    def _calc_grtn(self):
         '''
         Computes Gross Return to N and saves in df_data under column heading of
         'grtn'
         '''
         self.df_data['grtn'] = self.df_data[self.col_yld]*self.price_grain
-        if model == 'quad_plateau':
-            # Calculate the coefficients describing the quadratic plateau model
-            self._quad_plateau(col_x=self.col_n_app, col_y='grtn')
-        elif model == 'lin_plateau':
-            self._r_lin_plateau(col_x=self.col_n_app, col_y='grtn')
-            self._r_confint(level=0.8)
-        else:
-            raise NotImplementedError('{0} model not implemented'
-                                      ''.format(model))
+        self._fit_model(col_x=self.col_n_app, col_y='grtn')
+#        if model == 'quad_plateau':
+#            # Calculate the coefficients describing the quadratic plateau model
+#            self._quad_plateau(col_x=self.col_n_app, col_y='grtn')
+#        elif model == 'quadratic':
+#            self.
+#        elif model == 'lin_plateau':
+#            self._r_lin_plateau(col_x=self.col_n_app, col_y='grtn')
+#            self._r_confint(level=0.8)
+#        else:
+#            raise NotImplementedError('{0} model not implemented'
+#                                      ''.format(model))
         self.results_temp['grtn_y_int'] = self.coefs_grtn['b0'].n
 
         if self.base_zero is True:
             self.df_data['grtn'] = (self.df_data['grtn'] -
                                     self.coefs_grtn['b0'].n)
-            if model == 'quad_plateau':
-                self._quad_plateau(col_x=self.col_n_app, col_y='grtn',
-                                   rerun=True)
-            elif model == 'lin_plateau':
-                self._r_lin_plateau(col_x=self.col_n_app, col_y='grtn')
-                self._r_confint(level=0.8)
-            else:
-                raise NotImplementedError('{0} model not implemented'
-                                          ''.format(model))
+            self._fit_model(col_x=self.col_n_app, col_y='grtn', rerun=True)
         self.models.update_eonr(self)
 
     def _calc_nrtn(self, col_x, col_y):
@@ -787,15 +790,21 @@ class EONR(object):
         x = df_data[col_x].values
         y = df_data[col_y].values
 
+        if self.model is 'quadratic':
+#            f_model = self.models.quadratic
+            f_model_theta2 = self.models.q_theta2
+        elif self.model is 'quad_plateau':
+#            f_model = self.models.quad_plateau
+            f_model_theta2 = self.models.qp_theta2
         guess = (self.coefs_grtn['b0'].n,
                  self.coefs_grtn['crit_x'],
                  self.coefs_grtn['b2'].n)
         info = ('func = {0}\ncol_x = {1}\ncol_y = {2}\n'
-                ''.format('_calc_nrtn() -> _f_qp_theta2',
+                ''.format(f_model_theta2,
                           col_x, col_y))
-        popt, pcov = self._curve_fit_opt(self.models.qp_theta2, x, y,
+        popt, pcov = self._curve_fit_opt(f_model_theta2, x, y,
                                          p0=guess, maxfev=1000, info=info)
-        res = y - self.models.qp_theta2(x, *popt)
+        res = y - f_model_theta2(x, *popt)
         # if cost_n_social > 0, this will be dif than coefs_grtn['ss_res']
         ss_res = np.sum(res**2)
 
@@ -891,9 +900,10 @@ class EONR(object):
             print('Bootstrapped confidence bounds (90%): [{0:.1f}, {1:.1f}]\n'
                   ''.format(boot_l, boot_u))
 
-    def _quad_plateau(self, col_x, col_y, rerun=False):
+    def _fit_model(self, col_x, col_y, rerun=False):
         '''
-        Computes quadratic plateau coeficients using numpy.polyfit()
+        Fits the specified model (EONR.model); if EONR.model is None, fits both
+        then uses the model with the highest R^2 hereafter
 
         <col_x (``str``): df column name for x axis
         <col_y (``str``): df column name for y axis
@@ -902,12 +912,43 @@ class EONR(object):
         x = df_data[col_x].values
         y = df_data[col_y].values
         info = ('func = {0}\ncol_x = {1}\ncol_y = {2}\n'
-                ''.format('_quad_plateau() -> _f_quad_plateau', col_x, col_y))
+                ''.format('_fit_model() -> _f_quad_plateau', col_x, col_y))
         guess = self._get_guess_qp(rerun=rerun)
         #  TODO: Add a try/except to catch a bad guess.. or at least warn the
         # user that the guess is *extremely* sensitive
-        popt, pcov = self._curve_fit_opt(self.models.quad_plateau, x, y,
-                                         p0=guess, info=info)
+        if self.model is None:
+            print('Checking quadratic and quadric-plateau models for best '
+                  'fit..')
+            model_q = self.models.quadratic
+            model_qp = self.models.quad_plateau
+            popt_q, pcov_q = self._curve_fit_opt(model_q, x, y,
+                                                 p0=guess, info=info)
+            _, r2_adj_q, _, _, rmse_q = self._get_rsq(
+                model_q, x, y, popt_q)
+            popt_qp, pcov_qp = self._curve_fit_opt(model_qp, x,
+                                                   y,p0=guess, info=info)
+            _, r2_adj_qp, _, _, rmse_qp = self._get_rsq(
+                model_qp, x, y, popt_qp)
+            print('Quadratic model r^2: {0:.2f}'.format(r2_adj_q))
+            print('Quadratic-plateau model r^2: {0:.2f}'.format(r2_adj_qp))
+            if r2_adj_q > r2_adj_qp:
+                self.model = 'quadratic'
+#                model = self.models.quadratic
+#                popt, pcov = popt_q, pcov_q
+                print('Using the quadratic model..')
+            else:
+                self.model = 'quad_plateau'
+#                model = self.models.quad_plateau
+#                popt, pcov = popt_qp, pcov_qp
+                print('Using the quadratic-plateau model..')
+        if self.model is 'quadratic':
+            f_model = self.models.quadratic
+        elif self.model is 'quad_plateau':
+            f_model = self.models.quad_plateau
+        else:
+            raise NotImplementedError('{0} model not implemented'
+                                      ''.format(f_model))
+        popt, pcov = self._curve_fit_opt(f_model, x, y, p0=guess, info=info)
         if popt is None or np.any(popt == np.inf) or np.any(pcov == np.inf):
             b0 = unc.ufloat(popt[0], 0)
             b1 = unc.ufloat(popt[1], 0)
@@ -916,9 +957,9 @@ class EONR(object):
             b0, b1, b2 = unc.correlated_values(popt, pcov)
 
         crit_x = -b1.n/(2*b2.n)
-        max_y = self.models.quad_plateau(crit_x, b0.n, b1.n, b2.n)
+        max_y = f_model(crit_x, b0.n, b1.n, b2.n)
         r2, r2_adj, ss_res, ss_tot, rmse = self._get_rsq(
-                self.models.quad_plateau, x, y, popt)
+                f_model, x, y, popt)
         aic = self._calc_aic(x, y, dist='gamma')
 
         if rerun is False:
@@ -1075,10 +1116,16 @@ class EONR(object):
         df = self.df_data.copy()
         x = df[self.col_n_app].values
         y = df['grtn'].values
+        if self.model is 'quadratic':
+#            f_model = self.models.quadratic
+            f_model_theta2 = self.models.q_theta2
+        elif self.model is 'quad_plateau':
+#            f_model = self.models.quad_plateau
+            f_model_theta2 = self.models.qp_theta2
         guess = (self.coefs_grtn['b0'].n,
                  self.eonr,
                  self.coefs_grtn['b2'].n)
-        popt, pcov = self._curve_fit_opt(self.models.qp_theta2, x, y, p0=guess,
+        popt, pcov = self._curve_fit_opt(f_model_theta2, x, y, p0=guess,
                                          maxfev=800)
         self.coefs_nrtn['eonr_bias'] = popt[1] - self.eonr
 
@@ -1089,12 +1136,18 @@ class EONR(object):
         maxfev = 1000
         b0 = self.coefs_grtn['b0'].n
         b2 = self.coefs_grtn['b2'].n
+        if self.model is 'quadratic':
+#            f_model = self.models.quadratic
+            f_model_theta2 = self.models.q_theta2
+        elif self.model is 'quad_plateau':
+#            f_model = self.models.quad_plateau
+            f_model_theta2 = self.models.qp_theta2
         guess = (b0, self.eonr, b2)
 #        y = self.models.quad_plateau(x, a, b, c) + res
 #        try_n = 0
         popt = [None, None, None]
         try:
-            popt, _ = self._curve_fit_bs(self.models.qp_theta2, x, y,
+            popt, _ = self._curve_fit_bs(f_model_theta2, x, y,
                                          p0=guess, maxfev=maxfev)
         except RuntimeError as err:
             print(err)
@@ -1103,7 +1156,7 @@ class EONR(object):
                   '{0} before giving up.\n'.format(maxfev))
         if popt[1] is None:
             try:
-                popt, _ = self._curve_fit_bs(self.models.qp_theta2, x,
+                popt, _ = self._curve_fit_bs(f_model_theta2, x,
                                              y, p0=guess, maxfev=maxfev)
             except RuntimeError as err:
                 print(err)
@@ -1137,17 +1190,23 @@ class EONR(object):
         Calculates the sum of squares across the full set of parameters,
         solving for theta2
         '''
+        if self.model is 'quadratic':
+#            f_model = self.models.quadratic
+            f_model_theta2 = self.models.q_theta2
+        elif self.model is 'quad_plateau':
+#            f_model = self.models.quad_plateau
+            f_model_theta2 = self.models.qp_theta2
         guess = (self.coefs_grtn['b0'].n,
                  self.eonr,
                  self.coefs_grtn['b2'].n)
         col_x = None  # Perhaps we should keep in col_x/ytil curve_fit runs..?
         col_y = None
         info = ('func = {0}\ncol_x = {1}\ncol_y = {2}\n'
-                ''.format('_calc_sse_full() -> _f_qp_theta2',
+                ''.format(f_model_theta2,
                           col_x, col_y))
-        popt, pcov = self._curve_fit_opt(self.models.qp_theta2, x, y, p0=guess,
+        popt, pcov = self._curve_fit_opt(f_model_theta2, x, y, p0=guess,
                                          info=info)
-        res = y - self.models.qp_theta2(x, *popt)
+        res = y - f_model_theta2(x, *popt)
         sse_full_theta2 = np.sum(res**2)
         return sse_full_theta2
 
@@ -1298,16 +1357,25 @@ class EONR(object):
         df_data = self.df_data.copy()
         x = df_data[col_x].values
         y = df_data[col_y].values
+        if self.model is 'quadratic':
+            f_model = self.models.quadratic
+        elif self.model is 'quad_plateau':
+            f_model = self.models.quad_plateau
         info = ('func = {0}\ncol_x = {1}\ncol_y = {2}\n'
-                ''.format('_compute_residuals() -> _f_quad_plateau',
-                          col_x, col_y))
-        if self.base_zero is False:
-            popt, pcov = self._curve_fit_opt(self.models.quad_plateau, x, y,
-                                             p0=(600, 3, -0.01), info=info)
-        else:
-            popt, pcov = self._curve_fit_opt(self.models.quad_plateau, x, y,
-                                             p0=(0, 3, -0.01), info=info)
-        res = y - self.models.quad_plateau(x, *popt)
+                ''.format(f_model, col_x, col_y))
+        guess = (self.coefs_grtn['b0'].n, self.coefs_grtn['b1'].n,
+                 self.coefs_grtn['b2'].n)
+#        print('popt: {0}'.format(guess))
+        popt, pcov = self._curve_fit_opt(f_model, x, y, p0=guess, info=info)
+#        if self.base_zero is False:
+#            popt, pcov = self._curve_fit_opt(f_model, x, y,
+#                                             p0=(600, 3, -0.01), info=info)
+#        else:
+#            popt, pcov = self._curve_fit_opt(f_model, x, y,
+#                                             p0=(0, 3, -0.01), info=info)
+#        print('popt: {0}'.format(popt))  # if same, do we need previous 4 lines?
+#        res = y - self.models.quad_plateau(x, *popt)
+        res = y - f_model(x, *popt)
         res -= res.mean()
         df_temp = pd.DataFrame(data=res, index=df_data.index,
                                columns=['grtn_res'])
@@ -1353,9 +1421,13 @@ class EONR(object):
             guess = (900, 10, -0.03)
         # if rerun is True, don't we already know the beta1 and beta2 params?
         elif rerun is True:
+            if self.base_zero is True:
+                b0 = 0
+            else:
+                b0 = self.coefs_grtn['b0'].n
             b1 = self.coefs_grtn['b1'].n
             b2 = self.coefs_grtn['b2'].n
-            guess = (0, b1, b2)
+            guess = (b0, b1, b2)
         return guess
 
     class _pl_steps_init(object):
@@ -1414,7 +1486,12 @@ class EONR(object):
         distribution function) of the F statistic. The T statistic can be used
         as well (they will give the same result).
         '''
-        # First, get variables stored in the EONR class
+        if self.model is 'quadratic':
+#            f_model = self.models.quadratic
+            f_model_theta2 = self.models.q_theta2
+        elif self.model is 'quad_plateau':
+#            f_model = self.models.quad_plateau
+            f_model_theta2 = self.models.qp_theta2
         guess = (self.coefs_grtn['b0'].n,
                  self.coefs_grtn['crit_x'],
                  self.coefs_grtn['b2'].n)
@@ -1441,14 +1518,28 @@ class EONR(object):
         # Rule of thumb: if saved in both EONR and _pl_steps_init, use
         # variable from EONR; if passed directly to _get_pl_steps(), use the
         # variable directly
+
+        # Testing quadratic model 8/7/2019
+
+#        b0 = my_eonr.coefs_grtn['b0'].n
+#        b1 = my_eonr.coefs_grtn['b1'].n
+#        b2 = my_eonr.coefs_grtn['b2'].n
+#        theta2 = my_eonr.coefs_nrtn['theta2'].n
+#
+#        y1 = my_eonr.models.quadratic(x, b0, b1, b2)
+#        y2 = my_eonr.models.q_theta2(x, b0, theta2, b2)
+#
+#        sns.scatterplot(x, y1)
+#        sns.scatterplot(x, y2)
+
         while li.tau < crit_stat:
             popt, pcov = self._curve_fit_runtime(
-                    lambda x, b0, b2: self.models.qp_theta2(
+                    lambda x, b0, b2: f_model_theta2(
                             x, b0, li.theta2, b2), x, y,
                     guess=(1, 1), maxfev=800, info=li.info)
             if popt is not None:
                 popt = np.insert(popt, 1, li.theta2)
-                res = y - self.models.qp_theta2(x, *popt)
+                res = y - f_model_theta2(x, *popt)
                 sse_res = np.sum(res**2)
                 tau_temp_f = ((sse_res - sse_full) / li.q) / li.s2
                 with warnings.catch_warnings():
@@ -1637,13 +1728,19 @@ class EONR(object):
             returns <dif>, which will equal zero when the likelihood ratio is
             exactly equal to the test statistic (e.g., t-test or f-test)
             '''
+            if self.model is 'quadratic':
+    #            f_model = self.models.quadratic
+                f_model_theta2 = self.models.q_theta2
+            elif self.model is 'quad_plateau':
+    #            f_model = self.models.quad_plateau
+                f_model_theta2 = self.models.qp_theta2
             popt, pcov = self._curve_fit_runtime(
-                    lambda x, b0, b2: self.models.qp_theta2(
+                    lambda x, b0, b2: f_model_theta2(
                             x, b0, theta2, b2), x, y,
                     guess=(1, 1), maxfev=800, info=info)
             if popt is not None:
                 popt = np.insert(popt, 1, theta2)
-                res = y - self.models.qp_theta2(x, *popt)
+                res = y - f_model_theta2(x, *popt)
                 sse_res = np.sum(res**2)
                 tau_temp_f = ((sse_res - sse_full) / q) / s2
                 with warnings.catch_warnings():
@@ -2027,7 +2124,7 @@ class EONR(object):
         results = [[self.price_grain, self.cost_n_fert, self.cost_n_social,
                     self.costs_fixed,
                     self.price_ratio, unit_price_grain, unit_cost_n,
-                    self.location, self.year, self.time_n,
+                    self.location, self.year, self.time_n, self.model,
                     base_zero, self.eonr,
                     self.coefs_nrtn['eonr_bias'],
                     self.R, self.costs_at_onr,
