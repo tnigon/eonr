@@ -46,7 +46,7 @@ It can be used for any crop (e.g., corn, wheat, potatoes, etc.), and as of versi
 
 **You should always exercise caution in making sure that the model being used is appropriate for your application.**
 
-The methods and algorithms used by the ``EONR`` package are documented in a manuscript submitted to `Computers and Electronics in Agriculture <https://www.journals.elsevier.com/computers-and-electronics-in-agriculture>`_ and is currently in under peer-review:
+The methods and algorithms used by the ``EONR`` package are documented in a manuscript submitted to `Computers and Electronics in Agriculture <https://www.journals.elsevier.com/computers-and-electronics-in-agriculture>`_ and is currently under peer-review:
 
 Nigon, T., Yang, C., Mulla, D.J., and Kaiser, D. (in review). Computing uncertainty in the optimum nitrogen rate using a generalized cost function. *Computers and Electronics in Agriculture*.
 
