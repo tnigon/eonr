@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="python">
   <head>
     <meta charset="utf-8" />
-    <title>eonr package &#8212; eonr 0.1.4 documentation</title>
+    <title>eonr package &#8212; eonr 0.2.0 documentation</title>
     <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -37,7 +37,7 @@
         </button>
         <a class="navbar-brand" href="index.html">
           EONR</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.1.4</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.2.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -246,8 +246,9 @@ timing (default: 'time_n')</p>
 </dd>
 <dt class="field-odd">param model</dt>
 <dd class="field-odd"><p>Statistical model used to fit N rate response.
-<em>'quad_plateau'</em> = quadratic plateau; <em>'lin_plateau'</em> = linear plateau
-(default: 'quad_plateau')</p>
+<em>'quad_plateau'</em> = quadratic plateau; <em>'quadratic'</em> = quadratic;
+<code class="docutils literal notranslate"><span class="pre">None</span></code> = fits each of the preceding models, and uses the one with the
+highest R2 (default: 'quad_plateau').</p>
 </dd>
 <dt class="field-even">type model</dt>
 <dd class="field-even"><p>str, optional</p>
@@ -426,7 +427,7 @@ the options supported by <code class="docutils literal notranslate"><span class=
 
 <dl class="method">
 <dt id="eonr.eonr.EONR.plot_eonr">
-<code class="descname">plot_eonr</code><span class="sig-paren">(</span><em>ci_type='profile-likelihood'</em>, <em>ci_level=None</em>, <em>run_n=None</em>, <em>x_min=None</em>, <em>x_max=None</em>, <em>y_min=None</em>, <em>y_max=None</em>, <em>style='ggplot'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/eonr/eonr.html#EONR.plot_eonr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#eonr.eonr.EONR.plot_eonr" title="Permalink to this definition">¶</a></dt>
+<code class="descname">plot_eonr</code><span class="sig-paren">(</span><em>ci_type='profile-likelihood'</em>, <em>ci_level=None</em>, <em>run_n=None</em>, <em>x_min=None</em>, <em>x_max=None</em>, <em>y_min=None</em>, <em>y_max=None</em>, <em>show_model=True</em>, <em>style='ggplot'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/eonr/eonr.html#EONR.plot_eonr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#eonr.eonr.EONR.plot_eonr" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plots EONR, MRTN, GRTN, net return, and nitrogen cost</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -451,6 +452,8 @@ or maximum, run_n in EONR.df_results (default: None).</p></li>
 (default: None)</p></li>
 <li><p><strong>y_max</strong> (<code class="docutils literal notranslate"><span class="pre">int</span></code>, optional) -- The maximum y-bounds of the plot
 (default: None)</p></li>
+<li><p><strong>show_model</strong> (<em>str</em>) -- Whether to display the type of fitted model in
+the helper legend (default: True).</p></li>
 <li><p><strong>style</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>, optional) -- The style of the plolt; can be any of
 the options supported by <code class="docutils literal notranslate"><span class="pre">matplotlib</span></code></p></li>
 </ul>
@@ -699,6 +702,22 @@ Returns x, the result of combining the two</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="eonr.models.Models.q_theta2">
+<code class="descname">q_theta2</code><span class="sig-paren">(</span><em>x</em>, <em>b0</em>, <em>theta2</em>, <em>b2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/eonr/models.html#Models.q_theta2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#eonr.models.Models.q_theta2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Quadratic function using theta2 (EOR) as one of the parameters</p>
+<dl class="simple">
+<dt>theta2 = (R-b1)/(2*b2) = EOR</dt><dd><p>where R is the price ratio and b2 = beta2</p>
+</dd>
+</dl>
+<p>rearrange to get:</p>
+<p>b1_hat = -(2*theta2*b2-R)</p>
+<p>b1_hat can replace b1 in the original quadratic model to
+incorporate theta2 (EOR) as one of the parameters. This is desireable
+because we can use scipy.optimize.curve_fit() to compute the covariance
+matrix and estimate confidence intervals for theta2 directly.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="eonr.models.Models.qp_gross_theta2">
 <code class="descname">qp_gross_theta2</code><span class="sig-paren">(</span><em>x</em>, <em>b0</em>, <em>theta2</em>, <em>b2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/eonr/models.html#Models.qp_gross_theta2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#eonr.models.Models.qp_gross_theta2" title="Permalink to this definition">¶</a></dt>
 <dd><p>Quadratic plateau function using theta2 (EOR) as one of the parameters
@@ -767,6 +786,13 @@ matrix and estimate confidence intervals for theta2 directly.</p>
 </dd>
 </dl>
 <p>where crit_x = -b1/(2*b2)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="eonr.models.Models.quadratic">
+<code class="descname">quadratic</code><span class="sig-paren">(</span><em>x</em>, <em>b0</em>, <em>b1</em>, <em>b2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/eonr/models.html#Models.quadratic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#eonr.models.Models.quadratic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Quadratic function</p>
+<p>Y =     b0 + b1*x + b2*(x^2) + error</p>
 </dd></dl>
 
 <dl class="method">
@@ -862,7 +888,7 @@ the options supported by <code class="docutils literal notranslate"><span class=
 
 <dl class="method">
 <dt id="eonr.plotting_tools.Plotting_tools.plot_eonr">
-<code class="descname">plot_eonr</code><span class="sig-paren">(</span><em>ci_type='profile-likelihood'</em>, <em>ci_level=None</em>, <em>run_n=None</em>, <em>x_min=None</em>, <em>x_max=None</em>, <em>y_min=None</em>, <em>y_max=None</em>, <em>fert_range=False</em>, <em>style='ggplot'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/eonr/plotting_tools.html#Plotting_tools.plot_eonr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#eonr.plotting_tools.Plotting_tools.plot_eonr" title="Permalink to this definition">¶</a></dt>
+<code class="descname">plot_eonr</code><span class="sig-paren">(</span><em>ci_type='profile-likelihood'</em>, <em>ci_level=None</em>, <em>run_n=None</em>, <em>x_min=None</em>, <em>x_max=None</em>, <em>y_min=None</em>, <em>y_max=None</em>, <em>show_model=True</em>, <em>fert_range=False</em>, <em>style='ggplot'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/eonr/plotting_tools.html#Plotting_tools.plot_eonr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#eonr.plotting_tools.Plotting_tools.plot_eonr" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plots EONR, MRTN, GRTN, net return, and nitrogen cost</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -882,9 +908,11 @@ run_n in EONR.df_results (default: None).</p></li>
 <li><p><strong>x_max</strong> (<em>int</em>) -- The maximum x-bounds of the plot (default: None)</p></li>
 <li><p><strong>y_min</strong> (<em>int</em>) -- The minimum y-bounds of the plot (default: None)</p></li>
 <li><p><strong>y_max</strong> (<em>int</em>) -- The maximum y-bounds of the plot (default: None)</p></li>
+<li><p><strong>show_model</strong> (<em>str</em>) -- Whether to display the type of fitted model in
+the helper legend (default: True).</p></li>
 <li><p><strong>fert_range</strong> (<em>bool</em>) -- Whether to include the recommended range in
 fertilizer rate; this is the 50% confidence interval (default:
-True)</p></li>
+False) -- DO NOT USE.</p></li>
 <li><p><strong>style</strong> (<em>str</em>) -- The style of the plolt; can be any of the options
 supported by
 supported by
@@ -941,7 +969,7 @@ the options supported by <code class="docutils literal notranslate"><span class=
 <dl class="method">
 <dt id="eonr.plotting_tools.Plotting_tools.update_eonr">
 <code class="descname">update_eonr</code><span class="sig-paren">(</span><em>EONR</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/eonr/plotting_tools.html#Plotting_tools.update_eonr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#eonr.plotting_tools.Plotting_tools.update_eonr" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sets/updates all EONR variables required by the Models class</p>
+<dd><p>Sets/updates all EONR variables required by the Plotting_tools class</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>EONR</strong> (<em>EONR object</em>) -- The EONR object to update</p>
@@ -1085,7 +1113,7 @@ the options supported by <code class="docutils literal notranslate"><span class=
 
 <dl class="method">
 <dt id="eonr.EONR.plot_eonr">
-<code class="descname">plot_eonr</code><span class="sig-paren">(</span><em>ci_type='profile-likelihood'</em>, <em>ci_level=None</em>, <em>run_n=None</em>, <em>x_min=None</em>, <em>x_max=None</em>, <em>y_min=None</em>, <em>y_max=None</em>, <em>style='ggplot'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/eonr/eonr.html#EONR.plot_eonr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#eonr.EONR.plot_eonr" title="Permalink to this definition">¶</a></dt>
+<code class="descname">plot_eonr</code><span class="sig-paren">(</span><em>ci_type='profile-likelihood'</em>, <em>ci_level=None</em>, <em>run_n=None</em>, <em>x_min=None</em>, <em>x_max=None</em>, <em>y_min=None</em>, <em>y_max=None</em>, <em>show_model=True</em>, <em>style='ggplot'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/eonr/eonr.html#EONR.plot_eonr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#eonr.EONR.plot_eonr" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plots EONR, MRTN, GRTN, net return, and nitrogen cost</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1110,6 +1138,8 @@ or maximum, run_n in EONR.df_results (default: None).</p></li>
 (default: None)</p></li>
 <li><p><strong>y_max</strong> (<code class="docutils literal notranslate"><span class="pre">int</span></code>, optional) -- The maximum y-bounds of the plot
 (default: None)</p></li>
+<li><p><strong>show_model</strong> (<em>str</em>) -- Whether to display the type of fitted model in
+the helper legend (default: True).</p></li>
 <li><p><strong>style</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>, optional) -- The style of the plolt; can be any of
 the options supported by <code class="docutils literal notranslate"><span class="pre">matplotlib</span></code></p></li>
 </ul>
@@ -1354,6 +1384,22 @@ Returns x, the result of combining the two</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="eonr.Models.q_theta2">
+<code class="descname">q_theta2</code><span class="sig-paren">(</span><em>x</em>, <em>b0</em>, <em>theta2</em>, <em>b2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/eonr/models.html#Models.q_theta2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#eonr.Models.q_theta2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Quadratic function using theta2 (EOR) as one of the parameters</p>
+<dl class="simple">
+<dt>theta2 = (R-b1)/(2*b2) = EOR</dt><dd><p>where R is the price ratio and b2 = beta2</p>
+</dd>
+</dl>
+<p>rearrange to get:</p>
+<p>b1_hat = -(2*theta2*b2-R)</p>
+<p>b1_hat can replace b1 in the original quadratic model to
+incorporate theta2 (EOR) as one of the parameters. This is desireable
+because we can use scipy.optimize.curve_fit() to compute the covariance
+matrix and estimate confidence intervals for theta2 directly.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="eonr.Models.qp_gross_theta2">
 <code class="descname">qp_gross_theta2</code><span class="sig-paren">(</span><em>x</em>, <em>b0</em>, <em>theta2</em>, <em>b2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/eonr/models.html#Models.qp_gross_theta2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#eonr.Models.qp_gross_theta2" title="Permalink to this definition">¶</a></dt>
 <dd><p>Quadratic plateau function using theta2 (EOR) as one of the parameters
@@ -1422,6 +1468,13 @@ matrix and estimate confidence intervals for theta2 directly.</p>
 </dd>
 </dl>
 <p>where crit_x = -b1/(2*b2)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="eonr.Models.quadratic">
+<code class="descname">quadratic</code><span class="sig-paren">(</span><em>x</em>, <em>b0</em>, <em>b1</em>, <em>b2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/eonr/models.html#Models.quadratic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#eonr.Models.quadratic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Quadratic function</p>
+<p>Y =     b0 + b1*x + b2*(x^2) + error</p>
 </dd></dl>
 
 <dl class="method">
@@ -1513,7 +1566,7 @@ the options supported by <code class="docutils literal notranslate"><span class=
 
 <dl class="method">
 <dt id="eonr.Plotting_tools.plot_eonr">
-<code class="descname">plot_eonr</code><span class="sig-paren">(</span><em>ci_type='profile-likelihood'</em>, <em>ci_level=None</em>, <em>run_n=None</em>, <em>x_min=None</em>, <em>x_max=None</em>, <em>y_min=None</em>, <em>y_max=None</em>, <em>fert_range=False</em>, <em>style='ggplot'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/eonr/plotting_tools.html#Plotting_tools.plot_eonr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#eonr.Plotting_tools.plot_eonr" title="Permalink to this definition">¶</a></dt>
+<code class="descname">plot_eonr</code><span class="sig-paren">(</span><em>ci_type='profile-likelihood'</em>, <em>ci_level=None</em>, <em>run_n=None</em>, <em>x_min=None</em>, <em>x_max=None</em>, <em>y_min=None</em>, <em>y_max=None</em>, <em>show_model=True</em>, <em>fert_range=False</em>, <em>style='ggplot'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/eonr/plotting_tools.html#Plotting_tools.plot_eonr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#eonr.Plotting_tools.plot_eonr" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plots EONR, MRTN, GRTN, net return, and nitrogen cost</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1533,9 +1586,11 @@ run_n in EONR.df_results (default: None).</p></li>
 <li><p><strong>x_max</strong> (<em>int</em>) -- The maximum x-bounds of the plot (default: None)</p></li>
 <li><p><strong>y_min</strong> (<em>int</em>) -- The minimum y-bounds of the plot (default: None)</p></li>
 <li><p><strong>y_max</strong> (<em>int</em>) -- The maximum y-bounds of the plot (default: None)</p></li>
+<li><p><strong>show_model</strong> (<em>str</em>) -- Whether to display the type of fitted model in
+the helper legend (default: True).</p></li>
 <li><p><strong>fert_range</strong> (<em>bool</em>) -- Whether to include the recommended range in
 fertilizer rate; this is the 50% confidence interval (default:
-True)</p></li>
+False) -- DO NOT USE.</p></li>
 <li><p><strong>style</strong> (<em>str</em>) -- The style of the plolt; can be any of the options
 supported by
 supported by
@@ -1592,7 +1647,7 @@ the options supported by <code class="docutils literal notranslate"><span class=
 <dl class="method">
 <dt id="eonr.Plotting_tools.update_eonr">
 <code class="descname">update_eonr</code><span class="sig-paren">(</span><em>EONR</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/eonr/plotting_tools.html#Plotting_tools.update_eonr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#eonr.Plotting_tools.update_eonr" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sets/updates all EONR variables required by the Models class</p>
+<dd><p>Sets/updates all EONR variables required by the Plotting_tools class</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>EONR</strong> (<em>EONR object</em>) -- The EONR object to update</p>

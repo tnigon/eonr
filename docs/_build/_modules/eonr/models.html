@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="python">
   <head>
     <meta charset="utf-8" />
-    <title>eonr.models &#8212; eonr 0.1.4 documentation</title>
+    <title>eonr.models &#8212; eonr 0.2.0 documentation</title>
     <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -37,7 +37,7 @@
         </button>
         <a class="navbar-brand" href="../../index.html">
           EONR</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.1.4</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.2.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -166,6 +166,51 @@
         <span class="k">if</span> <span class="n">a</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">a</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">return</span> <span class="n">a</span><span class="o">*</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">b</span><span class="o">*</span><span class="n">x</span> <span class="o">+</span> <span class="n">c</span></div>
+
+<div class="viewcode-block" id="Models.quadratic"><a class="viewcode-back" href="../../eonr.html#eonr.models.Models.quadratic">[docs]</a>    <span class="k">def</span> <span class="nf">quadratic</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">b0</span><span class="p">,</span> <span class="n">b1</span><span class="p">,</span> <span class="n">b2</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Quadratic function</span>
+
+<span class="sd">        Y =     b0 + b1*x + b2*(x^2) + error</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="c1">#            y += (b0 + b1*x + b2*(x**2)) * x</span>
+            <span class="n">y</span> <span class="o">+=</span> <span class="p">(</span><span class="n">b0</span> <span class="o">+</span> <span class="n">b1</span><span class="o">*</span><span class="n">x</span> <span class="o">+</span> <span class="n">b2</span><span class="o">*</span><span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">y</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">array_temp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="c1">#            array_temp += (b0 + b1*x + b2*(x**2)) * (x)</span>
+            <span class="n">array_temp</span> <span class="o">+=</span> <span class="p">(</span><span class="n">b0</span> <span class="o">+</span> <span class="n">b1</span><span class="o">*</span><span class="n">x</span> <span class="o">+</span> <span class="n">b2</span><span class="o">*</span><span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">array_temp</span></div>
+
+<div class="viewcode-block" id="Models.q_theta2"><a class="viewcode-back" href="../../eonr.html#eonr.models.Models.q_theta2">[docs]</a>    <span class="k">def</span> <span class="nf">q_theta2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">b0</span><span class="p">,</span> <span class="n">theta2</span><span class="p">,</span> <span class="n">b2</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Quadratic function using theta2 (EOR) as one of the parameters</span>
+
+<span class="sd">        theta2 = (R-b1)/(2*b2) = EOR</span>
+<span class="sd">            where R is the price ratio and b2 = beta2</span>
+<span class="sd">        rearrange to get:</span>
+
+<span class="sd">        b1_hat = -(2*theta2*b2-R)</span>
+
+<span class="sd">        b1_hat can replace b1 in the original quadratic model to</span>
+<span class="sd">        incorporate theta2 (EOR) as one of the parameters. This is desireable</span>
+<span class="sd">        because we can use scipy.optimize.curve_fit() to compute the covariance</span>
+<span class="sd">        matrix and estimate confidence intervals for theta2 directly.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">R</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">R</span>
+<span class="c1">#        crit_x = self.coefs_grtn[&#39;crit_x&#39;]  # and we know it&#39;s accurate</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="c1">#            y += (b0 - ((2*theta2*b2) - R)*x + b2*(x**2)) * (x)</span>
+            <span class="n">y</span> <span class="o">+=</span> <span class="p">(</span><span class="n">b0</span> <span class="o">-</span> <span class="p">((</span><span class="mi">2</span><span class="o">*</span><span class="n">theta2</span><span class="o">*</span><span class="n">b2</span><span class="p">)</span> <span class="o">-</span> <span class="n">R</span><span class="p">)</span><span class="o">*</span><span class="n">x</span> <span class="o">+</span> <span class="n">b2</span><span class="o">*</span><span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">y</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">array_temp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="c1">#            array_temp += ((b0 - ((2*theta2*b2) - R)*x + b2*(x**2)) * (x))</span>
+            <span class="n">array_temp</span> <span class="o">+=</span> <span class="p">(</span><span class="n">b0</span> <span class="o">-</span> <span class="p">((</span><span class="mi">2</span><span class="o">*</span><span class="n">theta2</span><span class="o">*</span><span class="n">b2</span><span class="p">)</span> <span class="o">-</span> <span class="n">R</span><span class="p">)</span><span class="o">*</span><span class="n">x</span> <span class="o">+</span> <span class="n">b2</span><span class="o">*</span><span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">array_temp</span></div>
 
 <div class="viewcode-block" id="Models.quad_plateau"><a class="viewcode-back" href="../../eonr.html#eonr.models.Models.quad_plateau">[docs]</a>    <span class="k">def</span> <span class="nf">quad_plateau</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">b0</span><span class="p">,</span> <span class="n">b1</span><span class="p">,</span> <span class="n">b2</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>

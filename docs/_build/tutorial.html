@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="python">
   <head>
     <meta charset="utf-8" />
-    <title>2. Tutorial &#8212; eonr 0.1.4 documentation</title>
+    <title>2. Tutorial &#8212; eonr 0.2.0 documentation</title>
     <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -39,7 +39,7 @@
         </button>
         <a class="navbar-brand" href="index.html">
           EONR</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.1.4</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.2.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -361,7 +361,8 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">eonr</span>
 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;EONR version: </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">eonr</span><span class="o">.</span><span class="n">__version__</span><span class="p">))</span>
 </pre></div>
@@ -372,7 +373,7 @@ div.rendered_html tbody tr:hover {
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-EONR version: 0.1.4
+EONR version: 0.2.0
 </pre></div></div>
 </div>
 </div>
@@ -385,7 +386,7 @@ EONR version: 0.1.4
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">df_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;data\minnesota_2012.csv&#39;</span><span class="p">)</span>
+<span></span><span class="n">df_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="s1">&#39;minnesota_2012.csv&#39;</span><span class="p">))</span>
 <span class="n">df_data</span>
 </pre></div>
 </div>
@@ -850,7 +851,11 @@ EONR version: 0.1.4
 <hr class="docutils" />
 <div class="section" id="Set-column-names-(pre-init)">
 <h2>2.4. Set column names <em>(pre-init)</em><a class="headerlink" href="#Set-column-names-(pre-init)" title="Permalink to this headline">¶</a></h2>
-<p><em>The table containing the experimental data</em> <strong>must</strong> <em>have a minimum of two columns:</em> * <em>Nitrogen fertilizer rate</em> * <em>Grain yield</em></p>
+<p><em>The table containing the experimental data</em> <strong>must</strong> <em>have a minimum of two columns:</em></p>
+<ul class="simple">
+<li><p><em>Nitrogen fertilizer rate</em></p></li>
+<li><p><em>Grain yield</em></p></li>
+</ul>
 <p><code class="docutils literal notranslate"><span class="pre">EONR</span></code> accepts custom column names. Just be sure to set them by either using <code class="docutils literal notranslate"><span class="pre">EONR.set_column_names()</span></code> or by passing them to <code class="docutils literal notranslate"><span class="pre">EONR.calculate_eonr()</span></code>. We will declare the names of the these two columns as they exist in the <code class="docutils literal notranslate"><span class="pre">Pandas</span></code> dataframe so they can be passed to <code class="docutils literal notranslate"><span class="pre">EONR</span></code> later:</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
@@ -880,12 +885,12 @@ EONR version: 0.1.4
 </pre></div>
 </div>
 </div>
-<p>These unit variables are only used for plotting (titles and axes labels), and they are not actually used for any computations.</p>
+<p>These unit variables are only used for plotting (titles and axes labels), and they are not actually used for any computations. Because the initial parameter guess is critically important for fitting the model(s), there is logic built in that adjusts this intitial guess based on the units provided here.</p>
 </div>
 <hr class="docutils" />
 <div class="section" id="Set-economic-conditions">
 <h2>2.6. Set economic conditions<a class="headerlink" href="#Set-economic-conditions" title="Permalink to this headline">¶</a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">EONR</span></code> computes the <strong>Economic</strong> <em>Optimum Nitrogen Rate</em> for any economic scenario that we define. All that is required is to declare the cost of the nitrogen fertilizer (per unit, as defined above) and the price of grain (also per unit). Note that the cost of nitrogen fertilizer can be set to zero, and the <strong>Agronomic</strong> <em>Optimum Nitrogen Rate</em> will be computed.</p>
+<p><code class="docutils literal notranslate"><span class="pre">EONR</span></code> computes the <em>Economic</em> Optimum Nitrogen Rate for any economic scenario that we define. All that is required is to declare the cost of the nitrogen fertilizer (per unit, as defined above) and the price of grain (also per unit). Note that the cost of nitrogen fertilizer can be set to zero, and the <em>Agronomic</em> Optimum Nitrogen Rate will be computed.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
@@ -901,7 +906,7 @@ EONR version: 0.1.4
 <div class="section" id="Initialize-EONR">
 <h2>2.7. Initialize <code class="docutils literal notranslate"><span class="pre">EONR</span></code><a class="headerlink" href="#Initialize-EONR" title="Permalink to this headline">¶</a></h2>
 <p>At this point, we can initialize an instance of <code class="docutils literal notranslate"><span class="pre">EONR</span></code>.</p>
-<p><em>Before doing so, we may want to set the base directory.</em> <code class="docutils literal notranslate"><span class="pre">EONR.base_dir</span></code> <em>is the default location for saving plots and data processed by</em> <code class="docutils literal notranslate"><span class="pre">EONR</span></code><em>. If</em> <code class="docutils literal notranslate"><span class="pre">EONR.base_dir</span></code> <em>is not set, it will be set to be a folder named “eonr_advanced_tutorial” in the current working directory during the intitialization (to see your current working directory, type</em> <code class="docutils literal notranslate"><span class="pre">os.getcwd()</span></code><em>). If you do not wish to use this as your current working directory, it can be passed to the</em> <code class="docutils literal notranslate"><span class="pre">EONR</span></code> <em>instance using the</em>
+<p><em>Before doing so, we may want to set the base directory.</em> <code class="docutils literal notranslate"><span class="pre">EONR.base_dir</span></code> <em>is the default location for saving plots and data processed by</em> <code class="docutils literal notranslate"><span class="pre">EONR</span></code><em>. If</em> <code class="docutils literal notranslate"><span class="pre">EONR.base_dir</span></code> <em>is not set, it will be set to be a folder named “eonr_tutorial” in the current working directory during the intitialization (to see your current working directory, type</em> <code class="docutils literal notranslate"><span class="pre">os.getcwd()</span></code><em>). If you do not wish to use this as your current working directory, it can be passed to the</em> <code class="docutils literal notranslate"><span class="pre">EONR</span></code> <em>instance using the</em>
 <code class="docutils literal notranslate"><span class="pre">base_dir</span></code> <em>keyword.</em></p>
 <p>For demonstration purposes, we will set <code class="docutils literal notranslate"><span class="pre">EONR.base_dir</span></code> to what would be the default folder if nothing were passed to the <code class="docutils literal notranslate"><span class="pre">base_dir</span></code> keyword –&gt; that is, we will choose a folder named “eonr_advanced_tutorial” in the current working directory (<code class="docutils literal notranslate"><span class="pre">EONR</span></code> will create the directory if it does not exist).</p>
 <p>And finally, to create an instance of <code class="docutils literal notranslate"><span class="pre">EONR</span></code>, pass the appropriate variables to <code class="docutils literal notranslate"><span class="pre">EONR()</span></code>:</p>
@@ -921,10 +926,12 @@ EONR version: 0.1.4
                     <span class="n">unit_grain</span><span class="o">=</span><span class="n">unit_grain</span><span class="p">,</span>
                     <span class="n">unit_fert</span><span class="o">=</span><span class="n">unit_fert</span><span class="p">,</span>
                     <span class="n">unit_area</span><span class="o">=</span><span class="n">unit_area</span><span class="p">,</span>
+                    <span class="n">model</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                     <span class="n">base_dir</span><span class="o">=</span><span class="n">base_dir</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
+<p>Notice the <code class="docutils literal notranslate"><span class="pre">model</span></code> keywork argument was set to <code class="docutils literal notranslate"><span class="pre">None</span></code> (default=‘quad_plateau’). This keyword is used to define which model to use to fit the experimental data. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, <code class="docutils literal notranslate"><span class="pre">EONR</span></code> will try all supported models (i.e., as of v. 0.2.0, both ‘quad_plateau’ and ‘quadratic’ models are supported), and use the model that fits the data best as determined by the highest <span class="math notranslate nohighlight">\(\text{r}^2\)</span>.</p>
 </div>
 <hr class="docutils" />
 <div class="section" id="Calculate-the-EONR">
@@ -949,12 +956,17 @@ Computing EONR for Minnesota 2012 Pre
 Cost of N fertilizer: $0.88 per kg
 Price grain: $0.16 per kg
 Fixed costs: $0.00 per ha
+Checking quadratic and quadric-plateau models for best fit..
+Quadratic model r^2: 0.72
+Quadratic-plateau model r^2: 0.73
+Using the quadratic-plateau model..
 Economic optimum N rate (EONR): 162.3 kg per ha [130.5, 207.8] (90.0% confidence)
 Maximum return to N (MRTN): $767.93 per ha
 </pre></div></div>
 </div>
-<p>It may take a few seconds to run, but it will take much longer if you choose to compute the bootstrap confidence intervals in addition to the profile-likelihood confidence intervals. Please see the <a class="reference external" href="advanced_tutorial.html#Bootstrap-confidence-intervals">Advanced tutorial</a> describing how to compute the bootstrap CIs <code class="docutils literal notranslate"><span class="pre">EONR</span></code> does not run the bootstrap CIs by default).</p>
+<p>It may take a few seconds to run, but it will take much longer if you choose to compute the bootstrap confidence intervals in addition to the profile-likelihood confidence intervals. Please see the <a class="reference external" href="advanced_tutorial.html#Bootstrap-confidence-intervals">Advanced tutorial</a> describing how to compute the bootstrap CIs (<code class="docutils literal notranslate"><span class="pre">EONR</span></code> does not run the bootstrap CIs by default).</p>
 <p>And that’s it! The economic optimum for this dataset and economic scenario was <strong>162 kg nitrogen per ha</strong> (with 90% confidence bounds at <strong>131</strong> and <strong>208 kg per ha</strong>) and resulted in a maximum net return of nearly <strong>$770 per ha</strong>.</p>
+<p>Notice the <span class="math notranslate nohighlight">\(\text{r}^2\)</span> for the quadratic-plateau model was greater than that of the quadratic model, so the quadratic-plateau model was used (the model used is recorded in <code class="docutils literal notranslate"><span class="pre">EONR.df_results</span></code> and will be displayed in the plot legend - see below).</p>
 </div>
 <hr class="docutils" />
 <div class="section" id="Plotting-the-EONR">
@@ -973,7 +985,7 @@ Maximum return to N (MRTN): $767.93 per ha
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/tutorial_17_0.png" src="_images/tutorial_17_0.png" />
+<img alt="_images/tutorial_18_0.png" src="_images/tutorial_18_0.png" />
 </div>
 </div>
 <ul class="simple">
@@ -985,7 +997,7 @@ Maximum return to N (MRTN): $767.93 per ha
 <li><p>The transparent grey box surrounding the EONR/MRTN (green point) illustrates the <strong>90% confidence intervals</strong></p></li>
 </ul>
 <p>The EONR is the point on the x-axis where the net return curve (green) reaches the maximum return. The return to nitrogen at the EONR is the <strong>Maximum Return to Nitrogen (MRTN)</strong>, indicating the profit that is earned at the economic optimum nitrogen rate.</p>
-<p><em>Notice the economic scenario (i.e., grain price, nitrogen fertilizer cost, etc.) and the “Base zero” values in the upper right corner describing the assumptions of EONR calculatioon. “Base zero” refers to the initial y-intercept of the gross return model (this setting can be turned on/off by setting</em> <code class="docutils literal notranslate"><span class="pre">EONR.base_zero</span></code> <em>to</em> <code class="docutils literal notranslate"><span class="pre">True</span></code> or <code class="docutils literal notranslate"><span class="pre">False</span></code>. See the <a class="reference external" href="advanced_tutorial.html#Turn-base_zero-off">Advanced tutorial</a> and the <a class="reference external" href="my_eonr.html#module-eonr.eonr">API</a> for more information.</p>
+<p>Notice the economic scenario (i.e., grain price, nitrogen fertilizer cost, etc.) and the “Base zero” values in the upper right corner describing the assumptions of EONR calculatioon. <em>Base zero</em> refers to the initial y-intercept of the gross return model (this setting can be turned on/off by setting <code class="docutils literal notranslate"><span class="pre">EONR.base_zero</span></code> to <code class="docutils literal notranslate"><span class="pre">True</span></code> or <code class="docutils literal notranslate"><span class="pre">False</span></code>. See the <a class="reference external" href="advanced_tutorial.html#Turn-base_zero-off">Advanced tutorial</a> and the <a class="reference external" href="my_eonr.html#module-eonr.eonr">API</a> for more information.</p>
 </div>
 <hr class="docutils" />
 <div class="section" id="Accesing-complete-results">
@@ -1073,7 +1085,7 @@ Maximum return to N (MRTN): $767.93 per ha
     </tr>
   </tbody>
 </table>
-<p>1 rows × 32 columns</p>
+<p>1 rows × 33 columns</p>
 </div></div>
 </div>
 <p>See the <a class="reference external" href="advanced_tutorial.html#View-results">Advanced tutorial</a> for a description of every column.</p>
@@ -1097,7 +1109,7 @@ Maximum return to N (MRTN): $767.93 per ha
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/tutorial_22_0.png" src="_images/tutorial_22_0.png" />
+<img alt="_images/tutorial_23_0.png" src="_images/tutorial_23_0.png" />
 </div>
 </div>
 <p>This plot shows the lower and upper confidence intervals of the <em>True EONR</em> (<em>True EONR</em> refers to the actual EONR value, which is not actually known due to uncertainty in the dataset). At 0% confidence, the <em>True EONR</em> is the <em>maximum likelihood</em> value, but as we increase the confidence level from 67%, 80%, 90%, 95%, and 99%, the statistical range of the <em>True EONR</em> widens.</p>
@@ -1495,7 +1507,7 @@ Maximum return to N (MRTN): $767.93 per ha
 <p>You may have noticed that <a class="reference external" href="tutorial.html#Load-the-data">the loaded data</a> for this tutorial contains columns for nitrogen uptake (“nup_total_kgha”) and available nitrogen (“soil_plus_fert_n_kgha”). This data can be used to calculate the approximate net mineralization for the zero rate, which can be assumed to consistent across all rates. Total crop available nitrogen can then be assumed to be the sum of fertilizer, soil, and net mineralized nitrogen. We can then calculate the <strong>SONR</strong> as long
 as the column names are correctly set.</p>
 <p>The column names were set for nitrogen fertilizer rate (<code class="docutils literal notranslate"><span class="pre">col_n_app</span></code>) and grain yield (<code class="docutils literal notranslate"><span class="pre">col_yld</span></code>) during the initialization of <code class="docutils literal notranslate"><span class="pre">EONR</span></code>, but they haven’t been set for the nitrogen uptake or available nitrogen columns. This can be done (even after initilization of <code class="docutils literal notranslate"><span class="pre">EONR</span></code>) using <code class="docutils literal notranslate"><span class="pre">EONR.set_column_names()</span></code>:</p>
-<div class="nbinput docutils container">
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
 </div>
@@ -1504,9 +1516,9 @@ as the column names are correctly set.</p>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Calculates mineralization and adds &quot;crop_available_n&quot; to df</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">df_trt0</span> <span class="o">=</span> <span class="n">df_data</span><span class="p">[</span><span class="n">df_data</span><span class="p">[</span><span class="s1">&#39;rate_n_applied_kgha&#39;</span><span class="p">]</span><span class="o">==</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">df_trt0</span><span class="p">[</span><span class="s1">&#39;mineralize_n&#39;</span><span class="p">]</span> <span class="o">=</span>  <span class="p">(</span><span class="n">df_trt0</span><span class="p">[</span><span class="s1">&#39;nup_total_kgha&#39;</span><span class="p">]</span> <span class="o">-</span>
-                                <span class="n">df_trt0</span><span class="p">[</span><span class="s1">&#39;soil_plus_fert_n_kgha&#39;</span><span class="p">])</span>
+    <span class="n">df_trt0</span> <span class="o">=</span> <span class="n">df_data</span><span class="p">[</span><span class="n">df_data</span><span class="p">[</span><span class="s1">&#39;rate_n_applied_kgha&#39;</span><span class="p">]</span><span class="o">==</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">df_trt0</span><span class="p">[</span><span class="s1">&#39;mineralize_n&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">df_trt0</span><span class="p">[</span><span class="s1">&#39;nup_total_kgha&#39;</span><span class="p">]</span> <span class="o">-</span>
+                               <span class="n">df_trt0</span><span class="p">[</span><span class="s1">&#39;soil_plus_fert_n_kgha&#39;</span><span class="p">])</span>
     <span class="n">trt0_mineralize</span> <span class="o">=</span> <span class="n">df_trt0</span><span class="p">[</span><span class="s1">&#39;mineralize_n&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
     <span class="n">crop_n_label</span> <span class="o">=</span> <span class="s1">&#39;crop_n_available_&#39;</span> <span class="o">+</span> <span class="n">units_fert</span>
     <span class="n">df_data</span><span class="p">[</span><span class="n">crop_n_label</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_data</span><span class="p">[</span><span class="s1">&#39;soil_plus_fert_n_kgha&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">trt0_mineralize</span>
@@ -1521,19 +1533,6 @@ as the column names are correctly set.</p>
                          <span class="n">col_n_avail</span><span class="o">=</span><span class="n">col_n_avail</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-C:\Anaconda3\lib\site-packages\ipykernel_launcher.py:7: SettingWithCopyWarning:
-A value is trying to be set on a copy of a slice from a DataFrame.
-Try using .loc[row_indexer,col_indexer] = value instead
-
-See the caveats in the documentation: http://pandas.pydata.org/pandas-docs/stable/indexing.html#indexing-view-versus-copy
-  import sys
-</pre></div></div>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">EONR</span></code> simply subtracts <em>end of season total nitrogen uptake</em> from <em>available nitrogen</em> to get <strong>net crop nitrogen use</strong>, which is subsequently used to calculate the <strong>SONR</strong>.</p>
 </div>
@@ -1561,6 +1560,10 @@ Cost of N fertilizer: $1.32 per kg
 Price grain: $0.16 per kg
 Fixed costs: $0.00 per ha
 Social cost of N: $1.10 per kg
+Checking quadratic and quadric-plateau models for best fit..
+Quadratic model r^2: 0.72
+Quadratic-plateau model r^2: 0.73
+Using the quadratic-plateau model..
 Socially optimum N rate (SONR): 149.6 kg per ha [122.4, 186.3] (90.0% confidence)
 Maximum return to N (MRTN): $684.60 per ha
 </pre></div></div>
@@ -1672,7 +1675,7 @@ Maximum return to N (MRTN): $684.60 per ha
     </tr>
   </tbody>
 </table>
-<p>2 rows × 32 columns</p>
+<p>2 rows × 33 columns</p>
 </div></div>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">EONR.plot_eonr()</span></code> and <code class="docutils literal notranslate"><span class="pre">EONR.plot_tau()</span></code> can be called again to plot the new results:</p>
@@ -1691,14 +1694,14 @@ Maximum return to N (MRTN): $684.60 per ha
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/tutorial_36_0.png" src="_images/tutorial_36_0.png" />
+<img alt="_images/tutorial_37_0.png" src="_images/tutorial_37_0.png" />
 </div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/tutorial_36_1.png" src="_images/tutorial_36_1.png" />
+<img alt="_images/tutorial_37_1.png" src="_images/tutorial_37_1.png" />
 </div>
 </div>
 <p>Notice the added data in the nitrogen response plot:</p>
@@ -1728,7 +1731,7 @@ Maximum return to N (MRTN): $684.60 per ha
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-F:\nigo0024\Documents\GitHub\eonr\eonr\examples\eonr_tutorial\social_154_1100
+F:\nigo0024\Documents\GitHub\eonr\docs\source\eonr_tutorial\social_154_1100
 </pre></div></div>
 </div>
 <p>Upon generating figures using <code class="docutils literal notranslate"><span class="pre">EONR.plot_eonr()</span></code> or <code class="docutils literal notranslate"><span class="pre">EONR.plot_tau()</span></code>, the <code class="docutils literal notranslate"><span class="pre">matplotlib</span></code> figures are stored to the <code class="docutils literal notranslate"><span class="pre">EONR</span></code> class. They can be saved to file by using <code class="docutils literal notranslate"><span class="pre">EONR.plot_save()</span></code>:</p>

@@ -43,8 +43,9 @@ Parameters:
         'bu')
     unit_area (str, optional): String descibing the "area" unit (default: 'ac')
     model (str, optional): Statistical model used to fit N rate response.
-        *'quad_plateau'* = quadratic plateau; *'lin_plateau'* = linear plateau
-        (default: 'quad_plateau')
+        *'quad_plateau'* = quadratic plateau; *'quadratic'* = quadratic;
+        ``None`` = fits each of the preceding models, and uses the one with the
+        highest R2 (default: 'quad_plateau').
     ci_level (float, optional): Confidence interval level to save in
         ``EONR.df_results`` and to display in the EONR plot; note that
         confidence intervals are calculated at many alpha levels, and we should
@@ -126,6 +127,7 @@ class EONR(object):
         self.unit_rtn = '{0} per {1}'.format(unit_currency, unit_area)
         self.unit_nrate = '{0} per {1}'.format(unit_fert, unit_area)
         self.model = model
+        self.model_temp = model
         self.ci_level = ci_level
         self.base_dir = base_dir
         self.base_zero = base_zero
@@ -508,10 +510,10 @@ class EONR(object):
             guess = (self.coefs_grtn['b0'].n,
                      self.eonr,
                      self.coefs_grtn['b2'].n)
-            if self.model is 'quadratic':
+            if self.model_temp is 'quadratic':
                 f_model = self.models.quadratic
                 f_model_theta2 = self.models.q_theta2
-            elif self.model is 'quad_plateau':
+            elif self.model_temp is 'quad_plateau':
                 f_model = self.models.quad_plateau
                 f_model_theta2 = self.models.qp_theta2
             info = ('func = {0}\ncol_x = {1}\ncol_y = {2}\n'
@@ -656,16 +658,16 @@ class EONR(object):
                                self.df_ci['run_n'].max()]
         else:
             df_ci = self.df_ci[self.df_ci['run_n'] == run_n]
-        val_min = df_ci[df_ci['level'] == 0.99]['pl_l'].item()
-        val_max = df_ci[df_ci['level'] == 0.99]['pl_u'].item()
+        val_min = df_ci[df_ci['level'] == 0.99]['pl_l'].values[0]
+        val_max = df_ci[df_ci['level'] == 0.99]['pl_u'].values[0]
         x_all = np.linspace(val_min, val_max, n_steps)
 
         level_list = list(df_ci['level'].unique())
         weights = np.zeros(x_all.shape)
         for level in level_list:
             if level != 0:
-                pl_l = df_ci[df_ci['level'] == level]['pl_l'].item()
-                pl_u = df_ci[df_ci['level'] == level]['pl_u'].item()
+                pl_l = df_ci[df_ci['level'] == level]['pl_l'].values[0]
+                pl_u = df_ci[df_ci['level'] == level]['pl_u'].values[0]
                 weight_in = (level*100)
                 weight_out = 100-weight_in  # 99 because 0 CI is excluded
 #                idx_l = (np.abs(x_all - pl_l)).argmin()  # find nearest index
@@ -693,8 +695,8 @@ class EONR(object):
         '''
         df_ci = self.df_ci[self.df_ci['run_n'] ==
                               self.df_ci['run_n'].max()].copy()
-        pl_l = df_ci[df_ci['level'] == self.ci_level]['pl_l'].item()
-        pl_u = df_ci[df_ci['level'] == self.ci_level]['pl_u'].item()
+        pl_l = df_ci[df_ci['level'] == self.ci_level]['pl_l'].values[0]
+        pl_u = df_ci[df_ci['level'] == self.ci_level]['pl_u'].values[0]
         df = self.df_linspace[['x', 'rtn_der', 'rtn_der2']].copy()
         df_trim = df[(df['x'] >= pl_l) & (df['x'] <= pl_u)]
         df_trim = df_trim.loc[~(df_trim == 0).any(axis=1)]
@@ -790,10 +792,10 @@ class EONR(object):
         x = df_data[col_x].values
         y = df_data[col_y].values
 
-        if self.model is 'quadratic':
+        if self.model_temp is 'quadratic':
 #            f_model = self.models.quadratic
             f_model_theta2 = self.models.q_theta2
-        elif self.model is 'quad_plateau':
+        elif self.model_temp is 'quad_plateau':
 #            f_model = self.models.quad_plateau
             f_model_theta2 = self.models.qp_theta2
         guess = (self.coefs_grtn['b0'].n,
@@ -866,19 +868,19 @@ class EONR(object):
         '''
         last_run_n = self.df_ci['run_n'].max()
         df_ci_last_all = self.df_ci[self.df_ci['run_n'] == last_run_n]
-        fert_l = df_ci_last_all[df_ci_last_all['level'] == 0.5]['pl_l'].item()
-        fert_u = df_ci_last_all[df_ci_last_all['level'] == 0.5]['pl_u'].item()
+        fert_l = df_ci_last_all[df_ci_last_all['level'] == 0.5]['pl_l'].values[0]
+        fert_u = df_ci_last_all[df_ci_last_all['level'] == 0.5]['pl_u'].values[0]
 
         df_ci_last = self.df_ci[(self.df_ci['run_n'] == last_run_n) &
                                 (self.df_ci['level'] == self.ci_level)]
         try:
-            pl_l = df_ci_last['pl_l'].item()
-            pl_u = df_ci_last['pl_u'].item()
-            wald_l = df_ci_last['wald_l'].item()
-            wald_u = df_ci_last['wald_u'].item()
+            pl_l = df_ci_last['pl_l'].values[0]
+            pl_u = df_ci_last['pl_u'].values[0]
+            wald_l = df_ci_last['wald_l'].values[0]
+            wald_u = df_ci_last['wald_u'].values[0]
             if self.bootstrap_ci is True:
-                boot_l = df_ci_last['boot_l'].item()
-                boot_u = df_ci_last['boot_u'].item()
+                boot_l = df_ci_last['boot_l'].values[0]
+                boot_u = df_ci_last['boot_u'].values[0]
         except TypeError as err:
             print(err)
         print('{0} optimum N rate ({1}): {2:.1f} {3} [{4:.1f}, '
@@ -916,7 +918,7 @@ class EONR(object):
         guess = self._get_guess_qp(rerun=rerun)
         #  TODO: Add a try/except to catch a bad guess.. or at least warn the
         # user that the guess is *extremely* sensitive
-        if self.model is None:
+        if self.model is None and rerun is False:
             print('Checking quadratic and quadric-plateau models for best '
                   'fit..')
             model_q = self.models.quadratic
@@ -932,18 +934,23 @@ class EONR(object):
             print('Quadratic model r^2: {0:.2f}'.format(r2_adj_q))
             print('Quadratic-plateau model r^2: {0:.2f}'.format(r2_adj_qp))
             if r2_adj_q > r2_adj_qp:
-                self.model = 'quadratic'
+                self.model_temp = 'quadratic'
 #                model = self.models.quadratic
 #                popt, pcov = popt_q, pcov_q
                 print('Using the quadratic model..')
             else:
-                self.model = 'quad_plateau'
+                self.model_temp = 'quad_plateau'
 #                model = self.models.quad_plateau
 #                popt, pcov = popt_qp, pcov_qp
                 print('Using the quadratic-plateau model..')
-        if self.model is 'quadratic':
+        elif self.model is None and rerun is True:
+            # Using self.model_temp because it was already determined
+            pass
+        else:
+            self.model_temp = self.model
+        if self.model_temp is 'quadratic':
             f_model = self.models.quadratic
-        elif self.model is 'quad_plateau':
+        elif self.model_temp is 'quad_plateau':
             f_model = self.models.quad_plateau
         else:
             raise NotImplementedError('{0} model not implemented'
@@ -1116,10 +1123,10 @@ class EONR(object):
         df = self.df_data.copy()
         x = df[self.col_n_app].values
         y = df['grtn'].values
-        if self.model is 'quadratic':
+        if self.model_temp is 'quadratic':
 #            f_model = self.models.quadratic
             f_model_theta2 = self.models.q_theta2
-        elif self.model is 'quad_plateau':
+        elif self.model_temp is 'quad_plateau':
 #            f_model = self.models.quad_plateau
             f_model_theta2 = self.models.qp_theta2
         guess = (self.coefs_grtn['b0'].n,
@@ -1136,10 +1143,10 @@ class EONR(object):
         maxfev = 1000
         b0 = self.coefs_grtn['b0'].n
         b2 = self.coefs_grtn['b2'].n
-        if self.model is 'quadratic':
+        if self.model_temp is 'quadratic':
 #            f_model = self.models.quadratic
             f_model_theta2 = self.models.q_theta2
-        elif self.model is 'quad_plateau':
+        elif self.model_temp is 'quad_plateau':
 #            f_model = self.models.quad_plateau
             f_model_theta2 = self.models.qp_theta2
         guess = (b0, self.eonr, b2)
@@ -1190,10 +1197,10 @@ class EONR(object):
         Calculates the sum of squares across the full set of parameters,
         solving for theta2
         '''
-        if self.model is 'quadratic':
+        if self.model_temp is 'quadratic':
 #            f_model = self.models.quadratic
             f_model_theta2 = self.models.q_theta2
-        elif self.model is 'quad_plateau':
+        elif self.model_temp is 'quad_plateau':
 #            f_model = self.models.quad_plateau
             f_model_theta2 = self.models.qp_theta2
         guess = (self.coefs_grtn['b0'].n,
@@ -1308,8 +1315,8 @@ class EONR(object):
                     boot_l, boot_u = self._compute_bootstrap(
                             alpha=pctle, samples_boot=samples_boot)
                 else:
-                    boot_l = df_boot[df_boot['alpha']==alpha]['boot_l'].item()
-                    boot_u = df_boot[df_boot['alpha']==alpha]['boot_u'].item()
+                    boot_l = df_boot[df_boot['alpha']==alpha]['boot_l'].values[0]
+                    boot_u = df_boot[df_boot['alpha']==alpha]['boot_u'].values[0]
             else:
                 boot_l, boot_u = np.nan, np.nan
             df_row = pd.DataFrame([[self.df_data.iloc[0]['location'],
@@ -1327,7 +1334,7 @@ class EONR(object):
             df_ci = df_ci.append(df_row, ignore_index=True)
 
 
-#            if df_row['level'].item() == self.ci_level:
+#            if df_row['level'].values[0] == self.ci_level:
 #                df_ci_last = df_row
 #        if bootstrap_ci is True:
 ##            df_ci = self._run_bootstrap(df_ci, alpha_list, n_samples=9999)
@@ -1357,9 +1364,9 @@ class EONR(object):
         df_data = self.df_data.copy()
         x = df_data[col_x].values
         y = df_data[col_y].values
-        if self.model is 'quadratic':
+        if self.model_temp is 'quadratic':
             f_model = self.models.quadratic
-        elif self.model is 'quad_plateau':
+        elif self.model_temp is 'quad_plateau':
             f_model = self.models.quad_plateau
         info = ('func = {0}\ncol_x = {1}\ncol_y = {2}\n'
                 ''.format(f_model, col_x, col_y))
@@ -1486,10 +1493,10 @@ class EONR(object):
         distribution function) of the F statistic. The T statistic can be used
         as well (they will give the same result).
         '''
-        if self.model is 'quadratic':
+        if self.model_temp is 'quadratic':
 #            f_model = self.models.quadratic
             f_model_theta2 = self.models.q_theta2
-        elif self.model is 'quad_plateau':
+        elif self.model_temp is 'quad_plateau':
 #            f_model = self.models.quad_plateau
             f_model_theta2 = self.models.qp_theta2
         guess = (self.coefs_grtn['b0'].n,
@@ -1728,16 +1735,21 @@ class EONR(object):
             returns <dif>, which will equal zero when the likelihood ratio is
             exactly equal to the test statistic (e.g., t-test or f-test)
             '''
-            if self.model is 'quadratic':
+            if self.model_temp is 'quadratic':
     #            f_model = self.models.quadratic
                 f_model_theta2 = self.models.q_theta2
-            elif self.model is 'quad_plateau':
+            elif self.model_temp is 'quad_plateau':
     #            f_model = self.models.quad_plateau
                 f_model_theta2 = self.models.qp_theta2
-            popt, pcov = self._curve_fit_runtime(
-                    lambda x, b0, b2: f_model_theta2(
-                            x, b0, theta2, b2), x, y,
-                    guess=(1, 1), maxfev=800, info=info)
+            try:
+                popt, pcov = self._curve_fit_runtime(
+                        lambda x, b0, b2: f_model_theta2(
+                                x, b0, theta2, b2), x, y, guess=(1, 1),
+                        maxfev=800, info=info)
+            except TypeError as e:
+                popt = None
+                pcov = None
+                print('{0}\n{1}\nAlpha: {2}\n'.format(e, info, alpha))
             if popt is not None:
                 popt = np.insert(popt, 1, theta2)
                 res = y - f_model_theta2(x, *popt)
@@ -1796,7 +1808,11 @@ class EONR(object):
                 is considered a poor fit, probably due to finding a local
                 minimum.
             '''
-            if f(pl_l) > thresh:
+            if pl_l is None:
+                print('\nUpper {0:.2f} profile-likelihood CI may not have '
+                      'optimized..'.format(alpha))
+                pl_l = np.nan
+            elif f(pl_l) > thresh:
                 guess_l = theta2_opt - (pl_guess / 2)
                 pl_l_reduced = minimize(f, guess_l, method=method)
                 guess_l = theta2_opt - (pl_guess * 2)
@@ -1808,7 +1824,11 @@ class EONR(object):
                 else:
                     print('\nLower {0:.2f} profile-likelihood CI may not have '
                           'optimized..'.format(alpha))
-            if f(pl_u) > thresh:
+            if pl_u is None:
+                print('\nUpper {0:.2f} profile-likelihood CI may not have '
+                      'optimized..'.format(alpha))
+                pl_u = np.nan
+            elif f(pl_u) > thresh:
                 guess_u = theta2_opt + (pl_guess / 2)
                 pl_u_reduced = minimize(f, guess_u, method=method)
                 guess_u = theta2_opt + (pl_guess * 2)
@@ -1837,10 +1857,14 @@ class EONR(object):
         pl_l, pl_u = _check_convergence(_f_like_opt, theta2_opt, pl_guess,
                                         pl_l, pl_u, alpha, thresh=0.5,
                                         method=method)
-        if pl_l is not None:
-            pl_l += theta2_bias
-        if pl_u is not None:
-            pl_u += theta2_bias
+#        if pl_l is not None:
+#            pl_l += theta2_bias
+#        if pl_u is not None:
+#            pl_u += theta2_bias
+#        if pl_l is None:
+#            pl_l = np.nan
+#        if pl_u is None:
+#            pl_u = np.nan
         if pl_l > self.eonr or pl_u < self.eonr:  # can't trust the data
             print('Profile-likelihood calculations are not realistic: '
                   '[{0:.1f}, {1:.1f}] setting to NaN'.format(pl_l, pl_u))
@@ -2124,16 +2148,16 @@ class EONR(object):
         results = [[self.price_grain, self.cost_n_fert, self.cost_n_social,
                     self.costs_fixed,
                     self.price_ratio, unit_price_grain, unit_cost_n,
-                    self.location, self.year, self.time_n, self.model,
+                    self.location, self.year, self.time_n, self.model_temp,
                     base_zero, self.eonr,
                     self.coefs_nrtn['eonr_bias'],
                     self.R, self.costs_at_onr,
-                    self.ci_level, df_ci_last['wald_l'].item(),
-                    df_ci_last['wald_u'].item(),
-                    df_ci_last['pl_l'].item(),
-                    df_ci_last['pl_u'].item(),
-                    df_ci_last['boot_l'].item(),
-                    df_ci_last['boot_u'].item(),
+                    self.ci_level, df_ci_last['wald_l'].values[0],
+                    df_ci_last['wald_u'].values[0],
+                    df_ci_last['pl_l'].values[0],
+                    df_ci_last['pl_u'].values[0],
+                    df_ci_last['boot_l'].values[0],
+                    df_ci_last['boot_u'].values[0],
                     self.mrtn, self.coefs_grtn['r2_adj'],
                     self.coefs_grtn['rmse'],
                     self.coefs_grtn['max_y'],
@@ -2150,7 +2174,7 @@ class EONR(object):
 
     def plot_eonr(self, ci_type='profile-likelihood', ci_level=None,
                   run_n=None, x_min=None, x_max=None, y_min=None, y_max=None,
-                  style='ggplot'):
+                  show_model=True, style='ggplot'):
         '''Plots EONR, MRTN, GRTN, net return, and nitrogen cost
 
         Parameters:
@@ -2174,6 +2198,8 @@ class EONR(object):
                 (default: None)
             y_max (``int``, optional): The maximum y-bounds of the plot
                 (default: None)
+            show_model (str): Whether to display the type of fitted model in
+                the helper legend (default: True).
             style (``str``, optional): The style of the plolt; can be any of
                 the options supported by ``matplotlib``
 

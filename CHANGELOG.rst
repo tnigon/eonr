@@ -1,11 +1,13 @@
 Release: 0.2.0
 ***************
-**Date**: 2019 August 07
+**Date**: 2019 August 22
 
 **Description**: Support for a quadratic model
 
-* If model is not specified, both quadratic and quadratic-plateau models are fit, and the model with the highest R^2 is used
-* Model can be specified using ``EONR.model`` (e.g., 'quadratic' or 'quad_plateau')
+* If model is not specified, both quadratic and quadratic-plateau models are fit, and the model with the highest r^2 is used
+* The model to be used can be specified using ``EONR.model`` (e.g., 'quadratic' or 'quad_plateau')
+* Removed "bootstrap" text from the "Tau" plot if the bootstrap confidence interval is not computed and there is no bootstrap data to show.
+* Added the model type to ``EONR.df_results`` and the legend of the EONR plot.
 
 Release: 0.1.4
 ***************

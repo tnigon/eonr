@@ -33,7 +33,8 @@ class Plotting_tools(object):
         self.unit_area = EONR.unit_area
         self.unit_rtn = EONR.unit_rtn
         self.unit_nrate = EONR.unit_nrate
-#        self.model = EONR.model
+        self.model = EONR.model
+        self.model_temp = EONR.model_temp
         self.ci_level = EONR.ci_level
         self.base_dir = EONR.base_dir
         self.base_zero = EONR.base_zero
@@ -71,7 +72,8 @@ class Plotting_tools(object):
         self.palette = self._seaborn_palette(color='muted', cmap_len=10)
 
     #  Following are plotting functions
-    def _add_labels(self, g, x_max=None, run_n=None, fert_range=False):
+    def _add_labels(self, g, x_max=None, run_n=None, show_model=False,
+                    fert_range=False):
         '''
         Adds EONR and economic labels to the plot
         '''
@@ -150,6 +152,9 @@ class Plotting_tools(object):
             label_econ = ('{0}\nBase zero: {1}{2:.2f}'.format(
                     label_econ, self.unit_currency,
                     self.coefs_grtn_primary['b0'].n))
+        if show_model is True:
+            label_econ = ('{0}\nModel: {1}'.format(
+                    label_econ, self.model_temp))
         g.ax.annotate(
             label_econ,
             xy=(0, 1), xycoords='axes fraction', xytext=(0.98, 0.95),
@@ -804,9 +809,15 @@ class Plotting_tools(object):
                               fontsize=fontsize)
         plt.getp(xlab_obj, 'color')
 
-    def _pci_place_legend_tau(self, g, loc='best', facecolor='white'):
+    def _pci_place_legend_tau(self, g, df_ci=None, loc='best',
+                              facecolor='white'):
         h, leg = g.ax.get_legend_handles_labels()
-        order = [0, 2, 4]
+        if df_ci is None:
+            order = [0, 2, 4]
+        elif not df_ci['boot_l'].isnull().all():
+            order = [0, 2, 4]
+        else:
+            order = [0, 2]
         handles = [h[idx] for idx in order]
         labels = [leg[idx] for idx in order]
         leg = g.ax.legend(handles=handles,
@@ -907,6 +918,11 @@ class Plotting_tools(object):
         <df_ci> --> the dataframe containing confidence interval data
         <y_ci> --> the y data to plot
         '''
+        if emphasis.lower() == 'bootstrap':
+            msg = ('Bootstrap CIs were not computed and thus can not be '
+                   'emphasized. Please set "bootstrap_ci=True" or change the '
+                   'empahsis to "wald" or "profile-likelihood".')
+            assert not df_ci['boot_l'].isnull().all(), msg
         if emphasis.lower() == 'wald':
             g.ax.plot(df_ci['wald_l'], y_ci,
                       color=self.palette[3], linestyle='-', linewidth=lw_thick,
@@ -914,6 +930,12 @@ class Plotting_tools(object):
             g.ax.plot(df_ci['wald_u'], y_ci,
                       color=self.palette[3], linestyle='-', linewidth=lw_thick,
                       label='wald_u', zorder=5)
+            self._plot_points(col_x='wald_l', col_y=y_ci, data=df_ci,
+                              palette=self.palette[3], ax=g.ax, s=20,
+                              zorder=6)
+            self._plot_points(col_x='wald_u', col_y=y_ci, data=df_ci,
+                              palette=self.palette[3], ax=g.ax, s=20,
+                              zorder=6)
         else:
             g.ax.plot(df_ci['wald_l'], y_ci,
                       color=self.palette[3], linestyle='-', linewidth=lw_thin,
@@ -930,6 +952,12 @@ class Plotting_tools(object):
                       color=self.palette[2], linestyle='--',
                       linewidth=lw_thick,
                       label='profile-likelihood_u', zorder=5)
+            self._plot_points(col_x='pl_l', col_y=y_ci, data=df_ci,
+                              palette=self.palette[2], ax=g.ax, s=20,
+                              zorder=6)
+            self._plot_points(col_x='pl_u', col_y=y_ci, data=df_ci,
+                              palette=self.palette[2], ax=g.ax, s=20,
+                              zorder=6)
         else:
             g.ax.plot(df_ci['pl_l'], y_ci,
                       color=self.palette[2], linestyle='--', linewidth=lw_thin,
@@ -946,7 +974,13 @@ class Plotting_tools(object):
                       color=self.palette[0], linestyle='-.',
                       linewidth=lw_thick,
                       label='bootstrap_u', zorder=5)
-        else:
+            self._plot_points(col_x='boot_l', col_y=y_ci, data=df_ci,
+                              palette=self.palette[0], ax=g.ax, s=20,
+                              zorder=6)
+            self._plot_points(col_x='boot_u', col_y=y_ci, data=df_ci,
+                              palette=self.palette[0], ax=g.ax, s=20,
+                              zorder=6)
+        elif not df_ci['boot_l'].isnull().all():
             g.ax.plot(df_ci['boot_l'], y_ci,
                       color=self.palette[0], linestyle='-.',
                       linewidth=lw_thin,
@@ -1186,7 +1220,7 @@ class Plotting_tools(object):
 
     def plot_eonr(self, ci_type='profile-likelihood', ci_level=None,
                   run_n=None, x_min=None, x_max=None, y_min=None, y_max=None,
-                  fert_range=False, style='ggplot'):
+                  show_model=True, fert_range=False, style='ggplot'):
         '''Plots EONR, MRTN, GRTN, net return, and nitrogen cost
 
         Parameters:
@@ -1205,9 +1239,11 @@ class Plotting_tools(object):
             x_max (int): The maximum x-bounds of the plot (default: None)
             y_min (int): The minimum y-bounds of the plot (default: None)
             y_max (int): The maximum y-bounds of the plot (default: None)
+            show_model (str): Whether to display the type of fitted model in
+                the helper legend (default: True).
             fert_range (bool): Whether to include the recommended range in
                 fertilizer rate; this is the 50% confidence interval (default:
-                True)
+                False) -- DO NOT USE.
             style (str): The style of the plolt; can be any of the options
                 supported by
                 supported by
@@ -1233,7 +1269,8 @@ class Plotting_tools(object):
         g = self._place_legend(g, loc='upper left')
         g = self._modify_plot_params(g, plotsize_x=7, plotsize_y=4,
                                      labelsize=11)
-        g = self._add_labels(g, x_max, fert_range=fert_range)
+        g = self._add_labels(g, x_max, show_model=show_model,
+                             fert_range=fert_range)
         g = self._add_title(g)
         plt.tight_layout()
 
@@ -1325,31 +1362,8 @@ class Plotting_tools(object):
         else:
             y_ci = df_ci[y_axis]
         g = self._pci_plot_emphasis(g, emphasis, df_ci, y_ci)
-
-        if emphasis == 'wald':
-            self._plot_points(col_x='wald_l', col_y=y_ci, data=df_ci,
-                              palette=self.palette[3], ax=g.ax, s=20,
-                              zorder=6)
-            self._plot_points(col_x='wald_u', col_y=y_ci, data=df_ci,
-                              palette=self.palette[3], ax=g.ax, s=20,
-                              zorder=6)
-        elif emphasis == 'profile-likelihood':
-            self._plot_points(col_x='pl_l', col_y=y_ci, data=df_ci,
-                              palette=self.palette[2], ax=g.ax, s=20,
-                              zorder=6)
-            self._plot_points(col_x='pl_u', col_y=y_ci, data=df_ci,
-                              palette=self.palette[2], ax=g.ax, s=20,
-                              zorder=6)
-        elif emphasis == 'bootstrap':
-            self._plot_points(col_x='boot_l', col_y=y_ci, data=df_ci,
-                              palette=self.palette[0], ax=g.ax, s=20,
-                              zorder=6)
-            self._plot_points(col_x='boot_u', col_y=y_ci, data=df_ci,
-                              palette=self.palette[0], ax=g.ax, s=20,
-                              zorder=6)
-
         self._pci_modify_axes_labels(y_axis)
-        g = self._pci_place_legend_tau(g)
+        g = self._pci_place_legend_tau(g, df_ci=df_ci)
         g = self._modify_plot_params(g, plotsize_x=4.5, plotsize_y=4,
                                      labelsize=11)
         g.ax.tick_params(axis='both', labelsize=9)
@@ -1367,7 +1381,7 @@ class Plotting_tools(object):
         self.fig_tau = g
 
     def update_eonr(self, EONR):
-        '''Sets/updates all EONR variables required by the Models class
+        '''Sets/updates all EONR variables required by the Plotting_tools class
 
         Parameters:
             EONR (EONR object): The EONR object to update
@@ -1389,6 +1403,8 @@ class Plotting_tools(object):
         self.unit_area = EONR.unit_area
         self.unit_rtn = EONR.unit_rtn
         self.unit_nrate = EONR.unit_nrate
+        self.model = EONR.model
+        self.model_temp = EONR.model_temp
         self.ci_level = EONR.ci_level
         self.base_dir = EONR.base_dir
         self.base_zero = EONR.base_zero

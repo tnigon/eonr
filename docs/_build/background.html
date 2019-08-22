@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="python">
   <head>
     <meta charset="utf-8" />
-    <title>4. Background &#8212; eonr 0.1.4 documentation</title>
+    <title>4. Background &#8212; eonr 0.2.0 documentation</title>
     <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -39,7 +39,7 @@
         </button>
         <a class="navbar-brand" href="index.html">
           EONR</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.1.4</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.2.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -119,8 +119,14 @@
 </li>
 <li><a class="reference internal" href="#EONR?-MRTN?-..what?">4.2. EONR? MRTN? ..what?</a></li>
 <li><a class="reference internal" href="#The-quadratic-plateau-model">4.3. The quadratic-plateau model</a></li>
-<li><a class="reference internal" href="#Confidence-intervals">4.4. Confidence intervals</a></li>
-<li><a class="reference internal" href="#The-social-cost-of-nitrogen">4.5. The social cost of nitrogen</a></li>
+<li><a class="reference internal" href="#The-quadratic-model">4.4. The quadratic model</a></li>
+<li><a class="reference internal" href="#Confidence-intervals">4.5. Confidence intervals</a><ul>
+<li><a class="reference internal" href="#Profile-likelihood">4.5.1. Profile-likelihood</a></li>
+<li><a class="reference internal" href="#Bootstrapping">4.5.2. Bootstrapping</a></li>
+<li><a class="reference internal" href="#Wald-type-(+/--1-standard-error)">4.5.3. Wald-type (+/- 1 standard error)</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#The-social-cost-of-nitrogen">4.6. The social cost of nitrogen</a></li>
 </ul>
 </li>
 </ul>
@@ -151,8 +157,8 @@
 <p>Many crops, (e.g., corn, wheat, potatoes) depend on nitrogen fertilizer to achieve profitable yields. Although the same is true for other nutrients (e.g., phosphorus, potassium, sulfur, etc.), many would probably agree that nitrogen deserves special attention because it is usually required in high quantities, it can cause environmental harm, and it tends to be more difficult to manage because of its elusive behavior in the soil. A diagram describing the fundamental pathways among the different
 pools in the nitrogen cycle illustrates its complexity (<strong>Figure 1</strong>). When nitrogen is introduced to agricultural soils, either naturally or synthetically, it is immediately vulnerable to be lost. Some losses may be temporary, while others are permanent. When nitrogen is lost, it can contribute to environmental pollution and cause other damages related to health and quality of living. Nitrogen pollution can be present in both water (including groundwater, lakes, rivers, etc.) and in the air (as
 particulate matter or as nitrous oxides, which are strong greenhouse gases).</p>
-<p><strong>Figure 1</strong>: The nitrogen cycle</p>
 <p><img alt="The nitrogen cycle" src="_images/background_n_cycle.png" /></p>
+<p><strong>Figure 1</strong>: The nitrogen cycle</p>
 <p><strong>With so many potential loss pathways, it is no wonder why farmers care so much about the nitrogen they apply to their crops. The</strong> <code class="docutils literal notranslate"><span class="pre">EONR</span></code> <strong>tool is an attempt to support them, through economics-driven research.</strong></p>
 </div>
 </div>
@@ -160,13 +166,13 @@ particulate matter or as nitrous oxides, which are strong greenhouse gases).</p>
 <h2>4.2. EONR? MRTN? ..what?<a class="headerlink" href="#EONR?-MRTN?-..what?" title="Permalink to this headline">¶</a></h2>
 <p>As its name suggests, the <strong>Maximum Return to Nitrogen</strong> (MRTN) is the maximum achievable profit expected after accounting for the cost of nitrogen fertilizer. The economic optimum nitrogen rate (EONR) is the nitrogen rate where the MRTN is reached. In statistical terms, the EONR is the point where the monetary return from yield is equal to the cost of the increase in nitrogen fertilizer input. The approach uses a best-fit statistical model that utilizes input data from replicated field trials
 with several nitrogen rate treatments. <strong>Figure 2</strong> is a typical nitrogen rate response curve for corn.</p>
-<p><strong>Figure 2:</strong> Plot generated from the <code class="docutils literal notranslate"><span class="pre">EONR</span></code> package. The blue points are observed experimental data (nitrogen rate vs yield return to nitrogen). Yield is expressed as monetary return, and is simply the grain price multiplied by grain yield. The blue line is the best-fit quadratic-plateau model representing gross return to nitrogen, the red line is the cost of nitrogen fertilizer, and the green line is the difference between the two and represents the net return to nitrogen.</p>
 <p><img alt="image0" src="_images/background_eonr_nonstandardized.png" /></p>
-<p>A quadratic-plateau model is fit to the experimental data to describe the return to nitrogen for <em>each</em> particular dataset. Differences among replications from these trials can contribute to uncertainty in estimating the EONR, and this is illustrated by the rather wide confidence intervals on either side of the 162 kg ha<span class="math notranslate nohighlight">\(^{-1}\)</span> estimated EONR value (90% confidence bounds are 130 kg ha<span class="math notranslate nohighlight">\(^{-1}\)</span> and 208<span class="math notranslate nohighlight">\(^{-1}\)</span>). Although there is perhaps a lot of uncertainty in the EONR
-estimate, it is a good baseline for making nitrogen fertilizer recommendations for a given location or soil.</p>
+<p><strong>Figure 2:</strong> Plot generated from the <code class="docutils literal notranslate"><span class="pre">EONR</span></code> package. The blue points are observed experimental data (nitrogen rate vs yield return to nitrogen). Yield is expressed as monetary return, and is simply the grain price multiplied by grain yield. The blue line is the best-fit quadratic-plateau model representing gross return to nitrogen, the red line is the cost of nitrogen fertilizer, and the green line is the difference between the two and represents the net return to nitrogen.</p>
+<p>A model is fit to the experimental data to describe the return to nitrogen for <em>each</em> particular dataset (e.g., quadratic, quadratic-plateau, etc.). Differences among replications from these trials can contribute to uncertainty in estimating the EONR, and this is illustrated by the rather wide confidence intervals on either side of the 162 kg ha<span class="math notranslate nohighlight">\(^{-1}\)</span> estimated EONR value (90% confidence bounds are 130 kg ha<span class="math notranslate nohighlight">\(^{-1}\)</span> and 208<span class="math notranslate nohighlight">\(^{-1}\)</span>). Although there is perhaps a lot of
+uncertainty in the EONR estimate, it is a good baseline for making nitrogen fertilizer recommendations for a given location or soil.</p>
 <p>To generate an EONR/MRTN plot as in <strong>Figure 2</strong>, it is necessary to conduct a nitrogen response field experiment (<strong>Figure 3</strong>). Experiments can be “small-plot”, where it is more feasible to include more nitrogen rates and replications, or experiments can be “strip trials”, where experiments are generally easier to establish.</p>
-<p><strong>Figure 3:</strong> Aerial photo of a nitrogen rate response experiment for corn (photo captured in July when the crop is about shoulder-high).</p>
 <p><img alt="image1" src="_images/background_mn_corn.png" /></p>
+<p><strong>Figure 3:</strong> Aerial photo of a nitrogen rate response experiment for corn (photo captured in July when the crop is about shoulder-high).</p>
 <p>Nitrogen deficiencies are visible in the small-plot experiment in <strong>Figure 3</strong> (plot boundaries were rendered over the photo to visualize the individual plots more easily). The experiment in this photo had nine (9) nitrogen rates applied at three (3) different times during the season, and was replicated four (4) times.</p>
 </div>
 <div class="section" id="The-quadratic-plateau-model">
@@ -180,23 +186,69 @@ y_i =\begin{cases}\beta_0 + \beta_1x_i + \beta_2x_i^2 + \epsilon_i & if\ x_i < \
 <p>where <span class="math notranslate nohighlight">\(y_{i}\)</span> can represent grain yield (kg ha<span class="math notranslate nohighlight">\(^{-1}\)</span>) or monetary return ($ ha<span class="math notranslate nohighlight">\(^{-1}\)</span>) from grain yield, <span class="math notranslate nohighlight">\(x_{i}\)</span> represents quantity of nitrogen fertilizer applied, and <span class="math notranslate nohighlight">\(\beta_{0}\)</span>, <span class="math notranslate nohighlight">\(\beta_{1}\)</span>, and <span class="math notranslate nohighlight">\(\beta_{2}\)</span> are the coefficients estimated from the experimental data assuming identically and independently distributed errors, <span class="math notranslate nohighlight">\(\epsilon_{i}\)</span>.</p>
 <p>The point on the x-axis where the net return curve (green) reaches the maximum return is the <strong>EONR/MRTN</strong>. The profile-likelihood 90% CIs are illustrated as a transparent grey box surrounding the EONR/MRTN point.</p>
 </div>
-<div class="section" id="Confidence-intervals">
-<h2>4.4. Confidence intervals<a class="headerlink" href="#Confidence-intervals" title="Permalink to this headline">¶</a></h2>
-<p>One of the major novelties of the <code class="docutils literal notranslate"><span class="pre">EONR</span></code> package is that it calculates profile-likelihood CIs (as well as Wald and bootstrap CIs) from data fit with a quadratic-plateau model.</p>
-<p>Quadratic models tend to be most popular in the literature, at least for describing how to calculate confidence intervals (CIs) for the EONR (<a class="reference external" href="https://dl.sciencesocieties.org/publications/aj/abstracts/100/5/1221">Hernandez &amp; Mulla, 2008</a>; <a class="reference external" href="https://dl.sciencesocieties.org/publications/jeq/abstracts/46/2/311">Sela et al., 2017</a>). Even in cases where a quadratic model happens to fit the observed data best, <a class="reference external" href="https://www.agronomy.org/publications/aj/abstracts/82/1/AJ0820010138">Cerrato &amp; Blackmer
-(1990)</a> imply that the idea of using the quadratic model is absurd because it predicts rapid decreases in yields when fertilizer is applied at higher than optimal rates, a trend that is not generally supported by evidence for maize. Furthermore, the quadratic model produces a systematic bias of overestimated maximum grain yield and optimum nitrogen fertilizer rate <a class="reference external" href="https://www.agronomy.org/publications/aj/abstracts/86/1/AJ0860010191">(Bullock &amp; Bullock,
+<div class="section" id="The-quadratic-model">
+<h2>4.4. The quadratic model<a class="headerlink" href="#The-quadratic-model" title="Permalink to this headline">¶</a></h2>
+<p>The quadratic model may be desireable if grain yield reaches a maximum, then begins to decline with increasing rates of nitrogen fertilizer (i.e., it exhibits a sort of toxicity effect). Compared to the quadratic-plateau model, the estimated ONR generally tends to be greater when using the quadratic model. It can be described as:</p>
+<p><span class="math">\begin{equation}
+y_i =\beta_0 + \beta_1x_i + \beta_2x_i^2 + \epsilon_i
+\label{q}
+\end{equation}</span></p>
+<p>where <span class="math notranslate nohighlight">\(y_{i}\)</span> can represent grain yield (kg ha<span class="math notranslate nohighlight">\(^{-1}\)</span>) or monetary return ($ ha<span class="math notranslate nohighlight">\(^{-1}\)</span>) from grain yield, <span class="math notranslate nohighlight">\(x_{i}\)</span> represents quantity of nitrogen fertilizer applied, and <span class="math notranslate nohighlight">\(\beta_{0}\)</span>, <span class="math notranslate nohighlight">\(\beta_{1}\)</span>, and <span class="math notranslate nohighlight">\(\beta_{2}\)</span> are the coefficients estimated from the experimental data assuming identically and independently distributed errors, <span class="math notranslate nohighlight">\(\epsilon_{i}\)</span>.</p>
+<p>Quadratic models tend to be most popular in the literature, at least for describing how to calculate confidence intervals (CIs) for the EONR (<a class="reference external" href="https://dl.sciencesocieties.org/publications/aj/abstracts/100/5/1221">Hernandez &amp; Mulla, 2008</a>; <a class="reference external" href="https://dl.sciencesocieties.org/publications/jeq/abstracts/46/2/311">Sela et al., 2017</a>). However, even in cases where a quadratic model happens to fit the observed data best, <a class="reference external" href="https://www.agronomy.org/publications/aj/abstracts/82/1/AJ0820010138">Cerrato &amp; Blackmer
+(1990)</a> imply that the idea of using the quadratic model for maize is absurd because it predicts rapid decreases in yields when fertilizer is applied at higher than optimal rates, a trend that is not generally supported by evidence for maize. Furthermore, the quadratic model produces a systematic bias of overestimated maximum grain yield and optimum nitrogen fertilizer rate <a class="reference external" href="https://www.agronomy.org/publications/aj/abstracts/86/1/AJ0860010191">(Bullock &amp; Bullock,
 1994)</a>.</p>
+</div>
+<div class="section" id="Confidence-intervals">
+<h2>4.5. Confidence intervals<a class="headerlink" href="#Confidence-intervals" title="Permalink to this headline">¶</a></h2>
+<p>One of the major novelties of the <code class="docutils literal notranslate"><span class="pre">EONR</span></code> package is that it calculates profile-likelihood CIs (as well as Wald and bootstrap CIs) from data fit by the model.</p>
 <p>From a scientific perspective, it is widely recognized that large uncertainties exist around the estimated EONR computed from yield data and that it is essential to report CIs. Still, few examples exist in the agronomic literature where CIs are actually estimated (<a class="reference external" href="https://www.researchgate.net/publication/225680100_A_conceptual_framework_for_judging_the_precision_agriculture_hypothesis_with_regard_to_site-specific_nitrogen_application">Bachmaier &amp; Gandorfer, 2009</a>; <a class="reference external" href="https://dl.sciencesocieties.org/publications/aj/abstracts/100/5/1221">Hernandez &amp; Mulla,
-2008</a>; <a class="reference external" href="https://link.springer.com/article/10.1007/s11119-010-9168-3">Jaynes, 2011</a>; <a class="reference external" href="https://dl.sciencesocieties.org/publications/jeq/abstracts/46/2/311">Sela et al., 2017</a>). Of these examples, only Jaynes (2011) calculated CIs for the quadratic-plateau response function (which has generally been recognized as the most appropriate model for describing yield response to nitrogen in corn). <a class="reference external" href="https://dl.sciencesocieties.org/publications/aj/abstracts/100/5/1221">Hernandez &amp; Mulla,
-2008</a> describe three general methods that can be used for estimating CIs about the EONR:</p>
+2008</a>; <a class="reference external" href="https://link.springer.com/article/10.1007/s11119-010-9168-3">Jaynes, 2011</a>; <a class="reference external" href="https://dl.sciencesocieties.org/publications/jeq/abstracts/46/2/311">Sela et al., 2017</a>; <a class="reference external" href="https://dl.sciencesocieties.org/publications/aj/articles/110/6/2596">Qin et al., 2018</a>. Of these examples, only Jaynes (2011) calculated CIs for the quadratic-plateau response function (which has generally been recognized as the most
+appropriate model for describing yield response to nitrogen in corn). <a class="reference external" href="https://dl.sciencesocieties.org/publications/aj/abstracts/100/5/1221">Hernandez &amp; Mulla, 2008</a> describe three general methods that can be used for estimating CIs about the EONR:</p>
 <ul class="simple">
-<li><p>the Wald CI</p></li>
 <li><p>the profile-likelihood based CI</p></li>
 <li><p>a bootstrap-derived CI</p></li>
+<li><p>the Wald CI</p></li>
 </ul>
+<div class="section" id="Profile-likelihood">
+<h3>4.5.1. Profile-likelihood<a class="headerlink" href="#Profile-likelihood" title="Permalink to this headline">¶</a></h3>
+<p>The profile-likelihood is the most accurate of any of the approaches (requires reparameterization). The profile-likelihood confidence intervals are computed according to the following general steps:</p>
+<ol class="arabic simple">
+<li><p>Fit a model (e.g., quadratic-plateau, quadratic, etc.) to the observed data and calculate the sum of squared errors (refered to as the sum of squared errors of the “full” model, <span class="math notranslate nohighlight">\(SSE(\hat{\theta_{2}})\)</span>).</p></li>
+<li><p>Calculate the <span class="math notranslate nohighlight">\(SSE\)</span> of the model subject to the constraint that <span class="math notranslate nohighlight">\(\theta_{2}\)</span> (the parameter representing the optimum nitrogen rate) has a fixed value (refered to as the sum of squared errors of the “reduced” model, <span class="math notranslate nohighlight">\(SSE(\tilde{\theta_{2}})\)</span>).</p></li>
+<li><p>The likelihood ratio statistic succinctly expresses how much more likely the fit of the full model is than reduced model. Calculate the likelihood ratio statistic to quantify the difference between the full and reduced model:</p></li>
+</ol>
+<p><span class="math">\begin{equation}
+\tau(\theta_{2}) = \frac{{(SSE(\tilde{\theta_{2}})-SSE(\hat{\theta_{2}}))}}{SSE(\hat{\theta_{2}})/(n-p)}
+\label{tau_lr}
+\end{equation}</span></p>
+<p>where <span class="math notranslate nohighlight">\(n\)</span> is the number of observations and <span class="math notranslate nohighlight">\(p\)</span> is the total number of parameters in the model (i.e., <span class="math notranslate nohighlight">\(p\)</span> = 3 for the quadratic-plateau model).</p>
+<ol class="arabic simple" start="4">
+<li><p>Invert the likelihood ratio statistic to obtain a confidence interval about the full model for <span class="math notranslate nohighlight">\(\theta_{2}\)</span>. That is, for a given <span class="math notranslate nohighlight">\(\alpha\)</span> level of significance, the profile-likelihood CI for <span class="math notranslate nohighlight">\(\theta_{2}\)</span> is the set of all <span class="math notranslate nohighlight">\(\tilde{\theta_{2}}\)</span> for which:</p></li>
+</ol>
+<p><span class="math">\begin{equation}
+\tau(\theta_{2}) \leq Q(t_{d}, f)
+\label{tau_inv}
+\end{equation}</span></p>
+<p>where <span class="math notranslate nohighlight">\(d\)</span> is the degrees of freedom and <span class="math notranslate nohighlight">\(Q({t_{d}, f})\)</span> is the <span class="math notranslate nohighlight">\({f}\)</span>th quantile of the <span class="math notranslate nohighlight">\({t}\)</span>-value distribution (<span class="math notranslate nohighlight">\(t_{d}\)</span>).</p>
+<p>Because <span class="math notranslate nohighlight">\(\tilde{\theta_{2}}\)</span> was intentionally set away from <span class="math notranslate nohighlight">\(\hat{\theta_{2}}\)</span> (step 2), any increase in <span class="math notranslate nohighlight">\(SSE(\tilde{\theta_{2}})\)</span> compared to <span class="math notranslate nohighlight">\(SSE(\hat{\theta_{2}})\)</span> is derived from <span class="math notranslate nohighlight">\(\theta_{2}\)</span> instead of any of the other model parameters. Because <span class="math notranslate nohighlight">\(SSE(\tilde{\theta_{2}})\)</span> should never be less than <span class="math notranslate nohighlight">\(SSE(\hat{\theta_{2}})\)</span>, <span class="math notranslate nohighlight">\(tau(\theta_{2})\)</span> is a positive value for both the lower and upper confidence interval.</p>
+<p>The algorithm for computing the profile-likelihood confidence intervals iteratively checks all <span class="math notranslate nohighlight">\(tau(\theta_{2})\)</span> that are less than or equal to the test statistic for the given <span class="math notranslate nohighlight">\(\alpha\)</span> value. The <code class="docutils literal notranslate"><span class="pre">EONR</span></code> package uses the Nelder-Mead optimization algorithm (<a class="reference external" href="https://academic.oup.com/comjnl/article-abstract/7/4/308/354237?redirectedFrom=fulltext">Nelder &amp; Mead, 1965</a>) to efficiently find the confidence interval.</p>
+</div>
+<div class="section" id="Bootstrapping">
+<h3>4.5.2. Bootstrapping<a class="headerlink" href="#Bootstrapping" title="Permalink to this headline">¶</a></h3>
+<p>Sampling residuals of the original data with replacement (requires reparameterization similar to the profile-likelihood approach). This is a worthy alternative to the profile-likelihood approach, but it is not always perfect.</p>
+</div>
+<div class="section" id="Wald-type-(+/--1-standard-error)">
+<h3>4.5.3. Wald-type (+/- 1 standard error)<a class="headerlink" href="#Wald-type-(+/--1-standard-error)" title="Permalink to this headline">¶</a></h3>
+<p>Poor performance with small sample sizes and nonlinear models <span class="math">\begin{equation}
+\hat{\theta} = Q(t_{d}, 1-\alpha/2)\:{SE}(\hat{\theta})
+\label{wald}
+\end{equation}</span></p>
+<p>Where <span class="math notranslate nohighlight">\(\hat{\theta}\)</span> is the parameter estimate, <span class="math notranslate nohighlight">\({d}\)</span> is the degrees of freedom, <span class="math notranslate nohighlight">\({d=n-k,n}\)</span> is the number of observations, <span class="math notranslate nohighlight">\(Q({t_{d}, f})\)</span> is the <span class="math notranslate nohighlight">\({f}\)</span>th quantile of the <span class="math notranslate nohighlight">\({t}\)</span>-value distribution (<span class="math notranslate nohighlight">\(t_{d}\)</span>) with <span class="math notranslate nohighlight">\({k}\)</span> treatments, and <span class="math notranslate nohighlight">\({SE}(\hat{\theta})\)</span> is the standard error of the parameter estimate (<a class="reference external" href="https://www.tandfonline.com/doi/abs/10.1080/01621459.1990.10476233">Cook &amp; Weisberg, 1990</a>; <a class="reference external" href="https://dl.sciencesocieties.org/publications/aj/abstracts/100/5/1221">Hernandez &amp; Mulla,
+2008)</a>.</p>
+</div>
 </div>
 <div class="section" id="The-social-cost-of-nitrogen">
-<h2>4.5. The social cost of nitrogen<a class="headerlink" href="#The-social-cost-of-nitrogen" title="Permalink to this headline">¶</a></h2>
+<h2>4.6. The social cost of nitrogen<a class="headerlink" href="#The-social-cost-of-nitrogen" title="Permalink to this headline">¶</a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">EONR</span></code> package also allows the user to define a <strong>social cost of nitrogen</strong>, which is then used in the optimum nitrogen rate calculations based on residual soil nitrogen (nitrogen fertilizer not taken up by the crop at the end of the season).</p>
 <p>The traditional approach for calculating the EONR considers only the cost of the nitrogen fertilizer product, and does not consider other unintended costs of nitrogen application. The social cost of nitrogen, defined as the present value of monetary damages caused by an incremental increase in nitrogen, has been suggested as a method to place a value on pollution and other damages (e.g., health, quality of living, etc.) caused by nitrogen fertilizer application (<a class="reference external" href="http://stacks.iop.org/1748-9326/9/i=7/a=074002?key=crossref.75a91c07d59a4043a07280d01299d0d8">Keeler et al.,
 2016</a>). Because of the complexity of the nitrogen cycle and the spatial and temporal variability associated with it, the social cost of nitrogen is extremely difficult to quantify and is fraught with uncertainty. Additionally, the basis for what might be considered a healthy environment or an acceptable quality of living is highly subjective and may change abruptly depending on many factors. The
@@ -210,7 +262,7 @@ the regional scale is worthwhile, results oftentimes to not translate to the fie
 <li><p><strong>Economic Optimum Nitrogen Rate</strong> <em>(EONR)</em>: cost of nitrogen fertilizer is considered but social cost is ignored</p></li>
 <li><p><strong>Socially Optimum Nitrogen Rate</strong> <em>(SONR)</em>: both cost of nitrogen fertilizer and social cost of nitrogen are considered</p></li>
 </ol>
-<p>The <code class="docutils literal notranslate"><span class="pre">EONR</span></code> package is able to calculate the <strong>AONR</strong>, <strong>EONR</strong>, or <strong>SONR</strong> for your dataset by simply adjusting the economic scenario (i.e., by adjusting <code class="docutils literal notranslate"><span class="pre">price_grain</span></code>, <code class="docutils literal notranslate"><span class="pre">cost_n_fert</span></code>, and <code class="docutils literal notranslate"><span class="pre">cost_n_social</span></code>).</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">EONR</span></code> package is able to calculate the <strong>AONR</strong>, <strong>EONR</strong>, or <strong>SONR</strong> for your dataset by simply adjusting the economic scenario (i.e., by adjusting <code class="docutils literal notranslate"><span class="pre">price_grain</span></code>, <code class="docutils literal notranslate"><span class="pre">cost_n_fert</span></code>, <code class="docutils literal notranslate"><span class="pre">cost_n_social</span></code>, and even <code class="docutils literal notranslate"><span class="pre">costs_fixed</span></code>).</p>
 </div>
 </div>
 
