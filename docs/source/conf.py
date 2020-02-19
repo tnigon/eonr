@@ -36,23 +36,19 @@ import sphinx_bootstrap_theme
 import recommonmark
 from recommonmark.transform import AutoStructify
 
-
-
-autodoc_default_options = {
-    'members': None
-}
+# autodoc_default_options = {
+#     'members': None
+# }
 
 autosummary_generate = True
 
 # -- Project information -----------------------------------------------------
 project = 'eonr'
-copyright = '2019, Tyler J Nigon'
+copyright = '2019-2020, Tyler J Nigon'
 author = 'Tyler J Nigon'
 
-# The short X.Y version
-version = '0.2.0'
 # The full version, including alpha/beta/rc tags
-release = '0.2.0'
+release = '0.2.1'
 
 # -- General configuration ---------------------------------------------------
 # If your documentation needs a minimal Sphinx version, state it here.
@@ -65,15 +61,22 @@ release = '0.2.0'
 extensions = [
     'sphinx.ext.autodoc',
     # 'docfx_yaml.extension',  # creates configuration.yaml file
-    # 'sphinx.ext.autosummary',  # Creates TOC sub-level for EONR methods
+     'sphinx.ext.autosummary',  # Creates TOC sub-level for EONR methods
     'sphinx.ext.intersphinx',
     'sphinx.ext.doctest',
     'sphinx.ext.mathjax',
     'sphinx.ext.viewcode',
     'recommonmark',
     'nbsphinx',  # converts Jupyter notebooks to html
-    'sphinx.ext.napoleon'  # for parsing docstrings
+    'sphinx.ext.napoleon',  # for parsing docstrings
+    'sphinx_automodapi.automodapi',  # Generates individual pages for each function
+    'sphinx_automodapi.smart_resolver',  # Tries to resolve errors that import classes from other files
+    'autodocsumm'
 ]
+
+automodapi_inheritance_diagram = False  # indicates whether to show inheritance diagrams by default
+numpydoc_show_class_members = False  # needed to avoid having methods and attributes of classes being shown multiple times.
+numpydoc_class_members_toctree = True
 
 mathjax_config = {
     'TeX': {'equationNumbers': {'autoNumber': 'AMS', 'useLabelIds': True}},
@@ -124,7 +127,9 @@ html_theme_options = {
     # Navigation bar title. (Default: ``project`` value)
     'navbar_title': "EONR",
     'navbar_links': [
-        ('Github', "https://github.com/tnigon/eonr", True)
+        ('Github', "https://github.com/tnigon/eonr", True),
+        ('PyPI', "https://pypi.org/project/hs-process/", True),
+        ('Publication', "https://www.sciencedirect.com/science/article/pii/S0168169919309354", True),
     ],
     'navbar_site_name': "Contents",
     'globaltoc_depth': 1,

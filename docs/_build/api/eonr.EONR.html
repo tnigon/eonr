@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="python">
+  <head>
+    <meta charset="utf-8" />
+    <title>5.1.1. EONR &#8212; eonr 0.2.1 documentation</title>
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script async="async" type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"extensions": ["tex2jax.js"], "jax": ["input/TeX", "output/HTML-CSS"], "tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="6. License" href="../license.html" />
+    <link rel="prev" title="5. API" href="../eonr_api.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="../_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="../_static/bootstrap-sphinx.js "></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          EONR</a>
+        <span class="navbar-text navbar-version pull-left"><b></b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="https://github.com/tnigon/eonr">Github</a></li>
+                <li><a href="https://pypi.org/project/hs-process/">PyPI</a></li>
+                <li><a href="https://www.sciencedirect.com/science/article/pii/S0168169919309354">Publication</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Contents <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Home</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">1. Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial.html">2. Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../advanced_tutorial.html">3. Advanced Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../background.html">4. Background</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../eonr_api.html">5. API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../license.html">6. License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../changelog.html">7. Change Log</a></li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+  <li>
+    <a href="../eonr_api.html" title="Previous Chapter: 5. API"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; 5. API</span>
+    </a>
+  </li>
+  <li>
+    <a href="../license.html" title="Next Chapter: 6. License"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">6. License &raquo;</span>
+    </a>
+  </li>
+              
+            
+            
+            
+            
+              <li class="hidden-sm">
+<div id="sourcelink">
+  <a href="../_sources/api/eonr.EONR.rst.txt"
+     rel="nofollow">Source</a>
+</div></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary"><ul>
+<li><a class="reference internal" href="#">5.1.1. EONR</a></li>
+</ul>
+
+<form action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+        </div>
+      </div>
+    <div class="body col-md-9 content" role="main">
+      
+  <div class="section" id="eonr">
+<h1><span class="section-number">5.1.1. </span>EONR<a class="headerlink" href="#eonr" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="eonr.EONR">
+<em class="property">class </em><code class="sig-prename descclassname">eonr.</code><code class="sig-name descname">EONR</code><span class="sig-paren">(</span><em class="sig-param">cost_n_fert=0.5</em>, <em class="sig-param">cost_n_social=0.0</em>, <em class="sig-param">costs_fixed=0.0</em>, <em class="sig-param">price_grain=3.0</em>, <em class="sig-param">col_n_app='rate_n_applied_lbac'</em>, <em class="sig-param">col_yld='yld_grain_dry_buac'</em>, <em class="sig-param">col_crop_nup='nup_total_lbac'</em>, <em class="sig-param">col_n_avail='soil_plus_fert_n_lbac'</em>, <em class="sig-param">col_year='year'</em>, <em class="sig-param">col_location='location'</em>, <em class="sig-param">col_time_n='time_n'</em>, <em class="sig-param">unit_currency='$'</em>, <em class="sig-param">unit_fert='lbs'</em>, <em class="sig-param">unit_grain='bu'</em>, <em class="sig-param">unit_area='ac'</em>, <em class="sig-param">model='quad_plateau'</em>, <em class="sig-param">ci_level=0.9</em>, <em class="sig-param">base_dir=None</em>, <em class="sig-param">base_zero=True</em>, <em class="sig-param">print_out=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/eonr/eonr.html#EONR"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#eonr.EONR" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">EONR</span></code> is a Python tool for computing the optimum nitrogen rate and its
+confidence intervals from agricultural research data.</p>
+<p class="rubric">Methods Summary</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#eonr.EONR.calc_delta" title="eonr.EONR.calc_delta"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calc_delta</span></code></a>([df_results])</p></td>
+<td><p>Calculates the change in EONR among economic scenarios.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#eonr.EONR.calculate_eonr" title="eonr.EONR.calculate_eonr"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calculate_eonr</span></code></a>(df[, col_n_app, col_yld, ...])</p></td>
+<td><p>Calculates the EONR and its confidence intervals.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#eonr.EONR.plot_delta_tstat" title="eonr.EONR.plot_delta_tstat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_delta_tstat</span></code></a>([level_list, style])</p></td>
+<td><p>Plots the test statistic as a function nitrogen rate</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#eonr.EONR.plot_derivative" title="eonr.EONR.plot_derivative"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_derivative</span></code></a>([ci_type, ci_level, style])</p></td>
+<td><p>Plots a zoomed up view of the ONR and the derivative</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#eonr.EONR.plot_eonr" title="eonr.EONR.plot_eonr"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_eonr</span></code></a>([ci_type, ci_level, run_n, x_min, ...])</p></td>
+<td><p>Plots EONR, MRTN, GRTN, net return, and nitrogen cost.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#eonr.EONR.plot_modify_size" title="eonr.EONR.plot_modify_size"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_modify_size</span></code></a>([fig, plotsize_x, ...])</p></td>
+<td><p>Modifies the size of the last plot generated</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#eonr.EONR.plot_modify_title" title="eonr.EONR.plot_modify_title"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_modify_title</span></code></a>(title_text[, g, size_font])</p></td>
+<td><p>Allows user to replace the title text</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#eonr.EONR.plot_save" title="eonr.EONR.plot_save"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_save</span></code></a>([fname, base_dir, fig, dpi])</p></td>
+<td><p>Saves a generated matplotlib figure to file</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#eonr.EONR.plot_tau" title="eonr.EONR.plot_tau"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_tau</span></code></a>([y_axis, emphasis, run_n, style])</p></td>
+<td><p>Plots the test statistic as a function nitrogen rate</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#eonr.EONR.print_results" title="eonr.EONR.print_results"><code class="xref py py-obj docutils literal notranslate"><span class="pre">print_results</span></code></a>()</p></td>
+<td><p>Prints the results of the optimum nitrogen rate computation</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#eonr.EONR.set_column_names" title="eonr.EONR.set_column_names"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_column_names</span></code></a>([col_n_app, col_yld, ...])</p></td>
+<td><p>Sets the column name(s) for <code class="docutils literal notranslate"><span class="pre">EONR.df_data</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#eonr.EONR.set_trial_details" title="eonr.EONR.set_trial_details"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_trial_details</span></code></a>([year, location, n_timing])</p></td>
+<td><p>Sets the year, location, or nitrogen timing</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#eonr.EONR.set_units" title="eonr.EONR.set_units"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_units</span></code></a>([unit_currency, unit_fert, ...])</p></td>
+<td><p>Sets the units data in <code class="docutils literal notranslate"><span class="pre">EONR.df_data</span></code> and for reporting</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#eonr.EONR.update_econ" title="eonr.EONR.update_econ"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_econ</span></code></a>([cost_n_fert, cost_n_social, ...])</p></td>
+<td><p>Sets or resets the nitrogen fertilizer cost, social cost of nitrogen, fixed costs, and/or grain price.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Methods Documentation</p>
+<dl class="method">
+<dt id="eonr.EONR.calc_delta">
+<code class="sig-name descname">calc_delta</code><span class="sig-paren">(</span><em class="sig-param">df_results=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/eonr/eonr.html#EONR.calc_delta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#eonr.EONR.calc_delta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the change in EONR among economic scenarios.</p>
+<p><code class="docutils literal notranslate"><span class="pre">EONR.calc_delta</span></code> filters all data by location, year, and
+nitrogen timing, then the &quot;delta&quot; is calculated as the difference
+relative to the economic scenario resulting in the highest EONR.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>df_results</strong> (<code class="docutils literal notranslate"><span class="pre">Pandas</span> <span class="pre">dataframe</span></code>, optional) -- The dataframe
+containing the results from <code class="docutils literal notranslate"><span class="pre">EONR.calculate_eonr()</span></code>
+(default: None).</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>df_delta</strong> -- The dataframe with the newly inserted EONR
+delta.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<p>Please complete the <a class="reference external" href="eonr.EONR.html#eonr.EONR.calculate_eonr">EONR.calculate_eonr</a> example first because
+this example builds on the results of the <code class="docutils literal notranslate"><span class="pre">my_eonr</span></code> object.</p>
+<p>Change the economic scenario (using <code class="docutils literal notranslate"><span class="pre">EONR.calculate_eonr</span></code>) and
+calculate the EONR again for the same dataset (using
+<code class="docutils literal notranslate"><span class="pre">EONR.calculate_eonr</span></code>)</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">price_grain</span> <span class="o">=</span> <span class="mf">0.314</span>  <span class="c1"># in USD per kg grain</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">my_eonr</span><span class="o">.</span><span class="n">update_econ</span><span class="p">(</span><span class="n">price_grain</span><span class="o">=</span><span class="n">price_grain</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">my_eonr</span><span class="o">.</span><span class="n">calculate_eonr</span><span class="p">(</span><span class="n">df_data</span><span class="p">)</span>
+<span class="go">Computing EONR for Minnesota 2012 Pre</span>
+<span class="go">Cost of N fertilizer: $0.88 per kg</span>
+<span class="go">Price grain: $0.31 per kg</span>
+<span class="go">Fixed costs: $0.00 per ha</span>
+<span class="go">Checking quadratic and quadric-plateau models for best fit..</span>
+<span class="go">Quadratic model r^2: 0.72</span>
+<span class="go">Quadratic-plateau model r^2: 0.73</span>
+<span class="go">Using the quadratic-plateau model..</span>
+<span class="go">Economic optimum N rate (EONR): 169.9 kg per ha [135.2, 220.9] (90.0% confidence)</span>
+<span class="go">Maximum return to N (MRTN): $1682.04 per ha</span>
+</pre></div>
+</div>
+<p>Use <code class="docutils literal notranslate"><span class="pre">EONR.calc_delta</span></code> to</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">df_delta</span> <span class="o">=</span> <span class="n">my_eonr</span><span class="o">.</span><span class="n">calc_delta</span><span class="p">(</span><span class="n">my_eonr</span><span class="o">.</span><span class="n">df_results</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="../_images/calc_delta.png" src="../_images/calc_delta.png" />
+</dd></dl>
+
+<dl class="method">
+<dt id="eonr.EONR.calculate_eonr">
+<code class="sig-name descname">calculate_eonr</code><span class="sig-paren">(</span><em class="sig-param">df</em>, <em class="sig-param">col_n_app=None</em>, <em class="sig-param">col_yld=None</em>, <em class="sig-param">col_crop_nup=None</em>, <em class="sig-param">col_n_avail=None</em>, <em class="sig-param">col_year=None</em>, <em class="sig-param">col_location=None</em>, <em class="sig-param">col_time_n=None</em>, <em class="sig-param">bootstrap_ci=False</em>, <em class="sig-param">samples_boot=9999</em>, <em class="sig-param">delta_tstat=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/eonr/eonr.html#EONR.calculate_eonr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#eonr.EONR.calculate_eonr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the EONR and its confidence intervals.</p>
+<p><code class="docutils literal notranslate"><span class="pre">col_n_app</span></code> and <code class="docutils literal notranslate"><span class="pre">col_yld</span></code> are required by <code class="docutils literal notranslate"><span class="pre">EONR</span></code>, but not
+necessarily by <code class="docutils literal notranslate"><span class="pre">EONR.calculate_eonr()</span></code>. They must either be set
+during the initialization of <code class="docutils literal notranslate"><span class="pre">EONR</span></code>, before running
+<code class="docutils literal notranslate"><span class="pre">EONR.calculate_eonr</span></code> (using <code class="docutils literal notranslate"><span class="pre">EONR.set_column_names</span></code>), or they
+must be passed in this <code class="docutils literal notranslate"><span class="pre">EONR.calculate_eonr</span></code> method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<code class="docutils literal notranslate"><span class="pre">Pandas</span> <span class="pre">dataframe</span></code>) -- The dataframe containing the
+experimental data.</p></li>
+<li><p><strong>col_n_app</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>, optional) -- Column name pointing to the rate of
+applied N fertilizer data (default: None).</p></li>
+<li><p><strong>col_yld</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>, optional) -- Column name pointing to the grain
+yield data. This column is multiplied by price_grain to create
+the 'grtn' column in <code class="docutils literal notranslate"><span class="pre">EONR.df_data</span></code> (default: None).</p></li>
+<li><p><strong>col_crop_nup</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>, optional) -- Column name pointing to crop N
+uptake data (default: None).</p></li>
+<li><p><strong>col_n_avail</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>, optional) -- Column name pointing to available
+soil N at planting plus fertilizer throughout the season
+(default: None).</p></li>
+<li><p><strong>col_year</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>, optional) -- Column name pointing to year
+(default: None).</p></li>
+<li><p><strong>col_location</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>, optional) -- Column name pointing to location
+(default: None).</p></li>
+<li><p><strong>col_time_n</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>, optional) -- Column name pointing to nitrogen
+application timing (default: None).</p></li>
+<li><p><strong>bootstrap_ci</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>, optional) -- Indicates whether bootstrap
+confidence intervals are to be computed. If calculating the
+EONR for many sites and/or economic scenarios, it may be
+desirable to set to <code class="docutils literal notranslate"><span class="pre">False</span></code> because the bootstrap confidence
+intervals take the most time to compute (default: False).</p></li>
+<li><p><strong>samples_boot</strong> (<code class="docutils literal notranslate"><span class="pre">int</span></code>, optional) -- Number of samples in the
+bootstrap computation (default: 9999).</p></li>
+<li><p><strong>delta_tstat</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>, optional) -- Indicates whether the
+difference from the t-statistic will be computed (as a function
+of theta2/N rate). May be useful to observe what optimization
+method is best suited to reach convergence when computing the
+profile-likelihood CIs (default: False).</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code class="docutils literal notranslate"><span class="pre">col_crop_nup</span></code> and <code class="docutils literal notranslate"><span class="pre">col_n_avail</span></code> are required to calculate the
+socially optimum nitrogen rate, SONR. The SONR is the optimum
+nitrogen rate considering the social cost of nitrogen, so
+therefore, <code class="docutils literal notranslate"><span class="pre">EONR.cost_n_social</span></code> must also be set. <code class="docutils literal notranslate"><span class="pre">col_year</span></code>,
+<code class="docutils literal notranslate"><span class="pre">col_location</span></code>, and <code class="docutils literal notranslate"><span class="pre">col_time_n</span></code> are purely  optional. They
+only affect the titles and axes labels of the plots.</p>
+</div>
+<p class="rubric">Example</p>
+<p>Load and initialize <code class="docutils literal notranslate"><span class="pre">eonr</span></code></p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">eonr</span> <span class="kn">import</span> <span class="n">EONR</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">os</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+</pre></div>
+</div>
+<p>Load the sample data</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">base_dir</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;F:\nigo0024\Documents\GitHub\eonr\eonr&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">base_dir</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="s1">&#39;minnesota_2012.csv&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Set column names</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">col_n_app</span> <span class="o">=</span> <span class="s1">&#39;rate_n_applied_kgha&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">col_yld</span> <span class="o">=</span> <span class="s1">&#39;yld_grain_dry_kgha&#39;</span>
+</pre></div>
+</div>
+<p>Set units</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">unit_currency</span> <span class="o">=</span> <span class="s1">&#39;$&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">unit_fert</span> <span class="o">=</span> <span class="s1">&#39;kg&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">unit_grain</span> <span class="o">=</span> <span class="s1">&#39;kg&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">unit_area</span> <span class="o">=</span> <span class="s1">&#39;ha&#39;</span>
+</pre></div>
+</div>
+<p>Set economic conditions</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cost_n_fert</span> <span class="o">=</span> <span class="mf">0.88</span>  <span class="c1"># in USD per kg nitrogen</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">price_grain</span> <span class="o">=</span> <span class="mf">0.157</span>  <span class="c1"># in USD per kg grain</span>
+</pre></div>
+</div>
+<p>Initialize <code class="docutils literal notranslate"><span class="pre">EONR</span></code></p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">my_eonr</span> <span class="o">=</span> <span class="n">EONR</span><span class="p">(</span><span class="n">cost_n_fert</span><span class="o">=</span><span class="n">cost_n_fert</span><span class="p">,</span>
+<span class="go">                   price_grain=price_grain,</span>
+<span class="go">                   col_n_app=col_n_app,</span>
+<span class="go">                   col_yld=col_yld,</span>
+<span class="go">                   unit_currency=unit_currency,</span>
+<span class="go">                   unit_grain=unit_grain,</span>
+<span class="go">                   unit_fert=unit_fert,</span>
+<span class="go">                   unit_area=unit_area,</span>
+<span class="go">                   model=None,</span>
+<span class="go">                   base_dir=base_dir)</span>
+</pre></div>
+</div>
+<p>Calculate the economic optimum nitrogen rate using
+<code class="docutils literal notranslate"><span class="pre">EONR.calculate_eonr</span></code></p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">my_eonr</span><span class="o">.</span><span class="n">calculate_eonr</span><span class="p">(</span><span class="n">df_data</span><span class="p">)</span>
+<span class="go">Computing EONR for Minnesota 2012 Pre</span>
+<span class="go">Cost of N fertilizer: $0.88 per kg</span>
+<span class="go">Price grain: $0.16 per kg</span>
+<span class="go">Fixed costs: $0.00 per ha</span>
+<span class="go">Checking quadratic and quadric-plateau models for best fit..</span>
+<span class="go">Quadratic model r^2: 0.72</span>
+<span class="go">Quadratic-plateau model r^2: 0.73</span>
+<span class="go">Using the quadratic-plateau model..</span>
+<span class="go">Economic optimum N rate (EONR): 162.3 kg per ha [130.5, 207.8] (90.0% confidence)</span>
+<span class="go">Maximum return to N (MRTN): $767.93 per ha</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="eonr.EONR.plot_delta_tstat">
+<code class="sig-name descname">plot_delta_tstat</code><span class="sig-paren">(</span><em class="sig-param">level_list=None</em>, <em class="sig-param">style='ggplot'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/eonr/eonr.html#EONR.plot_delta_tstat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#eonr.EONR.plot_delta_tstat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots the test statistic as a function nitrogen rate</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>level_list</strong> (<code class="docutils literal notranslate"><span class="pre">list</span></code>) -- The confidence levels to plot; should be a
+subset of items in EONR.ci_list (default: None).</p></li>
+<li><p><strong>style</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>, optional) -- The style of the plolt; can be any of
+the options supported by <code class="docutils literal notranslate"><span class="pre">matplotlib</span></code></p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<p>Load and initialize <code class="docutils literal notranslate"><span class="pre">eonr</span></code>, then load the sample data</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">eonr</span> <span class="kn">import</span> <span class="n">EONR</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">os</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">base_dir</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;F:\nigo0024\Documents\GitHub\eonr\eonr&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">base_dir</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="s1">&#39;minnesota_2012.csv&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Set column names, units, and economic conditions</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">col_n_app</span> <span class="o">=</span> <span class="s1">&#39;rate_n_applied_kgha&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">col_yld</span> <span class="o">=</span> <span class="s1">&#39;yld_grain_dry_kgha&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">unit_currency</span> <span class="o">=</span> <span class="s1">&#39;$&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">unit_fert</span> <span class="o">=</span> <span class="s1">&#39;kg&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">unit_grain</span> <span class="o">=</span> <span class="s1">&#39;kg&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">unit_area</span> <span class="o">=</span> <span class="s1">&#39;ha&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cost_n_fert</span> <span class="o">=</span> <span class="mf">0.88</span>  <span class="c1"># in USD per kg nitrogen</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">price_grain</span> <span class="o">=</span> <span class="mf">0.157</span>  <span class="c1"># in USD per kg grain</span>
+</pre></div>
+</div>
+<p>Initialize <code class="docutils literal notranslate"><span class="pre">EONR</span></code></p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">my_eonr</span> <span class="o">=</span> <span class="n">EONR</span><span class="p">(</span><span class="n">cost_n_fert</span><span class="o">=</span><span class="n">cost_n_fert</span><span class="p">,</span> <span class="n">price_grain</span><span class="o">=</span><span class="n">price_grain</span><span class="p">,</span>
+<span class="go">                   col_n_app=col_n_app, col_yld=col_yld,</span>
+<span class="go">                   unit_currency=unit_currency, unit_grain=unit_grain,</span>
+<span class="go">                   unit_fert=unit_fert, unit_area=unit_area,</span>
+<span class="go">                   model=None, base_dir=base_dir)</span>
+</pre></div>
+</div>
+<p>Calculate the economic optimum nitrogen rate using
+<code class="docutils literal notranslate"><span class="pre">EONR.calculate_eonr</span></code>, being sure to set <code class="docutils literal notranslate"><span class="pre">delta_stat</span></code> to
+<code class="docutils literal notranslate"><span class="pre">True</span></code></p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">my_eonr</span><span class="o">.</span><span class="n">calculate_eonr</span><span class="p">(</span><span class="n">df_data</span><span class="p">,</span> <span class="n">delta_tstat</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="go">Computing EONR for Minnesota 2012 Pre</span>
+<span class="go">Cost of N fertilizer: $0.88 per kg</span>
+<span class="go">Price grain: $0.16 per kg</span>
+<span class="go">Fixed costs: $0.00 per ha</span>
+<span class="go">Checking quadratic and quadric-plateau models for best fit..</span>
+<span class="go">Quadratic model r^2: 0.72</span>
+<span class="go">Quadratic-plateau model r^2: 0.73</span>
+<span class="go">Using the quadratic-plateau model..</span>
+<span class="go">Economic optimum N rate (EONR): 162.3 kg per ha [130.5, 207.8] (90.0% confidence)</span>
+<span class="go">Maximum return to N (MRTN): $767.93 per ha</span>
+</pre></div>
+</div>
+<p>Plot the Delta t-stat plot using <code class="docutils literal notranslate"><span class="pre">EONR.plot_delta_tstat</span></code></p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">my_eonr</span><span class="o">.</span><span class="n">plot_delta_tstat</span><span class="p">()</span>
+</pre></div>
+</div>
+<img alt="../_images/plot_delta_tstat.png" src="../_images/plot_delta_tstat.png" />
+</dd></dl>
+
+<dl class="method">
+<dt id="eonr.EONR.plot_derivative">
+<code class="sig-name descname">plot_derivative</code><span class="sig-paren">(</span><em class="sig-param">ci_type='profile-likelihood'</em>, <em class="sig-param">ci_level=None</em>, <em class="sig-param">style='ggplot'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/eonr/eonr.html#EONR.plot_derivative"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#eonr.EONR.plot_derivative" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots a zoomed up view of the ONR and the derivative</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ci_type</strong> (<em>str</em>) -- Indicates which confidence interval type should be
+plotted. Options are 'wald', to plot the Wald
+CIs; 'profile-likelihood', to plot the profile-likelihood
+CIs; or 'bootstrap', to plot the bootstrap CIs (default:
+'profile-likelihood').</p></li>
+<li><p><strong>ci_level</strong> (<em>float</em>) -- The confidence interval level to be plotted, and
+must be one of the values in EONR.ci_list. If None, uses the
+EONR.ci_level (default: None).</p></li>
+<li><p><strong>level</strong> (<code class="docutils literal notranslate"><span class="pre">float</span></code>) -- The confidence levels to plot; should be a
+value from EONR.ci_list (default: 0.90).</p></li>
+<li><p><strong>style</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>, optional) -- The style of the plolt; can be any of
+the options supported by <code class="docutils literal notranslate"><span class="pre">matplotlib</span></code></p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<p>Please complete the <a class="reference external" href="eonr.EONR.html#eonr.EONR.calculate_eonr">EONR.calculate_eonr</a> example first because
+this example builds on the results of the <code class="docutils literal notranslate"><span class="pre">my_eonr</span></code> object.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">my_eonr</span><span class="o">.</span><span class="n">plot_derivative</span><span class="p">()</span>
+</pre></div>
+</div>
+<img alt="../_images/plot_derivative.png" src="../_images/plot_derivative.png" />
+</dd></dl>
+
+<dl class="method">
+<dt id="eonr.EONR.plot_eonr">
+<code class="sig-name descname">plot_eonr</code><span class="sig-paren">(</span><em class="sig-param">ci_type='profile-likelihood'</em>, <em class="sig-param">ci_level=None</em>, <em class="sig-param">run_n=None</em>, <em class="sig-param">x_min=None</em>, <em class="sig-param">x_max=None</em>, <em class="sig-param">y_min=None</em>, <em class="sig-param">y_max=None</em>, <em class="sig-param">show_model=True</em>, <em class="sig-param">style='ggplot'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/eonr/eonr.html#EONR.plot_eonr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#eonr.EONR.plot_eonr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots EONR, MRTN, GRTN, net return, and nitrogen cost.</p>
+<p>If left as <code class="docutils literal notranslate"><span class="pre">None</span></code>, <code class="docutils literal notranslate"><span class="pre">x_min</span></code>, <code class="docutils literal notranslate"><span class="pre">x_max</span></code>, <code class="docutils literal notranslate"><span class="pre">y_min</span></code>, and <code class="docutils literal notranslate"><span class="pre">y_max</span></code>
+are set by <code class="docutils literal notranslate"><span class="pre">Matplotlib</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ci_type</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>, optional) -- Indicates which confidence interval
+type should be plotted. Options are 'wald', to plot the Wald
+CIs; 'profile-likelihood', to plot the profile-likelihood
+CIs; or 'bootstrap', to plot the bootstrap CIs (default:
+'profile-likelihood').</p></li>
+<li><p><strong>ci_level</strong> (<code class="docutils literal notranslate"><span class="pre">float</span></code>, optional) -- The confidence interval level to be
+plotted, and must be one of the values in EONR.ci_list. If
+<code class="docutils literal notranslate"><span class="pre">None</span></code>, uses the
+<code class="docutils literal notranslate"><span class="pre">EONR.ci_level</span></code> (default: None).</p></li>
+<li><p><strong>run_n</strong> (<code class="docutils literal notranslate"><span class="pre">int</span></code>, optional) -- NOT IMPLEMENTED. The run number to plot,
+as indicated in EONR.df_results; if None, uses the most recent,
+or maximum, run_n in EONR.df_results (default: None).</p></li>
+<li><p><strong>x_min</strong> (<code class="docutils literal notranslate"><span class="pre">int</span></code>, optional) -- The minimum x-bounds of the plot
+(default: None)</p></li>
+<li><p><strong>x_max</strong> (<code class="docutils literal notranslate"><span class="pre">int</span></code>, optional) -- The maximum x-bounds of the plot
+(default: None)</p></li>
+<li><p><strong>y_min</strong> (<code class="docutils literal notranslate"><span class="pre">int</span></code>, optional) -- The minimum y-bounds of the plot
+(default: None)</p></li>
+<li><p><strong>y_max</strong> (<code class="docutils literal notranslate"><span class="pre">int</span></code>, optional) -- The maximum y-bounds of the plot
+(default: None)</p></li>
+<li><p><strong>show_model</strong> (<em>str</em>) -- Whether to display the type of fitted model in
+the helper legend (default: True).</p></li>
+<li><p><strong>style</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>, optional) -- The style of the plot; can be any of
+the options supported by <a class="reference external" href="https://tonysyu.github.io/raw_content/matplotlib-style-gallery/gallery.html">matplotlib</a> (default: 'ggplot').</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<p>Please complete the <a class="reference external" href="eonr.EONR.html#eonr.EONR.calculate_eonr">EONR.calculate_eonr</a> example first because
+this example builds on the results of the <code class="docutils literal notranslate"><span class="pre">my_eonr</span></code> object.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">my_eonr</span><span class="o">.</span><span class="n">plot_eonr</span><span class="p">(</span><span class="n">x_min</span><span class="o">=-</span><span class="mi">5</span><span class="p">,</span> <span class="n">x_max</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">y_min</span><span class="o">=-</span><span class="mi">100</span><span class="p">,</span> <span class="n">y_max</span><span class="o">=</span><span class="mi">1400</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="../_images/plot_eonr.png" src="../_images/plot_eonr.png" />
+</dd></dl>
+
+<dl class="method">
+<dt id="eonr.EONR.plot_modify_size">
+<code class="sig-name descname">plot_modify_size</code><span class="sig-paren">(</span><em class="sig-param">fig=None</em>, <em class="sig-param">plotsize_x=7</em>, <em class="sig-param">plotsize_y=4</em>, <em class="sig-param">labelsize=11</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/eonr/eonr.html#EONR.plot_modify_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#eonr.EONR.plot_modify_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Modifies the size of the last plot generated</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fig</strong> (<code class="docutils literal notranslate"><span class="pre">Matplotlib</span> <span class="pre">Figure</span></code>, optional) -- Matplotlib figure to modify
+(default: None)</p></li>
+<li><p><strong>plotsize_x</strong> (<code class="docutils literal notranslate"><span class="pre">float</span></code>, optional) -- Sets x size of plot in inches
+(default: 7)</p></li>
+<li><p><strong>plotsize_y</strong> (<code class="docutils literal notranslate"><span class="pre">float</span></code>, optional) -- Sets y size of plot in inches
+(default: 4)</p></li>
+<li><p><strong>labelsize</strong> (<code class="docutils literal notranslate"><span class="pre">float</span></code>, optional) -- Sets tick and label
+(defaulat: 11)</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<p>Please complete the <a class="reference external" href="eonr.EONR.html#eonr.EONR.calculate_eonr">EONR.calculate_eonr</a> and
+<a class="reference external" href="eonr.EONR.html#eonr.EONR.plot_eonr">EONR.plot_eonr</a> examples first because this example builds on
+the results of the <code class="docutils literal notranslate"><span class="pre">my_eonr.fig_eonr.fig</span></code> object.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">my_eonr</span><span class="o">.</span><span class="n">plot_modify_size</span><span class="p">(</span><span class="n">fig</span><span class="o">=</span><span class="n">my_eonr</span><span class="o">.</span><span class="n">fig_eonr</span><span class="o">.</span><span class="n">fig</span><span class="p">,</span> <span class="n">plotsize_x</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">plotsize_y</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">labelsize</span><span class="o">=</span><span class="mi">9</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="../_images/plot_modify_size.png" src="../_images/plot_modify_size.png" />
+</dd></dl>
+
+<dl class="method">
+<dt id="eonr.EONR.plot_modify_title">
+<code class="sig-name descname">plot_modify_title</code><span class="sig-paren">(</span><em class="sig-param">title_text</em>, <em class="sig-param">g=None</em>, <em class="sig-param">size_font=12</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/eonr/eonr.html#EONR.plot_modify_title"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#eonr.EONR.plot_modify_title" title="Permalink to this definition">¶</a></dt>
+<dd><p>Allows user to replace the title text</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>title_text</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) -- New title text</p></li>
+<li><p><strong>g</strong> (<code class="docutils literal notranslate"><span class="pre">matplotlib.figure</span></code>) -- Matplotlib figure object to modify
+(default: None)</p></li>
+<li><p><strong>size_font</strong> (<code class="docutils literal notranslate"><span class="pre">float</span></code>) -- Font size to use (default: 12)</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<p>Please complete the <a class="reference external" href="eonr.EONR.html#eonr.EONR.calculate_eonr">EONR.calculate_eonr</a> and
+<a class="reference external" href="eonr.EONR.html#eonr.EONR.plot_eonr">EONR.plot_eonr</a> examples first because this example builds on
+the results of the <code class="docutils literal notranslate"><span class="pre">my_eonr.fig_eonr.fig</span></code> object.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">my_eonr</span><span class="o">.</span><span class="n">plot_modify_title</span><span class="p">(</span><span class="s1">&#39;Preplant N fertilizer - Stewart, MN 2012&#39;</span><span class="p">,</span> <span class="n">g</span><span class="o">=</span><span class="n">my_eonr</span><span class="o">.</span><span class="n">fig_eonr</span><span class="o">.</span><span class="n">fig</span><span class="p">,</span> <span class="n">size_font</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="../_images/plot_modify_title.png" src="../_images/plot_modify_title.png" />
+</dd></dl>
+
+<dl class="method">
+<dt id="eonr.EONR.plot_save">
+<code class="sig-name descname">plot_save</code><span class="sig-paren">(</span><em class="sig-param">fname=None</em>, <em class="sig-param">base_dir=None</em>, <em class="sig-param">fig=None</em>, <em class="sig-param">dpi=300</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/eonr/eonr.html#EONR.plot_save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#eonr.EONR.plot_save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Saves a generated matplotlib figure to file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fname</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>, optional) -- Filename to save plot to (default: None)</p></li>
+<li><p><strong>base_dir</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>, optional) -- Base file directory when saving
+results (default: None)</p></li>
+<li><p><strong>fig</strong> (<em>eonr.fig</em><em>, </em><em>optional</em>) -- EONR figure object to save (default:
+None)</p></li>
+<li><p><strong>dpi</strong> (<code class="docutils literal notranslate"><span class="pre">int</span></code>, optional) -- Resolution to save the figure to in dots
+per inch (default: 300)</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<p>Please complete the <a class="reference external" href="eonr.EONR.html#eonr.EONR.calculate_eonr">EONR.calculate_eonr</a> and
+<a class="reference external" href="eonr.EONR.html#eonr.EONR.plot_eonr">EONR.plot_eonr</a> examples first because this example builds on
+the results of the <code class="docutils literal notranslate"><span class="pre">my_eonr.fig_eonr.fig</span></code> object.</p>
+<p>Set output filename</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fname</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;F:\nigo0024\Downloads\eonr_fig.png&#39;</span>
+</pre></div>
+</div>
+<p>Save the most recent figure</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">my_eonr</span><span class="o">.</span><span class="n">plot_save</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
+<span class="go">``fig`` is None, so saving the current (most recent) figure.</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="eonr.EONR.plot_tau">
+<code class="sig-name descname">plot_tau</code><span class="sig-paren">(</span><em class="sig-param">y_axis='t_stat'</em>, <em class="sig-param">emphasis='profile-likelihood'</em>, <em class="sig-param">run_n=None</em>, <em class="sig-param">style='ggplot'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/eonr/eonr.html#EONR.plot_tau"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#eonr.EONR.plot_tau" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots the test statistic as a function nitrogen rate</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y_axis</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>, optional) -- Value to plot on the y-axis. Options
+are 't_stat', to plot the <em>T statistic</em>; 'f_stat', to plot the
+<em>F-statistic</em>; or 'level', to plot the <em>confidence level</em>;
+(default: 't_stat').</p></li>
+<li><p><strong>emphasis</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>, optional) -- Indicates which confidence interval
+type, if any, should be emphasized. Options are 'wald', to
+empahsize the Wald CIs;
+'profile-likelihood', to empahsize the profile-likelihood CIs;
+'bootstrap', to empahsize the bootstrap CIs; or
+<code class="docutils literal notranslate"><span class="pre">None</span></code>, to empahsize no CI (default: 'profile-likelihood').</p></li>
+<li><p><strong>run_n</strong> (<code class="docutils literal notranslate"><span class="pre">int</span></code>, optional) -- The run number to plot, as indicated in
+<code class="docutils literal notranslate"><span class="pre">EONR.df_ci</span></code>; if <code class="docutils literal notranslate"><span class="pre">None</span></code>, uses the most recent, or maximum,
+run_n in <code class="docutils literal notranslate"><span class="pre">EONR.df_ci</span></code> (default: None).</p></li>
+<li><p><strong>style</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>, optional) -- The style of the plolt; can be any of
+the options supported by <code class="docutils literal notranslate"><span class="pre">matplotlib</span></code></p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<p>Please complete the <a class="reference external" href="eonr.EONR.html#eonr.EONR.calculate_eonr">EONR.calculate_eonr</a> example first because
+this example builds on the results of the <code class="docutils literal notranslate"><span class="pre">my_eonr</span></code> object.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">my_eonr</span><span class="o">.</span><span class="n">plot_tau</span><span class="p">()</span>
+</pre></div>
+</div>
+<img alt="../_images/plot_tau.png" src="../_images/plot_tau.png" />
+</dd></dl>
+
+<dl class="method">
+<dt id="eonr.EONR.print_results">
+<code class="sig-name descname">print_results</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/eonr/eonr.html#EONR.print_results"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#eonr.EONR.print_results" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints the results of the optimum nitrogen rate computation</p>
+<p class="rubric">Example</p>
+<p>Please complete the <a class="reference external" href="eonr.EONR.html#eonr.EONR.calculate_eonr">EONR.calculate_eonr</a> example first because
+this example builds on the results of the <code class="docutils literal notranslate"><span class="pre">my_eonr</span></code> object.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">my_eonr</span><span class="o">.</span><span class="n">print_results</span><span class="p">()</span>
+<span class="go">Economic optimum N rate (EONR): 162.3 kg per ha [130.5, 207.8] (90.0% confidence)</span>
+<span class="go">Maximum return to N (MRTN): $767.93 per ha</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="eonr.EONR.set_column_names">
+<code class="sig-name descname">set_column_names</code><span class="sig-paren">(</span><em class="sig-param">col_n_app=None</em>, <em class="sig-param">col_yld=None</em>, <em class="sig-param">col_crop_nup=None</em>, <em class="sig-param">col_n_avail=None</em>, <em class="sig-param">col_year=None</em>, <em class="sig-param">col_location=None</em>, <em class="sig-param">col_time_n=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/eonr/eonr.html#EONR.set_column_names"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#eonr.EONR.set_column_names" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the column name(s) for <code class="docutils literal notranslate"><span class="pre">EONR.df_data</span></code></p>
+<p>If these descriptions are used as metadata in the input dataset, they
+are accessed for plotting purposes. These parameters do not affect the
+calculation of the EONR or its confidence intervals in any way.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>col_n_app</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>, optional) -- Column name pointing to the rate of
+applied N fertilizer data (default: None).</p></li>
+<li><p><strong>col_yld</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>, optional) -- Column name pointing to the grain
+yield data. This column is multiplied by price_grain to create
+the 'grtn' column in <code class="docutils literal notranslate"><span class="pre">EONR.df_data</span></code> (default: None).</p></li>
+<li><p><strong>col_crop_nup</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>, optional) -- Column name pointing to crop N
+uptake data (default: None).</p></li>
+<li><p><strong>col_n_avail</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>, optional) -- Column name pointing to available
+soil N at planting plus fertilizer throughout the season
+(default: None).</p></li>
+<li><p><strong>col_year</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>, optional) -- Column name pointing to year
+(default: None).</p></li>
+<li><p><strong>col_location</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>, optional) -- Column name pointing to location
+(default: None).</p></li>
+<li><p><strong>col_time_n</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>, optional) -- Column name pointing to nitrogen
+application timing (default: None).</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<p>Load and initialize <code class="docutils literal notranslate"><span class="pre">eonr</span></code></p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">eonr</span> <span class="kn">import</span> <span class="n">EONR</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">os</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">base_dir</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;F:\nigo0024\Documents\GitHub\eonr\eonr&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">my_eonr</span> <span class="o">=</span> <span class="n">EONR</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">base_dir</span><span class="o">=</span><span class="n">base_dir</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Set the column names using <code class="docutils literal notranslate"><span class="pre">EONR.set_column_names</span></code></p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">my_eonr</span><span class="o">.</span><span class="n">set_column_names</span><span class="p">(</span><span class="n">col_n_app</span><span class="o">=</span><span class="s1">&#39;rate_n_applied_kgha&#39;</span><span class="p">,</span> <span class="n">col_yld</span><span class="o">=</span><span class="s1">&#39;yld_grain_dry_kgha&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">my_eonr</span><span class="o">.</span><span class="n">col_n_app</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">my_eonr</span><span class="o">.</span><span class="n">col_yld</span><span class="p">)</span>
+<span class="go">rate_n_applied_kgha</span>
+<span class="go">yld_grain_dry_kgha</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="eonr.EONR.set_trial_details">
+<code class="sig-name descname">set_trial_details</code><span class="sig-paren">(</span><em class="sig-param">year=None</em>, <em class="sig-param">location=None</em>, <em class="sig-param">n_timing=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/eonr/eonr.html#EONR.set_trial_details"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#eonr.EONR.set_trial_details" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the year, location, or nitrogen timing</p>
+<p>If these descriptions are used as metadata in the input dataset, they
+are accessed for plotting purposes. These parameters do not affect the
+calculation of the EONR or its confidence intervals in any way.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>year</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code> or <code class="docutils literal notranslate"><span class="pre">int</span></code>, optional) -- Year of experimental trial
+(default: None)</p></li>
+<li><p><strong>location</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code> or <code class="docutils literal notranslate"><span class="pre">int</span></code>, optional) -- Location of experimental
+trial (default: None)</p></li>
+<li><p><strong>n_timing</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code> or <code class="docutils literal notranslate"><span class="pre">int</span></code>, optional) -- Nitrogen timing of
+experimental trial (default: None)</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<p>Load and initialize <code class="docutils literal notranslate"><span class="pre">eonr</span></code></p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">eonr</span> <span class="kn">import</span> <span class="n">EONR</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">os</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">base_dir</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;F:\nigo0024\Documents\GitHub\eonr\eonr&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">my_eonr</span> <span class="o">=</span> <span class="n">EONR</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">base_dir</span><span class="o">=</span><span class="n">base_dir</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Set the trial details using <code class="docutils literal notranslate"><span class="pre">EONR.set_trial_details</span></code></p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">my_eonr</span><span class="o">.</span><span class="n">set_trial_details</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="mi">2019</span><span class="p">,</span> <span class="n">location</span><span class="o">=</span><span class="s1">&#39;St. Paul, MN&#39;</span><span class="p">,</span> <span class="n">n_timing</span><span class="o">=</span><span class="s1">&#39;At planting&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">my_eonr</span><span class="o">.</span><span class="n">year</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">my_eonr</span><span class="o">.</span><span class="n">location</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">my_eonr</span><span class="o">.</span><span class="n">n_timing</span><span class="p">)</span>
+<span class="go">2019</span>
+<span class="go">St. Paul, MN</span>
+<span class="go">At planting</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="eonr.EONR.set_units">
+<code class="sig-name descname">set_units</code><span class="sig-paren">(</span><em class="sig-param">unit_currency=None</em>, <em class="sig-param">unit_fert=None</em>, <em class="sig-param">unit_grain=None</em>, <em class="sig-param">unit_area=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/eonr/eonr.html#EONR.set_units"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#eonr.EONR.set_units" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the units data in <code class="docutils literal notranslate"><span class="pre">EONR.df_data</span></code> and for reporting</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>unit_currency</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>, optional) -- Currency unit, e.g., &quot;$&quot;
+(default: None).</p></li>
+<li><p><strong>unit_fert</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>, optional) -- Fertilizer unit, e.g., &quot;lbs&quot;
+(default: None).</p></li>
+<li><p><strong>unit_grain</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>, optional) -- Grain unit, e.g., &quot;bu&quot; (default:
+None).</p></li>
+<li><p><strong>unit_area</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>, optional) -- Area unit, e.g., &quot;ac&quot; (default:
+None).</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<p>Load and initialize <code class="docutils literal notranslate"><span class="pre">eonr</span></code></p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">eonr</span> <span class="kn">import</span> <span class="n">EONR</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">os</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">base_dir</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;F:\nigo0024\Documents\GitHub\eonr\eonr&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">my_eonr</span> <span class="o">=</span> <span class="n">EONR</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">base_dir</span><span class="o">=</span><span class="n">base_dir</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Set the units using <code class="docutils literal notranslate"><span class="pre">EONR.set_units</span></code></p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">my_eonr</span><span class="o">.</span><span class="n">set_units</span><span class="p">(</span><span class="n">unit_currency</span><span class="o">=</span><span class="s1">&#39;USD&#39;</span><span class="p">,</span> <span class="n">unit_fert</span><span class="o">=</span><span class="s1">&#39;kg&#39;</span><span class="p">,</span> <span class="n">unit_grain</span><span class="o">=</span><span class="s1">&#39;kg&#39;</span><span class="p">,</span> <span class="n">unit_area</span><span class="o">=</span><span class="s1">&#39;ha&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">my_eonr</span><span class="o">.</span><span class="n">unit_currency</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">my_eonr</span><span class="o">.</span><span class="n">unit_fert</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">my_eonr</span><span class="o">.</span><span class="n">unit_grain</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">my_eonr</span><span class="o">.</span><span class="n">unit_area</span><span class="p">)</span>
+<span class="go">USD</span>
+<span class="go">kg</span>
+<span class="go">kg</span>
+<span class="go">ha</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="eonr.EONR.update_econ">
+<code class="sig-name descname">update_econ</code><span class="sig-paren">(</span><em class="sig-param">cost_n_fert=None</em>, <em class="sig-param">cost_n_social=None</em>, <em class="sig-param">costs_fixed=None</em>, <em class="sig-param">price_grain=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/eonr/eonr.html#EONR.update_econ"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#eonr.EONR.update_econ" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets or resets the nitrogen fertilizer cost, social cost of nitrogen,
+fixed costs, and/or grain price.</p>
+<p>The price ratio is recomputed based on the passed information, then
+the the lowest level folder in the base directory is renamed/adjusted
+(<code class="docutils literal notranslate"><span class="pre">EONR.base_dir</span></code>) based on to the price ratio. The folder name is
+set according to the economic scenario (useful when running <code class="docutils literal notranslate"><span class="pre">EONR</span></code>
+for many different economic scenarios then plotting and saving results
+for each scenario).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cost_n_fert</strong> (<code class="docutils literal notranslate"><span class="pre">float</span></code>, optional) -- Cost of nitrogen fertilizer
+(default: None).</p></li>
+<li><p><strong>cost_n_social</strong> (<code class="docutils literal notranslate"><span class="pre">float</span></code>, optional) -- Cost of pollution caused by
+excess nitrogen (default: None).</p></li>
+<li><p><strong>costs_fixed</strong> (<em>float</em><em>, </em><em>optional</em>) -- Fixed costs on a per area basis</p></li>
+<li><p><strong>(</strong><strong>default</strong> -- None)</p></li>
+<li><p><strong>price_grain</strong> (<code class="docutils literal notranslate"><span class="pre">float</span></code>, optional) -- Price of grain (default: None).</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<p>Load and initialize <code class="docutils literal notranslate"><span class="pre">eonr</span></code></p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">eonr</span> <span class="kn">import</span> <span class="n">EONR</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">os</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">base_dir</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;F:\nigo0024\Documents\GitHub\eonr\eonr&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">my_eonr</span> <span class="o">=</span> <span class="n">EONR</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">base_dir</span><span class="o">=</span><span class="n">base_dir</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Set/update the cost of fertilizer and price of grain using
+<code class="docutils literal notranslate"><span class="pre">EONR.update_econ</span></code></p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">my_eonr</span><span class="o">.</span><span class="n">update_econ</span><span class="p">(</span><span class="n">cost_n_fert</span><span class="o">=</span><span class="mf">0.88</span><span class="p">,</span> <span class="n">price_grain</span><span class="o">=</span><span class="mf">0.157</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">my_eonr</span><span class="o">.</span><span class="n">price_ratio</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">my_eonr</span><span class="o">.</span><span class="n">base_dir</span><span class="p">)</span>
+<span class="go">5.605095541</span>
+<span class="go">F:\nigo0024\Documents\GitHub\eonr\eonr      rad_5605</span>
+</pre></div>
+</div>
+<p>Set/update the social cost of nitrogen, again using
+<code class="docutils literal notranslate"><span class="pre">EONR.update_econ</span></code></p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">my_eonr</span><span class="o">.</span><span class="n">update_econ</span><span class="p">(</span><span class="n">cost_n_social</span><span class="o">=</span><span class="mf">1.1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">my_eonr</span><span class="o">.</span><span class="n">price_ratio</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">my_eonr</span><span class="o">.</span><span class="n">base_dir</span><span class="p">)</span>
+<span class="go">12.61146496</span>
+<span class="go">F:\nigo0024\Documents\GitHub\eonr\eonr\social_12611_1100</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2019-2020, Tyler J Nigon.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.3.1.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

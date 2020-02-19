@@ -1,12 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-Copyright &copy; 2019 Tyler J Nigon. All rights reserved.
-
-The EONR package uses the Models and Plotting_tools classes to abstract some
-of the modeling and plotting components.
-"""
-
-__copyright__ = '2019 Tyler J Nigon. All rights reserved.'
+__copyright__ = '2019-2020 Tyler J Nigon. All rights reserved.'
 __author__ = 'Tyler J Nigon'
 __license__ = (
         'The MIT license'
@@ -38,7 +31,7 @@ from eonr.plotting_tools import Plotting_tools
 from eonr.eonr import EONR
 
 name = 'eonr'
-__version__ = '0.2.0'
+__version__ = '0.2.1'
 
 __all__ = ['EONR',
            'Models',

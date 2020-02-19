@@ -1,7 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Copyright &copy; 2019 Tyler J Nigon. All rights reserved.
-"""
 
 import matplotlib.colors as colors
 from matplotlib.offsetbox import AnchoredText
@@ -1289,8 +1286,8 @@ class Plotting_tools(object):
                 (default: 300)
         '''
         if fig is None:
-            print('<fig> is None, so saving the current (most recent) '
-                  'figure\n.')
+            print('``fig`` is None, so saving the current (most recent) '
+                  'figure.\n')
             fig = plt.gcf()
         msg = ('A figure must be generated first. Please execute '
                'EONR.plot_eonr() or EONR.plot_tau() first..\n')

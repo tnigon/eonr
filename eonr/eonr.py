@@ -92,6 +92,10 @@ from eonr import Plotting_tools
 
 
 class EONR(object):
+    '''
+    ``EONR`` is a Python tool for computing the optimum nitrogen rate and its
+    confidence intervals from agricultural research data.
+    '''
     def __init__(self,
                  cost_n_fert=0.5,
                  cost_n_social=0.0,
@@ -510,10 +514,10 @@ class EONR(object):
             guess = (self.coefs_grtn['b0'].n,
                      self.eonr,
                      self.coefs_grtn['b2'].n)
-            if self.model_temp is 'quadratic':
+            if self.model_temp == 'quadratic':
                 f_model = self.models.quadratic
                 f_model_theta2 = self.models.q_theta2
-            elif self.model_temp is 'quad_plateau':
+            elif self.model_temp == 'quad_plateau':
                 f_model = self.models.quad_plateau
                 f_model_theta2 = self.models.qp_theta2
             info = ('func = {0}\ncol_x = {1}\ncol_y = {2}\n'
@@ -792,10 +796,10 @@ class EONR(object):
         x = df_data[col_x].values
         y = df_data[col_y].values
 
-        if self.model_temp is 'quadratic':
+        if self.model_temp == 'quadratic':
 #            f_model = self.models.quadratic
             f_model_theta2 = self.models.q_theta2
-        elif self.model_temp is 'quad_plateau':
+        elif self.model_temp == 'quad_plateau':
 #            f_model = self.models.quad_plateau
             f_model_theta2 = self.models.qp_theta2
         guess = (self.coefs_grtn['b0'].n,
@@ -948,21 +952,40 @@ class EONR(object):
             pass
         else:
             self.model_temp = self.model
-        if self.model_temp is 'quadratic':
+        if self.model_temp == 'quadratic':
             f_model = self.models.quadratic
-        elif self.model_temp is 'quad_plateau':
+        elif self.model_temp == 'quad_plateau':
             f_model = self.models.quad_plateau
         else:
             raise NotImplementedError('{0} model not implemented'
-                                      ''.format(f_model))
+                                      ''.format(self.models.quadratic))
         popt, pcov = self._curve_fit_opt(f_model, x, y, p0=guess, info=info)
+
+        # the following should be made robust to dynamically find the starting values for a dataset..
+#        print(guess)
+#        print(popt, pcov)
+#        if popt[0] < 100 and rerun is False:
+#            guess = (100, guess[1], guess[2])
+#        if popt[1] < 1 and rerun is False:
+#            guess = (guess[0], guess[1] * 4, guess[2])
+#        if popt[2] > 0 and rerun is False:
+#            guess = (guess[0], guess[1], guess[2] * 5)
+#        popt, pcov = self._curve_fit_opt(f_model, x, y, p0=guess, info=info)
+#        print('\n\n')
+#        print(guess)
+#        print(popt, pcov)
+
         if popt is None or np.any(popt == np.inf) or np.any(pcov == np.inf):
             b0 = unc.ufloat(popt[0], 0)
             b1 = unc.ufloat(popt[1], 0)
             b2 = unc.ufloat(popt[2], 0)
         else:
-            b0, b1, b2 = unc.correlated_values(popt, pcov)
-
+            try:
+                b0, b1, b2 = unc.correlated_values(popt, pcov)
+            except np.linalg.LinAlgError:
+                b0 = unc.ufloat(popt[0], 0)
+                b1 = unc.ufloat(popt[1], 0)
+                b2 = unc.ufloat(popt[2], 0)
         crit_x = -b1.n/(2*b2.n)
         max_y = f_model(crit_x, b0.n, b1.n, b2.n)
         r2, r2_adj, ss_res, ss_tot, rmse = self._get_rsq(
@@ -1123,10 +1146,10 @@ class EONR(object):
         df = self.df_data.copy()
         x = df[self.col_n_app].values
         y = df['grtn'].values
-        if self.model_temp is 'quadratic':
+        if self.model_temp == 'quadratic':
 #            f_model = self.models.quadratic
             f_model_theta2 = self.models.q_theta2
-        elif self.model_temp is 'quad_plateau':
+        elif self.model_temp == 'quad_plateau':
 #            f_model = self.models.quad_plateau
             f_model_theta2 = self.models.qp_theta2
         guess = (self.coefs_grtn['b0'].n,
@@ -1143,10 +1166,10 @@ class EONR(object):
         maxfev = 1000
         b0 = self.coefs_grtn['b0'].n
         b2 = self.coefs_grtn['b2'].n
-        if self.model_temp is 'quadratic':
+        if self.model_temp == 'quadratic':
 #            f_model = self.models.quadratic
             f_model_theta2 = self.models.q_theta2
-        elif self.model_temp is 'quad_plateau':
+        elif self.model_temp == 'quad_plateau':
 #            f_model = self.models.quad_plateau
             f_model_theta2 = self.models.qp_theta2
         guess = (b0, self.eonr, b2)
@@ -1197,10 +1220,10 @@ class EONR(object):
         Calculates the sum of squares across the full set of parameters,
         solving for theta2
         '''
-        if self.model_temp is 'quadratic':
+        if self.model_temp == 'quadratic':
 #            f_model = self.models.quadratic
             f_model_theta2 = self.models.q_theta2
-        elif self.model_temp is 'quad_plateau':
+        elif self.model_temp == 'quad_plateau':
 #            f_model = self.models.quad_plateau
             f_model_theta2 = self.models.qp_theta2
         guess = (self.coefs_grtn['b0'].n,
@@ -1364,9 +1387,9 @@ class EONR(object):
         df_data = self.df_data.copy()
         x = df_data[col_x].values
         y = df_data[col_y].values
-        if self.model_temp is 'quadratic':
+        if self.model_temp == 'quadratic':
             f_model = self.models.quadratic
-        elif self.model_temp is 'quad_plateau':
+        elif self.model_temp == 'quad_plateau':
             f_model = self.models.quad_plateau
         info = ('func = {0}\ncol_x = {1}\ncol_y = {2}\n'
                 ''.format(f_model, col_x, col_y))
@@ -1493,10 +1516,10 @@ class EONR(object):
         distribution function) of the F statistic. The T statistic can be used
         as well (they will give the same result).
         '''
-        if self.model_temp is 'quadratic':
+        if self.model_temp == 'quadratic':
 #            f_model = self.models.quadratic
             f_model_theta2 = self.models.q_theta2
-        elif self.model_temp is 'quad_plateau':
+        elif self.model_temp == 'quad_plateau':
 #            f_model = self.models.quad_plateau
             f_model_theta2 = self.models.qp_theta2
         guess = (self.coefs_grtn['b0'].n,
@@ -1735,10 +1758,10 @@ class EONR(object):
             returns <dif>, which will equal zero when the likelihood ratio is
             exactly equal to the test statistic (e.g., t-test or f-test)
             '''
-            if self.model_temp is 'quadratic':
+            if self.model_temp == 'quadratic':
     #            f_model = self.models.quadratic
                 f_model_theta2 = self.models.q_theta2
-            elif self.model_temp is 'quad_plateau':
+            elif self.model_temp == 'quad_plateau':
     #            f_model = self.models.quad_plateau
                 f_model_theta2 = self.models.qp_theta2
             try:
@@ -1997,7 +2020,12 @@ class EONR(object):
 #        return boot_ci
 
     def calc_delta(self, df_results=None):
-        '''Calculates the change in EONR among economic scenarios
+        '''
+        Calculates the change in EONR among economic scenarios.
+
+        ``EONR.calc_delta`` filters all data by location, year, and
+        nitrogen timing, then the "delta" is calculated as the difference
+        relative to the economic scenario resulting in the highest EONR.
 
         Parameters:
             df_results (``Pandas dataframe``, optional): The dataframe
@@ -2005,13 +2033,40 @@ class EONR(object):
                 (default: None).
 
         Returns:
-            df_out "The dataframe with the newly inserted EONR delta."
+            ``pandas.DataFrame``:
+                **df_delta** -- The dataframe with the newly inserted EONR
+                delta.
 
-        Note:
-            ``EONR.calc_delta()`` filters all data by location, year, and
-            nitrogen timing, then the "delta" is calculated as the difference
-            relative to the economic scenario resulting in the highest EONR.
 
+        Example:
+            Please complete the `EONR.calculate_eonr`_ example first because
+            this example builds on the results of the ``my_eonr`` object.
+
+            Change the economic scenario (using ``EONR.calculate_eonr``) and
+            calculate the EONR again for the same dataset (using
+            ``EONR.calculate_eonr``)
+
+            >>> price_grain = 0.314  # in USD per kg grain
+            >>> my_eonr.update_econ(price_grain=price_grain)
+            >>> my_eonr.calculate_eonr(df_data)
+            Computing EONR for Minnesota 2012 Pre
+            Cost of N fertilizer: $0.88 per kg
+            Price grain: $0.31 per kg
+            Fixed costs: $0.00 per ha
+            Checking quadratic and quadric-plateau models for best fit..
+            Quadratic model r^2: 0.72
+            Quadratic-plateau model r^2: 0.73
+            Using the quadratic-plateau model..
+            Economic optimum N rate (EONR): 169.9 kg per ha [135.2, 220.9] (90.0% confidence)
+            Maximum return to N (MRTN): $1682.04 per ha
+
+            Use ``EONR.calc_delta`` to
+
+            >>> df_delta = my_eonr.calc_delta(my_eonr.df_results)
+
+            .. image:: ../img/calc_delta.png
+
+        .. _EONR.calculate_eonr: eonr.EONR.html#eonr.EONR.calculate_eonr
         '''
         if df_results is None:
             df = self.df_results.unique()
@@ -2020,7 +2075,7 @@ class EONR(object):
 
         years = df['year'].unique()
         years.sort()
-        df_out = None
+        df_delta = None
         for year in years:
             df_year = df[df['year'] == year]
             locs = df_year['location'].unique()
@@ -2033,17 +2088,24 @@ class EONR(object):
                     eonr_base = df_yloct['eonr'].max()  # lowest fert:grain rat
                     eonr_delta = df_yloct['eonr'] - eonr_base
                     df_yloct.insert(8, 'eonr_delta', eonr_delta)
-                    if df_out is None:
-                        df_out = pd.DataFrame(columns=df_yloct.columns)
-                    df_out = df_out.append(df_yloct)
-        return df_out
+                    if df_delta is None:
+                        df_delta = pd.DataFrame(columns=df_yloct.columns)
+                    df_delta = df_delta.append(df_yloct)
+        return df_delta
 
     def calculate_eonr(self, df, col_n_app=None, col_yld=None,
                        col_crop_nup=None, col_n_avail=None,
                        col_year=None, col_location=None, col_time_n=None,
                        bootstrap_ci=False, samples_boot=9999,
                        delta_tstat=False):
-        '''Calculates the EONR and its confidence intervals
+        '''
+        Calculates the EONR and its confidence intervals.
+
+        ``col_n_app`` and ``col_yld`` are required by ``EONR``, but not
+        necessarily by ``EONR.calculate_eonr()``. They must either be set
+        during the initialization of ``EONR``, before running
+        ``EONR.calculate_eonr`` (using ``EONR.set_column_names``), or they
+        must be passed in this ``EONR.calculate_eonr`` method.
 
         Parameters:
             df (``Pandas dataframe``): The dataframe containing the
@@ -2078,20 +2140,69 @@ class EONR(object):
                 profile-likelihood CIs (default: False).
 
         Note:
-            ``col_n_app`` and ``col_yld`` are required by ``EONR``, but not
-            necessarily by ``EONR.calculate_eonr()``. They must either be set
-            during the initialization of EONR(), or be passed in this method.
-
-        Note:
             ``col_crop_nup`` and ``col_n_avail`` are required to calculate the
             socially optimum nitrogen rate, SONR. The SONR is the optimum
             nitrogen rate considering the social cost of nitrogen, so
-            therefore, ``EONR.cost_n_social`` must also be set.
+            therefore, ``EONR.cost_n_social`` must also be set. ``col_year``,
+            ``col_location``, and ``col_time_n`` are purely  optional. They
+            only affect the titles and axes labels of the plots.
 
-        Note:
-            ``col_year``, ``col_location``, and ``col_time_n`` are purely
-            optional. They only affect the titles and axes labels of the plots.
+        Example:
+            Load and initialize ``eonr``
 
+            >>> from eonr import EONR
+            >>> import os
+            >>> import pandas as pd
+
+            Load the sample data
+
+            >>> base_dir = r'F:\\nigo0024\Documents\GitHub\eonr\eonr'
+            >>> df_data = pd.read_csv(os.path.join(base_dir, 'data', 'minnesota_2012.csv'))
+
+            Set column names
+
+            >>> col_n_app = 'rate_n_applied_kgha'
+            >>> col_yld = 'yld_grain_dry_kgha'
+
+            Set units
+
+            >>> unit_currency = '$'
+            >>> unit_fert = 'kg'
+            >>> unit_grain = 'kg'
+            >>> unit_area = 'ha'
+
+            Set economic conditions
+
+            >>> cost_n_fert = 0.88  # in USD per kg nitrogen
+            >>> price_grain = 0.157  # in USD per kg grain
+
+            Initialize ``EONR``
+
+            >>> my_eonr = EONR(cost_n_fert=cost_n_fert,
+                               price_grain=price_grain,
+                               col_n_app=col_n_app,
+                               col_yld=col_yld,
+                               unit_currency=unit_currency,
+                               unit_grain=unit_grain,
+                               unit_fert=unit_fert,
+                               unit_area=unit_area,
+                               model=None,
+                               base_dir=base_dir)
+
+            Calculate the economic optimum nitrogen rate using
+            ``EONR.calculate_eonr``
+
+            >>> my_eonr.calculate_eonr(df_data)
+            Computing EONR for Minnesota 2012 Pre
+            Cost of N fertilizer: $0.88 per kg
+            Price grain: $0.16 per kg
+            Fixed costs: $0.00 per ha
+            Checking quadratic and quadric-plateau models for best fit..
+            Quadratic model r^2: 0.72
+            Quadratic-plateau model r^2: 0.73
+            Using the quadratic-plateau model..
+            Economic optimum N rate (EONR): 162.3 kg per ha [130.5, 207.8] (90.0% confidence)
+            Maximum return to N (MRTN): $767.93 per ha
         '''
         msg = ('Please set EONR.price_grain > 0.')
         assert self.price_grain > 0, msg
@@ -2172,101 +2283,6 @@ class EONR(object):
                 results, columns=self.df_results.columns),
                 ignore_index=True)
 
-    def plot_eonr(self, ci_type='profile-likelihood', ci_level=None,
-                  run_n=None, x_min=None, x_max=None, y_min=None, y_max=None,
-                  show_model=True, style='ggplot'):
-        '''Plots EONR, MRTN, GRTN, net return, and nitrogen cost
-
-        Parameters:
-            ci_type (``str``, optional): Indicates which confidence interval
-                type should be plotted. Options are 'wald', to plot the Wald
-                CIs; 'profile-likelihood', to plot the profile-likelihood
-                CIs; or 'bootstrap', to plot the bootstrap CIs (default:
-                'profile-likelihood').
-            ci_level (``float``, optional): The confidence interval level to be
-                plotted, and must be one of the values in EONR.ci_list. If
-                ``None``, uses the
-                ``EONR.ci_level`` (default: None).
-            run_n (``int``, optional): NOT IMPLEMENTED. The run number to plot,
-                as indicated in EONR.df_results; if None, uses the most recent,
-                or maximum, run_n in EONR.df_results (default: None).
-            x_min (``int``, optional): The minimum x-bounds of the plot
-                (default: None)
-            x_max (``int``, optional): The maximum x-bounds of the plot
-                (default: None)
-            y_min (``int``, optional): The minimum y-bounds of the plot
-                (default: None)
-            y_max (``int``, optional): The maximum y-bounds of the plot
-                (default: None)
-            show_model (str): Whether to display the type of fitted model in
-                the helper legend (default: True).
-            style (``str``, optional): The style of the plolt; can be any of
-                the options supported by ``matplotlib``
-
-        Note:
-            ``x_min``, ``x_max``, ``y_min``, and ``y_max`` are set by
-            Matplotlib if left as ``None``.
-
-        .. _matplotlib:
-            https://tonysyu.github.io/raw_content/matplotlib-style-gallery/gallery.html
-
-        '''
-        if self.plotting_tools is None:
-            self.plotting_tools = Plotting_tools(self)
-        else:
-            self.plotting_tools.update_eonr(self)
-        self.plotting_tools.plot_eonr(ci_type=ci_type, ci_level=ci_level,
-                                      run_n=run_n, x_min=x_min, x_max=x_max,
-                                      y_min=y_min, y_max=y_max, style=style)
-        self.fig_eonr = self.plotting_tools.fig_eonr
-
-    def plot_modify_size(self, fig=None, plotsize_x=7, plotsize_y=4,
-                         labelsize=11):
-        '''
-        Modifies the size of the last plot generated
-
-        Parameters:
-            fig (``Matplotlib Figure``, optional): Matplotlib figure to modify
-                (default: None)
-            plotsize_x (``float``, optional): Sets x size of plot in inches
-                (default: 7)
-            plotsize_y (``float``, optional): Sets y size of plot in inches
-                (default: 4)
-            labelsize (``float``, optional): Sets tick and label
-                (defaulat: 11)
-        '''
-        self.plotting_tools.modify_size(fig=fig, plotsize_x=plotsize_x,
-                                        plotsize_y=plotsize_y,
-                                        labelsize=labelsize)
-
-    def plot_modify_title(self, title_text, g=None, size_font=12):
-        '''
-        Allows user to replace the title text
-
-        Parameters:
-            title_text (``str``): New title text
-            g (``matplotlib.figure``): Matplotlib figure object to modify
-                (default: None)
-            size_font (``float``): Font size to use (default: 12)
-        '''
-        self.plotting_tools.modify_title(title_text, g=g, size_font=size_font)
-
-    def plot_save(self, fname=None, base_dir=None, fig=None, dpi=300):
-        '''Saves a generated matplotlib figure to file
-
-        Parameters:
-            fname (``str``, optional): Filename to save plot to (default: None)
-            base_dir (``str``, optional): Base file directory when saving
-                results (default: None)
-            fig (eonr.fig, optional): EONR figure object to save (default:
-                None)
-            dpi (``int``, optional): Resolution to save the figure to in dots
-                per inch (default: 300)
-
-        '''
-        self.plotting_tools.plot_save(fname=fname, base_dir=base_dir, fig=fig,
-                                      dpi=dpi)
-
     def plot_delta_tstat(self, level_list=None, style='ggplot'):
         '''Plots the test statistic as a function nitrogen rate
 
@@ -2275,6 +2291,56 @@ class EONR(object):
                 subset of items in EONR.ci_list (default: None).
             style (``str``, optional): The style of the plolt; can be any of
                 the options supported by ``matplotlib``
+
+        Example:
+            Load and initialize ``eonr``, then load the sample data
+
+            >>> from eonr import EONR
+            >>> import os
+            >>> import pandas as pd
+            >>> base_dir = r'F:\\nigo0024\Documents\GitHub\eonr\eonr'
+            >>> df_data = pd.read_csv(os.path.join(base_dir, 'data', 'minnesota_2012.csv'))
+
+            Set column names, units, and economic conditions
+
+            >>> col_n_app = 'rate_n_applied_kgha'
+            >>> col_yld = 'yld_grain_dry_kgha'
+            >>> unit_currency = '$'
+            >>> unit_fert = 'kg'
+            >>> unit_grain = 'kg'
+            >>> unit_area = 'ha'
+            >>> cost_n_fert = 0.88  # in USD per kg nitrogen
+            >>> price_grain = 0.157  # in USD per kg grain
+
+            Initialize ``EONR``
+
+            >>> my_eonr = EONR(cost_n_fert=cost_n_fert, price_grain=price_grain,
+                               col_n_app=col_n_app, col_yld=col_yld,
+                               unit_currency=unit_currency, unit_grain=unit_grain,
+                               unit_fert=unit_fert, unit_area=unit_area,
+                               model=None, base_dir=base_dir)
+
+            Calculate the economic optimum nitrogen rate using
+            ``EONR.calculate_eonr``, being sure to set ``delta_stat`` to
+            ``True``
+
+            >>> my_eonr.calculate_eonr(df_data, delta_tstat=True)
+            Computing EONR for Minnesota 2012 Pre
+            Cost of N fertilizer: $0.88 per kg
+            Price grain: $0.16 per kg
+            Fixed costs: $0.00 per ha
+            Checking quadratic and quadric-plateau models for best fit..
+            Quadratic model r^2: 0.72
+            Quadratic-plateau model r^2: 0.73
+            Using the quadratic-plateau model..
+            Economic optimum N rate (EONR): 162.3 kg per ha [130.5, 207.8] (90.0% confidence)
+            Maximum return to N (MRTN): $767.93 per ha
+
+            Plot the Delta t-stat plot using ``EONR.plot_delta_tstat``
+
+            >>> my_eonr.plot_delta_tstat()
+
+            .. image:: ../img/plot_delta_tstat.png
         '''
         if self.plotting_tools is None:
             self.plotting_tools = Plotting_tools(self)
@@ -2302,6 +2368,16 @@ class EONR(object):
                 value from EONR.ci_list (default: 0.90).
             style (``str``, optional): The style of the plolt; can be any of
                 the options supported by ``matplotlib``
+
+        Example:
+            Please complete the `EONR.calculate_eonr`_ example first because
+            this example builds on the results of the ``my_eonr`` object.
+
+            >>> my_eonr.plot_derivative()
+
+            .. image:: ../img/plot_derivative.png
+
+        .. _EONR.calculate_eonr: eonr.EONR.html#eonr.EONR.calculate_eonr
         '''
         if self.plotting_tools is None:
             self.plotting_tools = Plotting_tools(self)
@@ -2310,6 +2386,151 @@ class EONR(object):
         self.plotting_tools.plot_derivative(ci_type=ci_type, ci_level=ci_level,
                                             style=style)
         self.fig_derivative = self.plotting_tools.fig_derivative
+
+    def plot_eonr(self, ci_type='profile-likelihood', ci_level=None,
+                  run_n=None, x_min=None, x_max=None, y_min=None, y_max=None,
+                  show_model=True, style='ggplot'):
+        '''
+        Plots EONR, MRTN, GRTN, net return, and nitrogen cost.
+
+        If left as ``None``, ``x_min``, ``x_max``, ``y_min``, and ``y_max``
+        are set by ``Matplotlib``.
+
+        Parameters:
+            ci_type (``str``, optional): Indicates which confidence interval
+                type should be plotted. Options are 'wald', to plot the Wald
+                CIs; 'profile-likelihood', to plot the profile-likelihood
+                CIs; or 'bootstrap', to plot the bootstrap CIs (default:
+                'profile-likelihood').
+            ci_level (``float``, optional): The confidence interval level to be
+                plotted, and must be one of the values in EONR.ci_list. If
+                ``None``, uses the
+                ``EONR.ci_level`` (default: None).
+            run_n (``int``, optional): NOT IMPLEMENTED. The run number to plot,
+                as indicated in EONR.df_results; if None, uses the most recent,
+                or maximum, run_n in EONR.df_results (default: None).
+            x_min (``int``, optional): The minimum x-bounds of the plot
+                (default: None)
+            x_max (``int``, optional): The maximum x-bounds of the plot
+                (default: None)
+            y_min (``int``, optional): The minimum y-bounds of the plot
+                (default: None)
+            y_max (``int``, optional): The maximum y-bounds of the plot
+                (default: None)
+            show_model (str): Whether to display the type of fitted model in
+                the helper legend (default: True).
+            style (``str``, optional): The style of the plot; can be any of
+                the options supported by `matplotlib`_ (default: 'ggplot').
+
+        Example:
+            Please complete the `EONR.calculate_eonr`_ example first because
+            this example builds on the results of the ``my_eonr`` object.
+
+            >>> my_eonr.plot_eonr(x_min=-5, x_max=300, y_min=-100, y_max=1400)
+
+            .. image:: ../img/plot_eonr.png
+
+        .. _matplotlib: https://tonysyu.github.io/raw_content/matplotlib-style-gallery/gallery.html
+        .. _EONR.calculate_eonr: eonr.EONR.html#eonr.EONR.calculate_eonr
+        '''
+        if self.plotting_tools is None:
+            self.plotting_tools = Plotting_tools(self)
+        else:
+            self.plotting_tools.update_eonr(self)
+        self.plotting_tools.plot_eonr(ci_type=ci_type, ci_level=ci_level,
+                                      run_n=run_n, x_min=x_min, x_max=x_max,
+                                      y_min=y_min, y_max=y_max, style=style)
+        self.fig_eonr = self.plotting_tools.fig_eonr
+
+    def plot_modify_size(self, fig=None, plotsize_x=7, plotsize_y=4,
+                         labelsize=11):
+        '''
+        Modifies the size of the last plot generated
+
+        Parameters:
+            fig (``Matplotlib Figure``, optional): Matplotlib figure to modify
+                (default: None)
+            plotsize_x (``float``, optional): Sets x size of plot in inches
+                (default: 7)
+            plotsize_y (``float``, optional): Sets y size of plot in inches
+                (default: 4)
+            labelsize (``float``, optional): Sets tick and label
+                (defaulat: 11)
+
+        Example:
+            Please complete the `EONR.calculate_eonr`_ and
+            `EONR.plot_eonr`_ examples first because this example builds on
+            the results of the ``my_eonr.fig_eonr.fig`` object.
+
+            >>> my_eonr.plot_modify_size(fig=my_eonr.fig_eonr.fig, plotsize_x=5, plotsize_y=3, labelsize=9)
+
+            .. image:: ../img/plot_modify_size.png
+
+        .. _EONR.calculate_eonr: eonr.EONR.html#eonr.EONR.calculate_eonr
+        .. _EONR.plot_eonr: eonr.EONR.html#eonr.EONR.plot_eonr
+        '''
+        self.plotting_tools.modify_size(fig=fig, plotsize_x=plotsize_x,
+                                        plotsize_y=plotsize_y,
+                                        labelsize=labelsize)
+
+    def plot_modify_title(self, title_text, g=None, size_font=12):
+        '''
+        Allows user to replace the title text
+
+        Parameters:
+            title_text (``str``): New title text
+            g (``matplotlib.figure``): Matplotlib figure object to modify
+                (default: None)
+            size_font (``float``): Font size to use (default: 12)
+
+        Example:
+            Please complete the `EONR.calculate_eonr`_ and
+            `EONR.plot_eonr`_ examples first because this example builds on
+            the results of the ``my_eonr.fig_eonr.fig`` object.
+
+            >>> my_eonr.plot_modify_title('Preplant N fertilizer - Stewart, MN 2012', g=my_eonr.fig_eonr.fig, size_font=15)
+
+            .. image:: ../img/plot_modify_title.png
+
+        .. _EONR.calculate_eonr: eonr.EONR.html#eonr.EONR.calculate_eonr
+        .. _EONR.plot_eonr: eonr.EONR.html#eonr.EONR.plot_eonr
+        '''
+        self.plotting_tools.modify_title(title_text, g=g, size_font=size_font)
+
+    def plot_save(self, fname=None, base_dir=None, fig=None, dpi=300):
+        '''Saves a generated matplotlib figure to file
+
+        Parameters:
+            fname (``str``, optional): Filename to save plot to (default: None)
+            base_dir (``str``, optional): Base file directory when saving
+                results (default: None)
+            fig (eonr.fig, optional): EONR figure object to save (default:
+                None)
+            dpi (``int``, optional): Resolution to save the figure to in dots
+                per inch (default: 300)
+
+        Example:
+            Please complete the `EONR.calculate_eonr`_ and
+            `EONR.plot_eonr`_ examples first because this example builds on
+            the results of the ``my_eonr.fig_eonr.fig`` object.
+
+            Set output filename
+
+            >>> fname = r'F:\\nigo0024\Downloads\eonr_fig.png'
+
+            Save the most recent figure
+
+            >>> my_eonr.plot_save(fname)
+            ``fig`` is None, so saving the current (most recent) figure.
+
+            >>> os.path.isfile(fname)
+            True
+
+        .. _EONR.calculate_eonr: eonr.EONR.html#eonr.EONR.calculate_eonr
+        .. _EONR.plot_eonr: eonr.EONR.html#eonr.EONR.plot_eonr
+        '''
+        self.plotting_tools.plot_save(fname=fname, base_dir=base_dir, fig=fig,
+                                      dpi=dpi)
 
     def plot_tau(self, y_axis='t_stat', emphasis='profile-likelihood',
                  run_n=None, style='ggplot'):
@@ -2331,6 +2552,16 @@ class EONR(object):
                 run_n in ``EONR.df_ci`` (default: None).
             style (``str``, optional): The style of the plolt; can be any of
                 the options supported by ``matplotlib``
+
+        Example:
+            Please complete the `EONR.calculate_eonr`_ example first because
+            this example builds on the results of the ``my_eonr`` object.
+
+            >>> my_eonr.plot_tau()
+
+            .. image:: ../img/plot_tau.png
+
+        .. _EONR.calculate_eonr: eonr.EONR.html#eonr.EONR.calculate_eonr
         '''
         if self.plotting_tools is None:
             self.plotting_tools = Plotting_tools(self)
@@ -2341,15 +2572,28 @@ class EONR(object):
         self.fig_tau = self.plotting_tools.fig_tau
 
     def print_results(self):
-        '''Prints the results of the optimum nitrogen rate computation
+        '''
+        Prints the results of the optimum nitrogen rate computation
 
+        Example:
+            Please complete the `EONR.calculate_eonr`_ example first because
+            this example builds on the results of the ``my_eonr`` object.
+
+            >>> my_eonr.print_results()
+            Economic optimum N rate (EONR): 162.3 kg per ha [130.5, 207.8] (90.0% confidence)
+            Maximum return to N (MRTN): $767.93 per ha
         '''
         self._print_results()
 
     def set_column_names(self, col_n_app=None, col_yld=None, col_crop_nup=None,
                          col_n_avail=None, col_year=None,
                          col_location=None, col_time_n=None):
-        '''Sets the column name(s) for ``EONR.df_data``
+        '''
+        Sets the column name(s) for ``EONR.df_data``
+
+        If these descriptions are used as metadata in the input dataset, they
+        are accessed for plotting purposes. These parameters do not affect the
+        calculation of the EONR or its confidence intervals in any way.
 
         Parameters:
             col_n_app (``str``, optional): Column name pointing to the rate of
@@ -2369,10 +2613,22 @@ class EONR(object):
             col_time_n (``str``, optional): Column name pointing to nitrogen
                 application timing (default: None).
 
-        Note:
-            Year, location, or nitrogen timing (used for titles and axes labels
-            for plotting).
+        Example:
+            Load and initialize ``eonr``
 
+            >>> from eonr import EONR
+            >>> import os
+            >>> import pandas as pd
+            >>> base_dir = r'F:\\nigo0024\Documents\GitHub\eonr\eonr'
+            >>> my_eonr = EONR(model=None, base_dir=base_dir)
+
+            Set the column names using ``EONR.set_column_names``
+
+            >>> my_eonr.set_column_names(col_n_app='rate_n_applied_kgha', col_yld='yld_grain_dry_kgha')
+            >>> print(my_eonr.col_n_app)
+            >>> print(my_eonr.col_yld)
+            rate_n_applied_kgha
+            yld_grain_dry_kgha
         '''
         if col_n_app is not None:
             self.col_n_app = str(col_n_app)
@@ -2388,10 +2644,61 @@ class EONR(object):
             self.col_location = str(col_location)
         if col_time_n is not None:
             self.col_time_n = str(col_time_n)
-        self._find_trial_details()  # Use new col_name(s) to update details
+        if self.df_data is not None:
+            self._find_trial_details()  # Use new col_name(s) to update details
+
+    def set_units(self, unit_currency=None, unit_fert=None, unit_grain=None,
+                  unit_area=None):
+        '''
+        Sets the units data in ``EONR.df_data`` and for reporting
+
+        Parameters:
+            unit_currency (``str``, optional): Currency unit, e.g., "$"
+                (default: None).
+            unit_fert (``str``, optional): Fertilizer unit, e.g., "lbs"
+                (default: None).
+            unit_grain (``str``, optional): Grain unit, e.g., "bu" (default:
+                None).
+            unit_area (``str``, optional): Area unit, e.g., "ac" (default:
+                None).
+
+        Example:
+            Load and initialize ``eonr``
+
+            >>> from eonr import EONR
+            >>> import os
+            >>> import pandas as pd
+            >>> base_dir = r'F:\\nigo0024\Documents\GitHub\eonr\eonr'
+            >>> my_eonr = EONR(model=None, base_dir=base_dir)
+
+            Set the units using ``EONR.set_units``
+
+            >>> my_eonr.set_units(unit_currency='USD', unit_fert='kg', unit_grain='kg', unit_area='ha')
+            >>> print(my_eonr.unit_currency)
+            >>> print(my_eonr.unit_fert)
+            >>> print(my_eonr.unit_grain)
+            >>> print(my_eonr.unit_area)
+            USD
+            kg
+            kg
+            ha
+        '''
+        if unit_currency is not None:
+            self.unit_currency = str(unit_currency)
+        if unit_fert is not None:
+            self.unit_fert = str(unit_fert)
+        if unit_grain is not None:
+            self.unit_grain = str(unit_grain)
+        if unit_area is not None:
+            self.unit_area = str(unit_area)
 
     def set_trial_details(self, year=None, location=None, n_timing=None):
-        '''Sets the year, location, or nitrogen timing
+        '''
+        Sets the year, location, or nitrogen timing
+
+        If these descriptions are used as metadata in the input dataset, they
+        are accessed for plotting purposes. These parameters do not affect the
+        calculation of the EONR or its confidence intervals in any way.
 
         Parameters:
             year (``str`` or ``int``, optional): Year of experimental trial
@@ -2401,10 +2708,24 @@ class EONR(object):
             n_timing (``str`` or ``int``, optional): Nitrogen timing of
                 experimental trial (default: None)
 
-        Note:
-            Year, location, or nitrogen timing (used for titles and axes labels
-            for plotting).
+        Example:
+            Load and initialize ``eonr``
 
+            >>> from eonr import EONR
+            >>> import os
+            >>> import pandas as pd
+            >>> base_dir = r'F:\\nigo0024\Documents\GitHub\eonr\eonr'
+            >>> my_eonr = EONR(model=None, base_dir=base_dir)
+
+            Set the trial details using ``EONR.set_trial_details``
+
+            >>> my_eonr.set_trial_details(year=2019, location='St. Paul, MN', n_timing='At planting')
+            >>> print(my_eonr.year)
+            >>> print(my_eonr.location)
+            >>> print(my_eonr.n_timing)
+            2019
+            St. Paul, MN
+            At planting
         '''
         if year is not None:
             self.year = int(year)
@@ -2415,7 +2736,16 @@ class EONR(object):
 
     def update_econ(self, cost_n_fert=None, cost_n_social=None,
                     costs_fixed=None, price_grain=None):
-        '''Sets or resets the nitrogen costs or grain price
+        '''
+        Sets or resets the nitrogen fertilizer cost, social cost of nitrogen,
+        fixed costs, and/or grain price.
+
+        The price ratio is recomputed based on the passed information, then
+        the the lowest level folder in the base directory is renamed/adjusted
+        (``EONR.base_dir``) based on to the price ratio. The folder name is
+        set according to the economic scenario (useful when running ``EONR``
+        for many different economic scenarios then plotting and saving results
+        for each scenario).
 
         Parameters:
             cost_n_fert (``float``, optional): Cost of nitrogen fertilizer
@@ -2426,25 +2756,32 @@ class EONR(object):
             (default: None)
             price_grain (``float``, optional): Price of grain (default: None).
 
-        Note:
-            ``update_econ()`` recomputes the price ratio based on the passed
-            information, then adjusts/renames the lowest level folder in the
-            base directory, ``EONR.base_dir``, based on to the ratio. The
-            folder name is set according to the economic scenario (useful when
-            running ``EONR`` for many different economic scenarios then
-            plotting and saving results for each scenario). See examples below.
+        Example:
+            Load and initialize ``eonr``
 
-            Example 1 (*how folder name is set when social cost of nitrogen is
-            zero*): folder name will be set to **"trad_0010"** if
-            ``cost_n_social == 0`` and ``price_ratio == 0.10``, coresponding to
-            *"trad"* and *"0010"* in the folder name, respectively.
+            >>> from eonr import EONR
+            >>> import os
+            >>> import pandas as pd
+            >>> base_dir = r'F:\\nigo0024\Documents\GitHub\eonr\eonr'
+            >>> my_eonr = EONR(model=None, base_dir=base_dir)
 
-            Example 2 (*how folder name is set when social cost of nitrogen is
-            greater than zero*): folder name will be set to
-            **"social_154_1100"** if ``cost_n_social > 0``,
-            ``price_ratio = 15.4``, and ``cost_n_social = 1.10``, corresponding
-            to *"social"*, *"154"*, and *"1100"* in the folder name,
-            respectively.
+            Set/update the cost of fertilizer and price of grain using
+            ``EONR.update_econ``
+
+            >>> my_eonr.update_econ(cost_n_fert=0.88, price_grain=0.157)
+            >>> print(my_eonr.price_ratio)
+            >>> print(my_eonr.base_dir)
+            5.605095541
+            F:\\nigo0024\Documents\GitHub\eonr\eonr\trad_5605
+
+            Set/update the social cost of nitrogen, again using
+            ``EONR.update_econ``
+
+            >>> my_eonr.update_econ(cost_n_social=1.1)
+            >>> print(my_eonr.price_ratio)
+            >>> print(my_eonr.base_dir)
+            12.61146496
+            F:\\nigo0024\Documents\GitHub\eonr\eonr\social_12611_1100
 
         '''
         if cost_n_fert is not None:

@@ -36,7 +36,11 @@
     "\n",
     "\tpip install .\n",
     "\n",
-    "The recommended folder directory for the `EONR` package is in the site-packages folder in your Python Path (alongside all other Python packages)."
+    "The recommended folder directory for the `EONR` package is in the site-packages folder in your Python Path (alongside all other Python packages).\n",
+    "\n",
+    "Installation via [conda](https://anaconda.org/) (coming soon)...:\n",
+    "\n",
+    "    conda install -c conda-forge eonr\n"
    ]
   },
   {
@@ -47,15 +51,11 @@
     "\n",
     "`EONR` requires the following packages:\n",
     "\n",
-    "* [\\*Matplotlib](http://matplotlib.org/ \"Matplotlib\")\n",
-    "* [\\*NumPy](http://www.numpy.org/ \"Numpy\")\n",
-    "* [\\*Pandas](http://pandas.pydata.org/ \"Pandas\")\n",
-    "* [Scikits-Bootstrap](https://pypi.org/project/scikits.bootstrap/ \"Scikits-Bootstrap\")\n",
-    "* [\\*Scipy](http://www.scipy.org/ \"Scipy\")\n",
-    "* [\\*Seaborn](https://seaborn.pydata.org/ \"Seaborn\")\n",
+    "* [Scikits.bootstrap](https://pypi.org/project/scikits.bootstrap/ \"Scikits-Bootstrap\") (Recent versions are on [PyPI only](https://pypi.org/project/scikits.bootstrap/))\n",
+    "* [Seaborn](https://seaborn.pydata.org/ \"Seaborn\")\n",
     "* [Uncertainties](https://pythonhosted.org/uncertainties/ \"Uncertainties\")\n",
     "\n",
-    "\\*The denoted dependencies should come pre-installed on [Anaconda](https://www.anaconda.com/). The others ([Scikits-Bootstrap](https://pypi.org/project/scikits.bootstrap/) and [Uncertainties](https://pythonhosted.org/uncertainties/)) should install during a `pip install` or `conda install`."
+    "[Seaborn](https://seaborn.pydata.org/ \"Seaborn\") and [Uncertainties](https://pythonhosted.org/uncertainties/) are available on [Anaconda Cloud](https://anaconda.org/) (can be installed via  `conda install`), but [Scikits.bootstrap](https://pypi.org/project/scikits.bootstrap/) is only available on the [PyPI](https://pypi.org/) and must be installed via `pip install`."
    ]
   }
  ],
@@ -75,7 +75,7 @@
    "name": "python",
    "nbconvert_exporter": "python",
    "pygments_lexer": "ipython3",
-   "version": "3.6.7"
+   "version": "3.8.1"
   }
  },
  "nbformat": 4,

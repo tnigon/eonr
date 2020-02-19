@@ -1,3 +1,13 @@
+Release: 0.2.1
+***************
+**Date**: 2020 February 19
+
+**Description**: Added tests and API examples
+
+* There is now a "tests" folder included in the installation. This can be executed by running ``python path-to-directory\tests\test.py``
+* Examples were added for each ``EONR`` class method
+* Added ``set_column_names``, ``set_units``, and ``set_trial_details`` methods, so all this information is no longer required to be passed upon initilization of ``EONR`` or to the ``calculate_eonr`` method.
+
 Release: 0.2.0
 ***************
 **Date**: 2019 August 22

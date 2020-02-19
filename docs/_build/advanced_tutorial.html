@@ -3,20 +3,18 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="python">
   <head>
     <meta charset="utf-8" />
-    <title>3. Advanced Tutorial &#8212; eonr 0.2.0 documentation</title>
+    <title>3. Advanced Tutorial &#8212; eonr 0.2.1 documentation</title>
     <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/graphviz.css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="_static/language_data.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script async="async" type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"extensions": ["tex2jax.js"], "jax": ["input/TeX", "output/HTML-CSS"], "tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
-    <script type="text/javascript" src="_static/js/jquery-1.11.0.min.js"></script>
-    <script type="text/javascript" src="_static/js/jquery-fix.js"></script>
-    <script type="text/javascript" src="_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="4. Background" href="background.html" />
@@ -25,6 +23,10 @@
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
 <meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="_static/bootstrap-sphinx.js "></script>
 
   </head><body>
 
@@ -39,13 +41,15 @@
         </button>
         <a class="navbar-brand" href="index.html">
           EONR</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.2.0</b></span>
+        <span class="navbar-text navbar-version pull-left"><b></b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
           <ul class="nav navbar-nav">
             
                 <li><a href="https://github.com/tnigon/eonr">Github</a></li>
+                <li><a href="https://pypi.org/project/hs-process/">PyPI</a></li>
+                <li><a href="https://www.sciencedirect.com/science/article/pii/S0168169919309354">Publication</a></li>
             
             
               <li class="dropdown globaltoc-container">
@@ -62,7 +66,7 @@
 <li class="toctree-l1"><a class="reference internal" href="tutorial.html">2. Tutorial</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">3. Advanced Tutorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="background.html">4. Background</a></li>
-<li class="toctree-l1"><a class="reference internal" href="my_eonr.html">5. API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="eonr_api.html">5. API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="license.html">6. License</a></li>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">7. Change Log</a></li>
 </ul>
@@ -139,23 +143,23 @@
 </form>
         </div>
       </div>
-    <div class="col-md-9 content">
+    <div class="body col-md-9 content" role="main">
       
   
 <style>
 /* CSS for nbsphinx extension */
 
 /* remove conflicting styling from Sphinx themes */
-div.nbinput,
-div.nbinput div.prompt,
-div.nbinput div.input_area,
-div.nbinput div[class*=highlight],
-div.nbinput div[class*=highlight] pre,
-div.nboutput,
-div.nbinput div.prompt,
-div.nbinput div.output_area,
-div.nboutput div[class*=highlight],
-div.nboutput div[class*=highlight] pre {
+div.nbinput.container,
+div.nbinput.container div.prompt,
+div.nbinput.container div.input_area,
+div.nbinput.container div[class*=highlight],
+div.nbinput.container div[class*=highlight] pre,
+div.nboutput.container,
+div.nboutput.container div.prompt,
+div.nboutput.container div.output_area,
+div.nboutput.container div[class*=highlight],
+div.nboutput.container div[class*=highlight] pre {
     background: none;
     border: none;
     padding: 0 0;
@@ -164,13 +168,13 @@ div.nboutput div[class*=highlight] pre {
 }
 
 /* avoid gaps between output lines */
-div.nboutput div[class*=highlight] pre {
+div.nboutput.container div[class*=highlight] pre {
     line-height: normal;
 }
 
 /* input/output containers */
-div.nbinput,
-div.nboutput {
+div.nbinput.container,
+div.nboutput.container {
     display: -webkit-flex;
     display: flex;
     align-items: flex-start;
@@ -178,92 +182,91 @@ div.nboutput {
     width: 100%;
 }
 @media (max-width: 540px) {
-    div.nbinput,
-    div.nboutput {
+    div.nbinput.container,
+    div.nboutput.container {
         flex-direction: column;
     }
 }
 
 /* input container */
-div.nbinput {
+div.nbinput.container {
     padding-top: 5px;
 }
 
 /* last container */
-div.nblast {
+div.nblast.container {
     padding-bottom: 5px;
 }
 
 /* input prompt */
-div.nbinput div.prompt pre {
+div.nbinput.container div.prompt pre {
     color: #307FC1;
 }
 
 /* output prompt */
-div.nboutput div.prompt pre {
+div.nboutput.container div.prompt pre {
     color: #BF5B3D;
 }
 
 /* all prompts */
-div.nbinput div.prompt,
-div.nboutput div.prompt {
-    min-width: 7ex;
-    padding-top: 0.4em;
-    padding-right: 0.4em;
+div.nbinput.container div.prompt,
+div.nboutput.container div.prompt {
+    min-width: 5.5ex;
+    padding-top: 0.3rem;
+    padding-right: 0.3rem;
     text-align: right;
     flex: 0;
 }
 @media (max-width: 540px) {
-    div.nbinput div.prompt,
-    div.nboutput div.prompt {
+    div.nbinput.container div.prompt,
+    div.nboutput.container div.prompt {
         text-align: left;
         padding: 0.4em;
     }
-    div.nboutput div.prompt.empty {
+    div.nboutput.container div.prompt.empty {
         padding: 0;
     }
 }
 
 /* disable scrollbars on prompts */
-div.nbinput div.prompt pre,
-div.nboutput div.prompt pre {
+div.nbinput.container div.prompt pre,
+div.nboutput.container div.prompt pre {
     overflow: hidden;
 }
 
 /* input/output area */
-div.nbinput div.input_area,
-div.nboutput div.output_area {
-    padding: 0.4em;
+div.nbinput.container div.input_area,
+div.nboutput.container div.output_area {
     -webkit-flex: 1;
     flex: 1;
     overflow: auto;
 }
 @media (max-width: 540px) {
-    div.nbinput div.input_area,
-    div.nboutput div.output_area {
+    div.nbinput.container div.input_area,
+    div.nboutput.container div.output_area {
         width: 100%;
     }
 }
 
 /* input area */
-div.nbinput div.input_area {
+div.nbinput.container div.input_area {
     border: 1px solid #e0e0e0;
     border-radius: 2px;
     background: #f5f5f5;
 }
 
 /* override MathJax center alignment in output cells */
-div.nboutput div[class*=MathJax] {
+div.nboutput.container div[class*=MathJax] {
     text-align: left !important;
 }
 
 /* override sphinx.ext.imgmath center alignment in output cells */
-div.nboutput div.math p {
+div.nboutput.container div.math p {
     text-align: left;
 }
 
 /* standard error */
-div.nboutput div.output_area.stderr {
+div.nboutput.container div.output_area.stderr {
     background: #fdd;
 }
 
@@ -307,6 +310,27 @@ div.nboutput div.output_area.stderr {
 .ansi-bold { font-weight: bold; }
 .ansi-underline { text-decoration: underline; }
 
+
+div.nbinput.container div.input_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight].math,
+div.nboutput.container div.output_area.rendered_html,
+div.nboutput.container div.output_area > div.output_javascript,
+div.nboutput.container div.output_area:not(.rendered_html) > img{
+    padding: 0.3rem;
+}
+
+/* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
+div.nbinput.container div.input_area > div[class^='highlight'],
+div.nboutput.container div.output_area > div[class^='highlight']{
+    overflow-y: hidden;
+}
+
+/* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
+.prompt a.copybtn {
+    display: none;
+}
+
 /* Some additional styling taken form the Jupyter notebook CSS */
 div.rendered_html table {
   border: none;
@@ -342,20 +366,20 @@ div.rendered_html tbody tr:hover {
 }
 </style>
 <div class="section" id="Advanced-Tutorial">
-<h1>3. Advanced Tutorial<a class="headerlink" href="#Advanced-Tutorial" title="Permalink to this headline">¶</a></h1>
+<h1><span class="section-number">3. </span>Advanced Tutorial<a class="headerlink" href="#Advanced-Tutorial" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="Follow-along">
-<h2>3.1. Follow along<a class="headerlink" href="#Follow-along" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">3.1. </span>Follow along<a class="headerlink" href="#Follow-along" title="Permalink to this headline">¶</a></h2>
 <p>Code for all the examples is located in your <code class="docutils literal notranslate"><span class="pre">PYTHONPATH/Lib/site-packages/eonr/examples</span></code> folder. With that said, you should be able to make use of <code class="docutils literal notranslate"><span class="pre">EONR</span></code> by following and executing the commands in this tutorial using either the sample data provided or substituting in your own data.</p>
 <p><em>You will find the following code included in the</em> <code class="docutils literal notranslate"><span class="pre">advanced_tutorial.py</span></code> <em>or</em> <code class="docutils literal notranslate"><span class="pre">advanced_tutorial.ipynb</span></code> <em>(for</em> <a class="reference external" href="https://jupyter.org/">Jupyter notebooks</a><em>) files in your</em> <code class="docutils literal notranslate"><span class="pre">PYTHONPATH/Lib/site-packages/eonr/examples</span></code> <em>folder - feel free to load that into your Python IDE to follow along.</em></p>
 </div>
 <hr class="docutils" />
 <div class="section" id="Calculate-EONR-for-several-economic-scenarios">
-<h2>3.2. Calculate <code class="docutils literal notranslate"><span class="pre">EONR</span></code> for several economic scenarios<a class="headerlink" href="#Calculate-EONR-for-several-economic-scenarios" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">3.2. </span>Calculate <code class="docutils literal notranslate"><span class="pre">EONR</span></code> for several economic scenarios<a class="headerlink" href="#Calculate-EONR-for-several-economic-scenarios" title="Permalink to this headline">¶</a></h2>
 <p>In this tutorial, we will run <code class="docutils literal notranslate"><span class="pre">EONR.calculate_eonr()</span></code> in a loop, adjusting the economic scenario prior to each run.</p>
 </div>
 <hr class="docutils" />
 <div class="section" id="Load-modules">
-<h2>3.3. Load modules<a class="headerlink" href="#Load-modules" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">3.3. </span>Load modules<a class="headerlink" href="#Load-modules" title="Permalink to this headline">¶</a></h2>
 <p>Load <code class="docutils literal notranslate"><span class="pre">pandas</span></code> and <code class="docutils literal notranslate"><span class="pre">EONR</span></code>:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
@@ -380,7 +404,7 @@ EONR version: 0.2.0
 </div>
 <hr class="docutils" />
 <div class="section" id="Load-the-data">
-<h2>3.4. Load the data<a class="headerlink" href="#Load-the-data" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">3.4. </span>Load the data<a class="headerlink" href="#Load-the-data" title="Permalink to this headline">¶</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">EONR</span></code> uses Pandas dataframes to access and manipulate the experimental data.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
@@ -851,7 +875,7 @@ EONR version: 0.2.0
 </div>
 <hr class="docutils" />
 <div class="section" id="Set-column-names-and-units">
-<h2>3.5. Set column names and units<a class="headerlink" href="#Set-column-names-and-units" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">3.5. </span>Set column names and units<a class="headerlink" href="#Set-column-names-and-units" title="Permalink to this headline">¶</a></h2>
 <p><em>The table containing the experimental data</em> <strong>must</strong> <em>have a minimum of two columns:</em></p>
 <ul class="simple">
 <li><p>Nitrogen fertilizer rate</p></li>
@@ -893,7 +917,7 @@ EONR version: 0.2.0
 </div>
 <hr class="docutils" />
 <div class="section" id="Turn-base_zero-off">
-<h2>3.6. Turn <code class="docutils literal notranslate"><span class="pre">base_zero</span></code> off<a class="headerlink" href="#Turn-base_zero-off" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">3.6. </span>Turn <code class="docutils literal notranslate"><span class="pre">base_zero</span></code> off<a class="headerlink" href="#Turn-base_zero-off" title="Permalink to this headline">¶</a></h2>
 <p>You might have noticed the <code class="docutils literal notranslate"><span class="pre">base_zero</span></code> option for the <code class="docutils literal notranslate"><span class="pre">EONR</span></code> class in the <a class="reference external" href="my_eonr.html#module-eonr.eonr">API</a>. <code class="docutils literal notranslate"><span class="pre">base_zero</span></code> is a <code class="docutils literal notranslate"><span class="pre">True</span></code>/<code class="docutils literal notranslate"><span class="pre">False</span></code> flag that determines if gross return to nitrogen should be expressed as an absolute values. We will see a bit later that upon executing <code class="docutils literal notranslate"><span class="pre">EONR.calculate_eonr()</span></code>, grain yield from the input dataset is used to create a new column for gross return to nitrogen <em>(“grtn”)</em> by multiplying the grain yield column by the price of grain
 (<code class="docutils literal notranslate"><span class="pre">price_grain</span></code> variable).</p>
 <p>If <code class="docutils literal notranslate"><span class="pre">base_zero</span></code> is <code class="docutils literal notranslate"><span class="pre">True</span></code> <em>(default)</em>, the observed yield return data are standardized so that the best-fit quadratic-plateau model passes through the y-axis at zero. This is done in two steps:</p>
@@ -914,7 +938,7 @@ EONR version: 0.2.0
 </div>
 <hr class="docutils" />
 <div class="section" id="Initialize-EONR">
-<h2>3.7. Initialize <code class="docutils literal notranslate"><span class="pre">EONR</span></code><a class="headerlink" href="#Initialize-EONR" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">3.7. </span>Initialize <code class="docutils literal notranslate"><span class="pre">EONR</span></code><a class="headerlink" href="#Initialize-EONR" title="Permalink to this headline">¶</a></h2>
 <p>Let’s set the base directory and initialize an instance of <code class="docutils literal notranslate"><span class="pre">EONR</span></code>, setting <code class="docutils literal notranslate"><span class="pre">cost_n_fert</span> <span class="pre">=</span> <span class="pre">0</span></code>, <code class="docutils literal notranslate"><span class="pre">costs_fixed</span> <span class="pre">=</span> <span class="pre">0</span></code>, and <code class="docutils literal notranslate"><span class="pre">price_grain</span> <span class="pre">=</span> <span class="pre">1.0</span></code> ($1.00 per kg) as the default values (we will adjust them later on in the tutorial):</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
@@ -943,7 +967,7 @@ EONR version: 0.2.0
 </div>
 <hr class="docutils" />
 <div class="section" id="Calculate-the-AONR">
-<h2>3.8. Calculate the <em>AONR</em><a class="headerlink" href="#Calculate-the-AONR" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">3.8. </span>Calculate the <em>AONR</em><a class="headerlink" href="#Calculate-the-AONR" title="Permalink to this headline">¶</a></h2>
 <p>You may be wondering why <code class="docutils literal notranslate"><span class="pre">cost_n_fert</span></code> was set to 0. Well, setting our nitrogen fertilizer cost to $0 essentially allows us to calculate the optimum nitrogen rate ignoring the cost of the fertilizer input. This is known as the <em>Agronomic Optimum Nitrogen Rate (AONR)</em>. The AONR provides insight into the maximum achievable grain yield. Notice <code class="docutils literal notranslate"><span class="pre">price_grain</span></code> was set to <code class="docutils literal notranslate"><span class="pre">1.0</span></code> - this effectively calculates the AONR so that the maximum return to nitrogen (MRTN), which will be expressed as $ per
 ha when ploting via <code class="docutils literal notranslate"><span class="pre">EONR.plot_eonr()</span></code>, is similar to units of kg per ha (the units we are using for grain yield).</p>
 <p>Let’s calculate the AONR and plot it (adjusting <code class="docutils literal notranslate"><span class="pre">y_max</span></code> so it is greater than our maximum grain yield):</p>
@@ -986,7 +1010,7 @@ Maximum return to N (MRTN): $13579.23 per ha
 </div>
 <hr class="docutils" />
 <div class="section" id="Bootstrap-confidence-intervals">
-<h2>3.9. Bootstrap confidence intervals<a class="headerlink" href="#Bootstrap-confidence-intervals" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">3.9. </span>Bootstrap confidence intervals<a class="headerlink" href="#Bootstrap-confidence-intervals" title="Permalink to this headline">¶</a></h2>
 <p>We will calculate the AONR again, but this time we will compute the <strong>bootstrap</strong> confidence intervals in addition to the <strong>profile-likelihood</strong> and <strong>Wald-type</strong> confidence intervals. To tell <code class="docutils literal notranslate"><span class="pre">EONR</span></code> to compute the <strong>bootstrap</strong> confidence intervals, simply set <code class="docutils literal notranslate"><span class="pre">bootstrap_ci</span></code> to <code class="docutils literal notranslate"><span class="pre">True</span></code> in the <code class="docutils literal notranslate"><span class="pre">EONR.calcualte_eonr()</span></code> function:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
@@ -1023,7 +1047,7 @@ Maximum return to N (MRTN): $13579.23 per ha
 </div>
 <hr class="docutils" />
 <div class="section" id="Set-fixed-costs">
-<h2>3.10. Set fixed costs<a class="headerlink" href="#Set-fixed-costs" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">3.10. </span>Set fixed costs<a class="headerlink" href="#Set-fixed-costs" title="Permalink to this headline">¶</a></h2>
 <p>Fixed costs (on a per area basis) can be considered by <code class="docutils literal notranslate"><span class="pre">EONR</span></code>. Simply set the fixed costs (using <code class="docutils literal notranslate"><span class="pre">EONR.update_econ()</span></code>) before calculating the EONR:</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
@@ -1038,7 +1062,7 @@ Maximum return to N (MRTN): $13579.23 per ha
 </div>
 <hr class="docutils" />
 <div class="section" id="Loop-through-several-economic-conditions">
-<h2>3.11. Loop through several economic conditions<a class="headerlink" href="#Loop-through-several-economic-conditions" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">3.11. </span>Loop through several economic conditions<a class="headerlink" href="#Loop-through-several-economic-conditions" title="Permalink to this headline">¶</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">EONR</span></code> computes the optimum nitrogen rate for any economic scenario that we define. The <code class="docutils literal notranslate"><span class="pre">EONR</span></code> class is designed so the economic conditions can be adjusted, calculating the optimum nitrogen rate after each adjustment. We just have to set up a simple loop to update the economic scenario (using <code class="docutils literal notranslate"><span class="pre">EONR.update_econ()</span></code>) and calculate the EONR (using <code class="docutils literal notranslate"><span class="pre">EONR.calculate_eonr()</span></code>).</p>
 <p>We will also generate plots and save them to our base directory right away:</p>
 <div class="nbinput docutils container">
@@ -1206,7 +1230,7 @@ Maximum return to N (MRTN): $701.67 per ha
 </div>
 <hr class="docutils" />
 <div class="section" id="View-results">
-<h2>3.12. View results<a class="headerlink" href="#View-results" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">3.12. </span>View results<a class="headerlink" href="#View-results" title="Permalink to this headline">¶</a></h2>
 <p>All eight runs can be viewed in the dataframe:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
@@ -1523,7 +1547,7 @@ Maximum return to N (MRTN): $701.67 per ha
 </div>
 <hr class="docutils" />
 <div class="section" id="Save-the-data">
-<h2>3.13. Save the data<a class="headerlink" href="#Save-the-data" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">3.13. </span>Save the data<a class="headerlink" href="#Save-the-data" title="Permalink to this headline">¶</a></h2>
 <p>The results generated by <code class="docutils literal notranslate"><span class="pre">EONR</span></code> can be saved to the <code class="docutils literal notranslate"><span class="pre">EONR.base_dir</span></code> using the Pandas <code class="docutils literal notranslate"><span class="pre">df.to_csv()</span></code> function. A folder will be created in the base_dir whose name is determined by the <strong>current economic scenario</strong> of <code class="docutils literal notranslate"><span class="pre">my_eonr</span></code> (in this case “social_336_4400”, corresponding to <code class="docutils literal notranslate"><span class="pre">cost_n_social</span> <span class="pre">&gt;</span> <span class="pre">0</span></code>, <code class="docutils literal notranslate"><span class="pre">price_ratio</span> <span class="pre">==</span> <span class="pre">33.6</span></code>, and <code class="docutils literal notranslate"><span class="pre">cost_n_social</span> <span class="pre">==</span> <span class="pre">4.40</span></code> for “social”, “336”, and “4400” in the folder name, respectively):</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
@@ -1560,8 +1584,8 @@ F:\nigo0024\Documents\GitHub\eonr\eonr\examples\eonr_advanced_tutorial\social_33
       
     </p>
     <p>
-        &copy; Copyright 2019, Tyler J Nigon.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.0.0.<br/>
+        &copy; Copyright 2019-2020, Tyler J Nigon.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.3.1.<br/>
     </p>
   </div>
 </footer>

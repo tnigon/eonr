@@ -1,7 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Copyright &copy; 2019 Tyler J Nigon. All rights reserved.
-"""
 
 import numpy as np
 
@@ -10,18 +7,16 @@ class Models(object):
     '''
     The Models class contains algebraic functions for fitting data
 
-    Use:
-        from eonr import EONR
-        from eonr import Models
-
-        my_eonr = EONR()
-        models = Models(my_eonr)
-
+    Example:
+        >>> from eonr import EONR
+        >>> from eonr import Models
+        >>> my_eonr = EONR()
+        >>> models = Models(my_eonr)
         b0 = 2.4
         b1 = 7.3
         b2 = -0.01
         x = 150
-        models.quad_plateau(x, b0, b1, b2)
+        >>> models.quad_plateau(x, b0, b1, b2)
     '''
     def __init__(self, EONR):
         '''

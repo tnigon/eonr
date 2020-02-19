@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 """
-Copyright &copy; 2019 Tyler J Nigon. All rights reserved.
+Copyright &copy; 2019-2020 Tyler J Nigon. All rights reserved.
 """
 
-__copyright__ = '2019 Tyler J Nigon. All rights reserved.'
+__copyright__ = '2019-2020 Tyler J Nigon. All rights reserved.'
 __author__ = 'Tyler J Nigon'
 __license__ = (
         'The MIT license'
@@ -41,12 +41,12 @@ def history():
         return history_file.read()
 
 requirements = [
-	'nbsphinx',  # for documentation
-    'matplotlib',
-    'numpy',
-    'pandas',
+# 	'nbsphinx',  # for documentation
+    # 'matplotlib',
+    # 'numpy',
+    # 'pandas',
     'scikits.bootstrap',
-    'scipy',
+    # 'scipy',
     'seaborn',
     'uncertainties'
 ]
@@ -56,7 +56,7 @@ test_requirements = [
 ]
 
 setuptools.setup(name='eonr',
-                 version='0.2.0',
+                 version='0.2.1',
                  description='A tool for calculating economic optimum nitrogen rates',
                  long_description=readme(),
                  long_description_content_type="text/markdown",
@@ -73,7 +73,7 @@ setuptools.setup(name='eonr',
                          'Operating System :: Microsoft :: Windows',
                          'Programming Language :: Python :: 3',
                          ],
-                package_data={'eonr': ['examples/*', 'examples/data/*']},
+                package_data={'eonr': ['examples/*', 'data/*', 'tests/*']},
                 include_package_data=True,
                 install_requires=requirements,
                 test_suite='tests',

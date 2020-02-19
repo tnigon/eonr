@@ -3,26 +3,28 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="python">
   <head>
     <meta charset="utf-8" />
-    <title>eonr.eonr &#8212; eonr 0.2.0 documentation</title>
+    <title>eonr.eonr &#8212; eonr 0.2.1 documentation</title>
     <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script async="async" type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"extensions": ["tex2jax.js"], "jax": ["input/TeX", "output/HTML-CSS"], "tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
-    <script type="text/javascript" src="../../_static/js/jquery-1.11.0.min.js"></script>
-    <script type="text/javascript" src="../../_static/js/jquery-fix.js"></script>
-    <script type="text/javascript" src="../../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="../../_static/bootstrap-sphinx.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
 <meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../../_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="../../_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="../../_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="../../_static/bootstrap-sphinx.js "></script>
 
   </head><body>
 
@@ -37,13 +39,15 @@
         </button>
         <a class="navbar-brand" href="../../index.html">
           EONR</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.2.0</b></span>
+        <span class="navbar-text navbar-version pull-left"><b></b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
           <ul class="nav navbar-nav">
             
                 <li><a href="https://github.com/tnigon/eonr">Github</a></li>
+                <li><a href="https://pypi.org/project/hs-process/">PyPI</a></li>
+                <li><a href="https://www.sciencedirect.com/science/article/pii/S0168169919309354">Publication</a></li>
             
             
               <li class="dropdown globaltoc-container">
@@ -60,7 +64,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">2. Tutorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../advanced_tutorial.html">3. Advanced Tutorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../background.html">4. Background</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../my_eonr.html">5. API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../eonr_api.html">5. API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../license.html">6. License</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../changelog.html">7. Change Log</a></li>
 </ul>
@@ -107,7 +111,7 @@
 </form>
         </div>
       </div>
-    <div class="col-md-9 content">
+    <div class="body col-md-9 content" role="main">
       
   <h1>Source code for eonr.eonr</h1><div class="highlight"><pre>
 <span></span><span class="c1"># -*- coding: utf-8 -*-</span>
@@ -189,22 +193,26 @@
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">re</span>
-<span class="kn">from</span> <span class="nn">scikits</span> <span class="k">import</span> <span class="n">bootstrap</span>
-<span class="kn">from</span> <span class="nn">scipy</span> <span class="k">import</span> <span class="n">stats</span>
-<span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="k">import</span> <span class="n">curve_fit</span>
-<span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="k">import</span> <span class="n">minimize</span>
-<span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="k">import</span> <span class="n">minimize_scalar</span>
-<span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="k">import</span> <span class="n">OptimizeWarning</span>
+<span class="kn">from</span> <span class="nn">scikits</span> <span class="kn">import</span> <span class="n">bootstrap</span>
+<span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">stats</span>
+<span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="kn">import</span> <span class="n">curve_fit</span>
+<span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="kn">import</span> <span class="n">minimize</span>
+<span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="kn">import</span> <span class="n">minimize_scalar</span>
+<span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="kn">import</span> <span class="n">OptimizeWarning</span>
 <span class="kn">import</span> <span class="nn">uncertainties</span> <span class="k">as</span> <span class="nn">unc</span>
-<span class="kn">from</span> <span class="nn">uncertainties</span> <span class="k">import</span> <span class="n">unumpy</span> <span class="k">as</span> <span class="n">unp</span>
+<span class="kn">from</span> <span class="nn">uncertainties</span> <span class="kn">import</span> <span class="n">unumpy</span> <span class="k">as</span> <span class="n">unp</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 
-<span class="kn">from</span> <span class="nn">eonr</span> <span class="k">import</span> <span class="n">Models</span>
-<span class="kn">from</span> <span class="nn">eonr</span> <span class="k">import</span> <span class="n">Plotting_tools</span>
+<span class="kn">from</span> <span class="nn">eonr</span> <span class="kn">import</span> <span class="n">Models</span>
+<span class="kn">from</span> <span class="nn">eonr</span> <span class="kn">import</span> <span class="n">Plotting_tools</span>
 
 
-<div class="viewcode-block" id="EONR"><a class="viewcode-back" href="../../my_eonr.html#eonr.eonr.EONR">[docs]</a><span class="k">class</span> <span class="nc">EONR</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+<div class="viewcode-block" id="EONR"><a class="viewcode-back" href="../../api/eonr.EONR.html#eonr.EONR">[docs]</a><span class="k">class</span> <span class="nc">EONR</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    ``EONR`` is a Python tool for computing the optimum nitrogen rate and its</span>
+<span class="sd">    confidence intervals from agricultural research data.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                  <span class="n">cost_n_fert</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
                  <span class="n">cost_n_social</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
                  <span class="n">costs_fixed</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
@@ -622,10 +630,10 @@
             <span class="n">guess</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coefs_grtn</span><span class="p">[</span><span class="s1">&#39;b0&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">n</span><span class="p">,</span>
                      <span class="bp">self</span><span class="o">.</span><span class="n">eonr</span><span class="p">,</span>
                      <span class="bp">self</span><span class="o">.</span><span class="n">coefs_grtn</span><span class="p">[</span><span class="s1">&#39;b2&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">n</span><span class="p">)</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_temp</span> <span class="ow">is</span> <span class="s1">&#39;quadratic&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_temp</span> <span class="o">==</span> <span class="s1">&#39;quadratic&#39;</span><span class="p">:</span>
                 <span class="n">f_model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">quadratic</span>
                 <span class="n">f_model_theta2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">q_theta2</span>
-            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_temp</span> <span class="ow">is</span> <span class="s1">&#39;quad_plateau&#39;</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_temp</span> <span class="o">==</span> <span class="s1">&#39;quad_plateau&#39;</span><span class="p">:</span>
                 <span class="n">f_model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">quad_plateau</span>
                 <span class="n">f_model_theta2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">qp_theta2</span>
             <span class="n">info</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;func = </span><span class="si">{0}</span><span class="se">\n</span><span class="s1">col_x = </span><span class="si">{1}</span><span class="se">\n</span><span class="s1">col_y = </span><span class="si">{2}</span><span class="se">\n</span><span class="s1">&#39;</span>
@@ -904,10 +912,10 @@
         <span class="n">x</span> <span class="o">=</span> <span class="n">df_data</span><span class="p">[</span><span class="n">col_x</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
         <span class="n">y</span> <span class="o">=</span> <span class="n">df_data</span><span class="p">[</span><span class="n">col_y</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_temp</span> <span class="ow">is</span> <span class="s1">&#39;quadratic&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_temp</span> <span class="o">==</span> <span class="s1">&#39;quadratic&#39;</span><span class="p">:</span>
 <span class="c1">#            f_model = self.models.quadratic</span>
             <span class="n">f_model_theta2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">q_theta2</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_temp</span> <span class="ow">is</span> <span class="s1">&#39;quad_plateau&#39;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_temp</span> <span class="o">==</span> <span class="s1">&#39;quad_plateau&#39;</span><span class="p">:</span>
 <span class="c1">#            f_model = self.models.quad_plateau</span>
             <span class="n">f_model_theta2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">qp_theta2</span>
         <span class="n">guess</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coefs_grtn</span><span class="p">[</span><span class="s1">&#39;b0&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">n</span><span class="p">,</span>
@@ -1060,21 +1068,40 @@
             <span class="k">pass</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">model_temp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_temp</span> <span class="ow">is</span> <span class="s1">&#39;quadratic&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_temp</span> <span class="o">==</span> <span class="s1">&#39;quadratic&#39;</span><span class="p">:</span>
             <span class="n">f_model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">quadratic</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_temp</span> <span class="ow">is</span> <span class="s1">&#39;quad_plateau&#39;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_temp</span> <span class="o">==</span> <span class="s1">&#39;quad_plateau&#39;</span><span class="p">:</span>
             <span class="n">f_model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">quad_plateau</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> model not implemented&#39;</span>
-                                      <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">f_model</span><span class="p">))</span>
+                                      <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">quadratic</span><span class="p">))</span>
         <span class="n">popt</span><span class="p">,</span> <span class="n">pcov</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_curve_fit_opt</span><span class="p">(</span><span class="n">f_model</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">p0</span><span class="o">=</span><span class="n">guess</span><span class="p">,</span> <span class="n">info</span><span class="o">=</span><span class="n">info</span><span class="p">)</span>
+
+        <span class="c1"># the following should be made robust to dynamically find the starting values for a dataset..</span>
+<span class="c1">#        print(guess)</span>
+<span class="c1">#        print(popt, pcov)</span>
+<span class="c1">#        if popt[0] &lt; 100 and rerun is False:</span>
+<span class="c1">#            guess = (100, guess[1], guess[2])</span>
+<span class="c1">#        if popt[1] &lt; 1 and rerun is False:</span>
+<span class="c1">#            guess = (guess[0], guess[1] * 4, guess[2])</span>
+<span class="c1">#        if popt[2] &gt; 0 and rerun is False:</span>
+<span class="c1">#            guess = (guess[0], guess[1], guess[2] * 5)</span>
+<span class="c1">#        popt, pcov = self._curve_fit_opt(f_model, x, y, p0=guess, info=info)</span>
+<span class="c1">#        print(&#39;\n\n&#39;)</span>
+<span class="c1">#        print(guess)</span>
+<span class="c1">#        print(popt, pcov)</span>
+
         <span class="k">if</span> <span class="n">popt</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">popt</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">)</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">pcov</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">):</span>
             <span class="n">b0</span> <span class="o">=</span> <span class="n">unc</span><span class="o">.</span><span class="n">ufloat</span><span class="p">(</span><span class="n">popt</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">0</span><span class="p">)</span>
             <span class="n">b1</span> <span class="o">=</span> <span class="n">unc</span><span class="o">.</span><span class="n">ufloat</span><span class="p">(</span><span class="n">popt</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">0</span><span class="p">)</span>
             <span class="n">b2</span> <span class="o">=</span> <span class="n">unc</span><span class="o">.</span><span class="n">ufloat</span><span class="p">(</span><span class="n">popt</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="mi">0</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">b0</span><span class="p">,</span> <span class="n">b1</span><span class="p">,</span> <span class="n">b2</span> <span class="o">=</span> <span class="n">unc</span><span class="o">.</span><span class="n">correlated_values</span><span class="p">(</span><span class="n">popt</span><span class="p">,</span> <span class="n">pcov</span><span class="p">)</span>
-
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">b0</span><span class="p">,</span> <span class="n">b1</span><span class="p">,</span> <span class="n">b2</span> <span class="o">=</span> <span class="n">unc</span><span class="o">.</span><span class="n">correlated_values</span><span class="p">(</span><span class="n">popt</span><span class="p">,</span> <span class="n">pcov</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">LinAlgError</span><span class="p">:</span>
+                <span class="n">b0</span> <span class="o">=</span> <span class="n">unc</span><span class="o">.</span><span class="n">ufloat</span><span class="p">(</span><span class="n">popt</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">0</span><span class="p">)</span>
+                <span class="n">b1</span> <span class="o">=</span> <span class="n">unc</span><span class="o">.</span><span class="n">ufloat</span><span class="p">(</span><span class="n">popt</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">0</span><span class="p">)</span>
+                <span class="n">b2</span> <span class="o">=</span> <span class="n">unc</span><span class="o">.</span><span class="n">ufloat</span><span class="p">(</span><span class="n">popt</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="mi">0</span><span class="p">)</span>
         <span class="n">crit_x</span> <span class="o">=</span> <span class="o">-</span><span class="n">b1</span><span class="o">.</span><span class="n">n</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">b2</span><span class="o">.</span><span class="n">n</span><span class="p">)</span>
         <span class="n">max_y</span> <span class="o">=</span> <span class="n">f_model</span><span class="p">(</span><span class="n">crit_x</span><span class="p">,</span> <span class="n">b0</span><span class="o">.</span><span class="n">n</span><span class="p">,</span> <span class="n">b1</span><span class="o">.</span><span class="n">n</span><span class="p">,</span> <span class="n">b2</span><span class="o">.</span><span class="n">n</span><span class="p">)</span>
         <span class="n">r2</span><span class="p">,</span> <span class="n">r2_adj</span><span class="p">,</span> <span class="n">ss_res</span><span class="p">,</span> <span class="n">ss_tot</span><span class="p">,</span> <span class="n">rmse</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_rsq</span><span class="p">(</span>
@@ -1235,10 +1262,10 @@
         <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_data</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">col_n_app</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
         <span class="n">y</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;grtn&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_temp</span> <span class="ow">is</span> <span class="s1">&#39;quadratic&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_temp</span> <span class="o">==</span> <span class="s1">&#39;quadratic&#39;</span><span class="p">:</span>
 <span class="c1">#            f_model = self.models.quadratic</span>
             <span class="n">f_model_theta2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">q_theta2</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_temp</span> <span class="ow">is</span> <span class="s1">&#39;quad_plateau&#39;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_temp</span> <span class="o">==</span> <span class="s1">&#39;quad_plateau&#39;</span><span class="p">:</span>
 <span class="c1">#            f_model = self.models.quad_plateau</span>
             <span class="n">f_model_theta2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">qp_theta2</span>
         <span class="n">guess</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coefs_grtn</span><span class="p">[</span><span class="s1">&#39;b0&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">n</span><span class="p">,</span>
@@ -1255,10 +1282,10 @@
         <span class="n">maxfev</span> <span class="o">=</span> <span class="mi">1000</span>
         <span class="n">b0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coefs_grtn</span><span class="p">[</span><span class="s1">&#39;b0&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">n</span>
         <span class="n">b2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coefs_grtn</span><span class="p">[</span><span class="s1">&#39;b2&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">n</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_temp</span> <span class="ow">is</span> <span class="s1">&#39;quadratic&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_temp</span> <span class="o">==</span> <span class="s1">&#39;quadratic&#39;</span><span class="p">:</span>
 <span class="c1">#            f_model = self.models.quadratic</span>
             <span class="n">f_model_theta2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">q_theta2</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_temp</span> <span class="ow">is</span> <span class="s1">&#39;quad_plateau&#39;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_temp</span> <span class="o">==</span> <span class="s1">&#39;quad_plateau&#39;</span><span class="p">:</span>
 <span class="c1">#            f_model = self.models.quad_plateau</span>
             <span class="n">f_model_theta2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">qp_theta2</span>
         <span class="n">guess</span> <span class="o">=</span> <span class="p">(</span><span class="n">b0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">eonr</span><span class="p">,</span> <span class="n">b2</span><span class="p">)</span>
@@ -1309,10 +1336,10 @@
 <span class="sd">        Calculates the sum of squares across the full set of parameters,</span>
 <span class="sd">        solving for theta2</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_temp</span> <span class="ow">is</span> <span class="s1">&#39;quadratic&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_temp</span> <span class="o">==</span> <span class="s1">&#39;quadratic&#39;</span><span class="p">:</span>
 <span class="c1">#            f_model = self.models.quadratic</span>
             <span class="n">f_model_theta2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">q_theta2</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_temp</span> <span class="ow">is</span> <span class="s1">&#39;quad_plateau&#39;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_temp</span> <span class="o">==</span> <span class="s1">&#39;quad_plateau&#39;</span><span class="p">:</span>
 <span class="c1">#            f_model = self.models.quad_plateau</span>
             <span class="n">f_model_theta2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">qp_theta2</span>
         <span class="n">guess</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coefs_grtn</span><span class="p">[</span><span class="s1">&#39;b0&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">n</span><span class="p">,</span>
@@ -1476,9 +1503,9 @@
         <span class="n">df_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_data</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">df_data</span><span class="p">[</span><span class="n">col_x</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
         <span class="n">y</span> <span class="o">=</span> <span class="n">df_data</span><span class="p">[</span><span class="n">col_y</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_temp</span> <span class="ow">is</span> <span class="s1">&#39;quadratic&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_temp</span> <span class="o">==</span> <span class="s1">&#39;quadratic&#39;</span><span class="p">:</span>
             <span class="n">f_model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">quadratic</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_temp</span> <span class="ow">is</span> <span class="s1">&#39;quad_plateau&#39;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_temp</span> <span class="o">==</span> <span class="s1">&#39;quad_plateau&#39;</span><span class="p">:</span>
             <span class="n">f_model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">quad_plateau</span>
         <span class="n">info</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;func = </span><span class="si">{0}</span><span class="se">\n</span><span class="s1">col_x = </span><span class="si">{1}</span><span class="se">\n</span><span class="s1">col_y = </span><span class="si">{2}</span><span class="se">\n</span><span class="s1">&#39;</span>
                 <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">f_model</span><span class="p">,</span> <span class="n">col_x</span><span class="p">,</span> <span class="n">col_y</span><span class="p">))</span>
@@ -1551,7 +1578,7 @@
 
     <span class="k">class</span> <span class="nc">_pl_steps_init</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Initializes variables required for _get_pl_steps()&#39;&#39;&#39;</span>
-        <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theta2_start</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">side</span><span class="p">,</span> <span class="n">tau_start</span><span class="p">,</span>
+        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theta2_start</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">side</span><span class="p">,</span> <span class="n">tau_start</span><span class="p">,</span>
                      <span class="n">step_size</span><span class="p">,</span> <span class="n">guess</span><span class="p">,</span> <span class="n">sse_full</span><span class="p">,</span> <span class="n">col_x</span><span class="p">,</span> <span class="n">col_y</span><span class="p">,</span>
                      <span class="n">cost_n_social</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">theta2_start</span> <span class="o">=</span> <span class="n">theta2_start</span>
@@ -1605,10 +1632,10 @@
 <span class="sd">        distribution function) of the F statistic. The T statistic can be used</span>
 <span class="sd">        as well (they will give the same result).</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_temp</span> <span class="ow">is</span> <span class="s1">&#39;quadratic&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_temp</span> <span class="o">==</span> <span class="s1">&#39;quadratic&#39;</span><span class="p">:</span>
 <span class="c1">#            f_model = self.models.quadratic</span>
             <span class="n">f_model_theta2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">q_theta2</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_temp</span> <span class="ow">is</span> <span class="s1">&#39;quad_plateau&#39;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_temp</span> <span class="o">==</span> <span class="s1">&#39;quad_plateau&#39;</span><span class="p">:</span>
 <span class="c1">#            f_model = self.models.quad_plateau</span>
             <span class="n">f_model_theta2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">qp_theta2</span>
         <span class="n">guess</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coefs_grtn</span><span class="p">[</span><span class="s1">&#39;b0&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">n</span><span class="p">,</span>
@@ -1847,10 +1874,10 @@
 <span class="sd">            returns &lt;dif&gt;, which will equal zero when the likelihood ratio is</span>
 <span class="sd">            exactly equal to the test statistic (e.g., t-test or f-test)</span>
 <span class="sd">            &#39;&#39;&#39;</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_temp</span> <span class="ow">is</span> <span class="s1">&#39;quadratic&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_temp</span> <span class="o">==</span> <span class="s1">&#39;quadratic&#39;</span><span class="p">:</span>
     <span class="c1">#            f_model = self.models.quadratic</span>
                 <span class="n">f_model_theta2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">q_theta2</span>
-            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_temp</span> <span class="ow">is</span> <span class="s1">&#39;quad_plateau&#39;</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_temp</span> <span class="o">==</span> <span class="s1">&#39;quad_plateau&#39;</span><span class="p">:</span>
     <span class="c1">#            f_model = self.models.quad_plateau</span>
                 <span class="n">f_model_theta2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">qp_theta2</span>
             <span class="k">try</span><span class="p">:</span>
@@ -2108,8 +2135,13 @@
 <span class="c1">##        df_ci = pd.concat([df_ci, df_boot], axis=1)</span>
 <span class="c1">#        return boot_ci</span>
 
-<div class="viewcode-block" id="EONR.calc_delta"><a class="viewcode-back" href="../../my_eonr.html#eonr.eonr.EONR.calc_delta">[docs]</a>    <span class="k">def</span> <span class="nf">calc_delta</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df_results</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Calculates the change in EONR among economic scenarios</span>
+<div class="viewcode-block" id="EONR.calc_delta"><a class="viewcode-back" href="../../api/eonr.EONR.html#eonr.EONR.calc_delta">[docs]</a>    <span class="k">def</span> <span class="nf">calc_delta</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df_results</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Calculates the change in EONR among economic scenarios.</span>
+
+<span class="sd">        ``EONR.calc_delta`` filters all data by location, year, and</span>
+<span class="sd">        nitrogen timing, then the &quot;delta&quot; is calculated as the difference</span>
+<span class="sd">        relative to the economic scenario resulting in the highest EONR.</span>
 
 <span class="sd">        Parameters:</span>
 <span class="sd">            df_results (``Pandas dataframe``, optional): The dataframe</span>
@@ -2117,13 +2149,40 @@
 <span class="sd">                (default: None).</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            df_out &quot;The dataframe with the newly inserted EONR delta.&quot;</span>
+<span class="sd">            ``pandas.DataFrame``:</span>
+<span class="sd">                **df_delta** -- The dataframe with the newly inserted EONR</span>
+<span class="sd">                delta.</span>
 
-<span class="sd">        Note:</span>
-<span class="sd">            ``EONR.calc_delta()`` filters all data by location, year, and</span>
-<span class="sd">            nitrogen timing, then the &quot;delta&quot; is calculated as the difference</span>
-<span class="sd">            relative to the economic scenario resulting in the highest EONR.</span>
 
+<span class="sd">        Example:</span>
+<span class="sd">            Please complete the `EONR.calculate_eonr`_ example first because</span>
+<span class="sd">            this example builds on the results of the ``my_eonr`` object.</span>
+
+<span class="sd">            Change the economic scenario (using ``EONR.calculate_eonr``) and</span>
+<span class="sd">            calculate the EONR again for the same dataset (using</span>
+<span class="sd">            ``EONR.calculate_eonr``)</span>
+
+<span class="sd">            &gt;&gt;&gt; price_grain = 0.314  # in USD per kg grain</span>
+<span class="sd">            &gt;&gt;&gt; my_eonr.update_econ(price_grain=price_grain)</span>
+<span class="sd">            &gt;&gt;&gt; my_eonr.calculate_eonr(df_data)</span>
+<span class="sd">            Computing EONR for Minnesota 2012 Pre</span>
+<span class="sd">            Cost of N fertilizer: $0.88 per kg</span>
+<span class="sd">            Price grain: $0.31 per kg</span>
+<span class="sd">            Fixed costs: $0.00 per ha</span>
+<span class="sd">            Checking quadratic and quadric-plateau models for best fit..</span>
+<span class="sd">            Quadratic model r^2: 0.72</span>
+<span class="sd">            Quadratic-plateau model r^2: 0.73</span>
+<span class="sd">            Using the quadratic-plateau model..</span>
+<span class="sd">            Economic optimum N rate (EONR): 169.9 kg per ha [135.2, 220.9] (90.0% confidence)</span>
+<span class="sd">            Maximum return to N (MRTN): $1682.04 per ha</span>
+
+<span class="sd">            Use ``EONR.calc_delta`` to</span>
+
+<span class="sd">            &gt;&gt;&gt; df_delta = my_eonr.calc_delta(my_eonr.df_results)</span>
+
+<span class="sd">            .. image:: ../img/calc_delta.png</span>
+
+<span class="sd">        .. _EONR.calculate_eonr: eonr.EONR.html#eonr.EONR.calculate_eonr</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">if</span> <span class="n">df_results</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_results</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
@@ -2132,7 +2191,7 @@
 
         <span class="n">years</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
         <span class="n">years</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
-        <span class="n">df_out</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">df_delta</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">for</span> <span class="n">year</span> <span class="ow">in</span> <span class="n">years</span><span class="p">:</span>
             <span class="n">df_year</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">year</span><span class="p">]</span>
             <span class="n">locs</span> <span class="o">=</span> <span class="n">df_year</span><span class="p">[</span><span class="s1">&#39;location&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
@@ -2145,17 +2204,24 @@
                     <span class="n">eonr_base</span> <span class="o">=</span> <span class="n">df_yloct</span><span class="p">[</span><span class="s1">&#39;eonr&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>  <span class="c1"># lowest fert:grain rat</span>
                     <span class="n">eonr_delta</span> <span class="o">=</span> <span class="n">df_yloct</span><span class="p">[</span><span class="s1">&#39;eonr&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">eonr_base</span>
                     <span class="n">df_yloct</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="s1">&#39;eonr_delta&#39;</span><span class="p">,</span> <span class="n">eonr_delta</span><span class="p">)</span>
-                    <span class="k">if</span> <span class="n">df_out</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                        <span class="n">df_out</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">df_yloct</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
-                    <span class="n">df_out</span> <span class="o">=</span> <span class="n">df_out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">df_yloct</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">df_out</span></div>
+                    <span class="k">if</span> <span class="n">df_delta</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="n">df_delta</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">df_yloct</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+                    <span class="n">df_delta</span> <span class="o">=</span> <span class="n">df_delta</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">df_yloct</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">df_delta</span></div>
 
-<div class="viewcode-block" id="EONR.calculate_eonr"><a class="viewcode-back" href="../../my_eonr.html#eonr.eonr.EONR.calculate_eonr">[docs]</a>    <span class="k">def</span> <span class="nf">calculate_eonr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">col_n_app</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">col_yld</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<div class="viewcode-block" id="EONR.calculate_eonr"><a class="viewcode-back" href="../../api/eonr.EONR.html#eonr.EONR.calculate_eonr">[docs]</a>    <span class="k">def</span> <span class="nf">calculate_eonr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">col_n_app</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">col_yld</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                        <span class="n">col_crop_nup</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">col_n_avail</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                        <span class="n">col_year</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">col_location</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">col_time_n</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                        <span class="n">bootstrap_ci</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">samples_boot</span><span class="o">=</span><span class="mi">9999</span><span class="p">,</span>
                        <span class="n">delta_tstat</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Calculates the EONR and its confidence intervals</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Calculates the EONR and its confidence intervals.</span>
+
+<span class="sd">        ``col_n_app`` and ``col_yld`` are required by ``EONR``, but not</span>
+<span class="sd">        necessarily by ``EONR.calculate_eonr()``. They must either be set</span>
+<span class="sd">        during the initialization of ``EONR``, before running</span>
+<span class="sd">        ``EONR.calculate_eonr`` (using ``EONR.set_column_names``), or they</span>
+<span class="sd">        must be passed in this ``EONR.calculate_eonr`` method.</span>
 
 <span class="sd">        Parameters:</span>
 <span class="sd">            df (``Pandas dataframe``): The dataframe containing the</span>
@@ -2190,20 +2256,69 @@
 <span class="sd">                profile-likelihood CIs (default: False).</span>
 
 <span class="sd">        Note:</span>
-<span class="sd">            ``col_n_app`` and ``col_yld`` are required by ``EONR``, but not</span>
-<span class="sd">            necessarily by ``EONR.calculate_eonr()``. They must either be set</span>
-<span class="sd">            during the initialization of EONR(), or be passed in this method.</span>
-
-<span class="sd">        Note:</span>
 <span class="sd">            ``col_crop_nup`` and ``col_n_avail`` are required to calculate the</span>
 <span class="sd">            socially optimum nitrogen rate, SONR. The SONR is the optimum</span>
 <span class="sd">            nitrogen rate considering the social cost of nitrogen, so</span>
-<span class="sd">            therefore, ``EONR.cost_n_social`` must also be set.</span>
+<span class="sd">            therefore, ``EONR.cost_n_social`` must also be set. ``col_year``,</span>
+<span class="sd">            ``col_location``, and ``col_time_n`` are purely  optional. They</span>
+<span class="sd">            only affect the titles and axes labels of the plots.</span>
 
-<span class="sd">        Note:</span>
-<span class="sd">            ``col_year``, ``col_location``, and ``col_time_n`` are purely</span>
-<span class="sd">            optional. They only affect the titles and axes labels of the plots.</span>
+<span class="sd">        Example:</span>
+<span class="sd">            Load and initialize ``eonr``</span>
 
+<span class="sd">            &gt;&gt;&gt; from eonr import EONR</span>
+<span class="sd">            &gt;&gt;&gt; import os</span>
+<span class="sd">            &gt;&gt;&gt; import pandas as pd</span>
+
+<span class="sd">            Load the sample data</span>
+
+<span class="sd">            &gt;&gt;&gt; base_dir = r&#39;F:\\nigo0024\Documents\GitHub\eonr\eonr&#39;</span>
+<span class="sd">            &gt;&gt;&gt; df_data = pd.read_csv(os.path.join(base_dir, &#39;data&#39;, &#39;minnesota_2012.csv&#39;))</span>
+
+<span class="sd">            Set column names</span>
+
+<span class="sd">            &gt;&gt;&gt; col_n_app = &#39;rate_n_applied_kgha&#39;</span>
+<span class="sd">            &gt;&gt;&gt; col_yld = &#39;yld_grain_dry_kgha&#39;</span>
+
+<span class="sd">            Set units</span>
+
+<span class="sd">            &gt;&gt;&gt; unit_currency = &#39;$&#39;</span>
+<span class="sd">            &gt;&gt;&gt; unit_fert = &#39;kg&#39;</span>
+<span class="sd">            &gt;&gt;&gt; unit_grain = &#39;kg&#39;</span>
+<span class="sd">            &gt;&gt;&gt; unit_area = &#39;ha&#39;</span>
+
+<span class="sd">            Set economic conditions</span>
+
+<span class="sd">            &gt;&gt;&gt; cost_n_fert = 0.88  # in USD per kg nitrogen</span>
+<span class="sd">            &gt;&gt;&gt; price_grain = 0.157  # in USD per kg grain</span>
+
+<span class="sd">            Initialize ``EONR``</span>
+
+<span class="sd">            &gt;&gt;&gt; my_eonr = EONR(cost_n_fert=cost_n_fert,</span>
+<span class="sd">                               price_grain=price_grain,</span>
+<span class="sd">                               col_n_app=col_n_app,</span>
+<span class="sd">                               col_yld=col_yld,</span>
+<span class="sd">                               unit_currency=unit_currency,</span>
+<span class="sd">                               unit_grain=unit_grain,</span>
+<span class="sd">                               unit_fert=unit_fert,</span>
+<span class="sd">                               unit_area=unit_area,</span>
+<span class="sd">                               model=None,</span>
+<span class="sd">                               base_dir=base_dir)</span>
+
+<span class="sd">            Calculate the economic optimum nitrogen rate using</span>
+<span class="sd">            ``EONR.calculate_eonr``</span>
+
+<span class="sd">            &gt;&gt;&gt; my_eonr.calculate_eonr(df_data)</span>
+<span class="sd">            Computing EONR for Minnesota 2012 Pre</span>
+<span class="sd">            Cost of N fertilizer: $0.88 per kg</span>
+<span class="sd">            Price grain: $0.16 per kg</span>
+<span class="sd">            Fixed costs: $0.00 per ha</span>
+<span class="sd">            Checking quadratic and quadric-plateau models for best fit..</span>
+<span class="sd">            Quadratic model r^2: 0.72</span>
+<span class="sd">            Quadratic-plateau model r^2: 0.73</span>
+<span class="sd">            Using the quadratic-plateau model..</span>
+<span class="sd">            Economic optimum N rate (EONR): 162.3 kg per ha [130.5, 207.8] (90.0% confidence)</span>
+<span class="sd">            Maximum return to N (MRTN): $767.93 per ha</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;Please set EONR.price_grain &gt; 0.&#39;</span><span class="p">)</span>
         <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">price_grain</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="n">msg</span>
@@ -2284,10 +2399,118 @@
                 <span class="n">results</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">df_results</span><span class="o">.</span><span class="n">columns</span><span class="p">),</span>
                 <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="EONR.plot_eonr"><a class="viewcode-back" href="../../my_eonr.html#eonr.eonr.EONR.plot_eonr">[docs]</a>    <span class="k">def</span> <span class="nf">plot_eonr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ci_type</span><span class="o">=</span><span class="s1">&#39;profile-likelihood&#39;</span><span class="p">,</span> <span class="n">ci_level</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<div class="viewcode-block" id="EONR.plot_delta_tstat"><a class="viewcode-back" href="../../api/eonr.EONR.html#eonr.EONR.plot_delta_tstat">[docs]</a>    <span class="k">def</span> <span class="nf">plot_delta_tstat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">level_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s1">&#39;ggplot&#39;</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Plots the test statistic as a function nitrogen rate</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">            level_list (``list``): The confidence levels to plot; should be a</span>
+<span class="sd">                subset of items in EONR.ci_list (default: None).</span>
+<span class="sd">            style (``str``, optional): The style of the plolt; can be any of</span>
+<span class="sd">                the options supported by ``matplotlib``</span>
+
+<span class="sd">        Example:</span>
+<span class="sd">            Load and initialize ``eonr``, then load the sample data</span>
+
+<span class="sd">            &gt;&gt;&gt; from eonr import EONR</span>
+<span class="sd">            &gt;&gt;&gt; import os</span>
+<span class="sd">            &gt;&gt;&gt; import pandas as pd</span>
+<span class="sd">            &gt;&gt;&gt; base_dir = r&#39;F:\\nigo0024\Documents\GitHub\eonr\eonr&#39;</span>
+<span class="sd">            &gt;&gt;&gt; df_data = pd.read_csv(os.path.join(base_dir, &#39;data&#39;, &#39;minnesota_2012.csv&#39;))</span>
+
+<span class="sd">            Set column names, units, and economic conditions</span>
+
+<span class="sd">            &gt;&gt;&gt; col_n_app = &#39;rate_n_applied_kgha&#39;</span>
+<span class="sd">            &gt;&gt;&gt; col_yld = &#39;yld_grain_dry_kgha&#39;</span>
+<span class="sd">            &gt;&gt;&gt; unit_currency = &#39;$&#39;</span>
+<span class="sd">            &gt;&gt;&gt; unit_fert = &#39;kg&#39;</span>
+<span class="sd">            &gt;&gt;&gt; unit_grain = &#39;kg&#39;</span>
+<span class="sd">            &gt;&gt;&gt; unit_area = &#39;ha&#39;</span>
+<span class="sd">            &gt;&gt;&gt; cost_n_fert = 0.88  # in USD per kg nitrogen</span>
+<span class="sd">            &gt;&gt;&gt; price_grain = 0.157  # in USD per kg grain</span>
+
+<span class="sd">            Initialize ``EONR``</span>
+
+<span class="sd">            &gt;&gt;&gt; my_eonr = EONR(cost_n_fert=cost_n_fert, price_grain=price_grain,</span>
+<span class="sd">                               col_n_app=col_n_app, col_yld=col_yld,</span>
+<span class="sd">                               unit_currency=unit_currency, unit_grain=unit_grain,</span>
+<span class="sd">                               unit_fert=unit_fert, unit_area=unit_area,</span>
+<span class="sd">                               model=None, base_dir=base_dir)</span>
+
+<span class="sd">            Calculate the economic optimum nitrogen rate using</span>
+<span class="sd">            ``EONR.calculate_eonr``, being sure to set ``delta_stat`` to</span>
+<span class="sd">            ``True``</span>
+
+<span class="sd">            &gt;&gt;&gt; my_eonr.calculate_eonr(df_data, delta_tstat=True)</span>
+<span class="sd">            Computing EONR for Minnesota 2012 Pre</span>
+<span class="sd">            Cost of N fertilizer: $0.88 per kg</span>
+<span class="sd">            Price grain: $0.16 per kg</span>
+<span class="sd">            Fixed costs: $0.00 per ha</span>
+<span class="sd">            Checking quadratic and quadric-plateau models for best fit..</span>
+<span class="sd">            Quadratic model r^2: 0.72</span>
+<span class="sd">            Quadratic-plateau model r^2: 0.73</span>
+<span class="sd">            Using the quadratic-plateau model..</span>
+<span class="sd">            Economic optimum N rate (EONR): 162.3 kg per ha [130.5, 207.8] (90.0% confidence)</span>
+<span class="sd">            Maximum return to N (MRTN): $767.93 per ha</span>
+
+<span class="sd">            Plot the Delta t-stat plot using ``EONR.plot_delta_tstat``</span>
+
+<span class="sd">            &gt;&gt;&gt; my_eonr.plot_delta_tstat()</span>
+
+<span class="sd">            .. image:: ../img/plot_delta_tstat.png</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">plotting_tools</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">plotting_tools</span> <span class="o">=</span> <span class="n">Plotting_tools</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">plotting_tools</span><span class="o">.</span><span class="n">update_eonr</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plotting_tools</span><span class="o">.</span><span class="n">plot_delta_tstat</span><span class="p">(</span><span class="n">level_list</span><span class="o">=</span><span class="n">level_list</span><span class="p">,</span>
+                                             <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fig_delta_tstat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plotting_tools</span><span class="o">.</span><span class="n">fig_delta_tstat</span></div>
+
+<div class="viewcode-block" id="EONR.plot_derivative"><a class="viewcode-back" href="../../api/eonr.EONR.html#eonr.EONR.plot_derivative">[docs]</a>    <span class="k">def</span> <span class="nf">plot_derivative</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ci_type</span><span class="o">=</span><span class="s1">&#39;profile-likelihood&#39;</span><span class="p">,</span> <span class="n">ci_level</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                        <span class="n">style</span><span class="o">=</span><span class="s1">&#39;ggplot&#39;</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Plots a zoomed up view of the ONR and the derivative</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">            ci_type (str): Indicates which confidence interval type should be</span>
+<span class="sd">                plotted. Options are &#39;wald&#39;, to plot the Wald</span>
+<span class="sd">                CIs; &#39;profile-likelihood&#39;, to plot the profile-likelihood</span>
+<span class="sd">                CIs; or &#39;bootstrap&#39;, to plot the bootstrap CIs (default:</span>
+<span class="sd">                &#39;profile-likelihood&#39;).</span>
+<span class="sd">            ci_level (float): The confidence interval level to be plotted, and</span>
+<span class="sd">                must be one of the values in EONR.ci_list. If None, uses the</span>
+<span class="sd">                EONR.ci_level (default: None).</span>
+<span class="sd">            level (``float``): The confidence levels to plot; should be a</span>
+<span class="sd">                value from EONR.ci_list (default: 0.90).</span>
+<span class="sd">            style (``str``, optional): The style of the plolt; can be any of</span>
+<span class="sd">                the options supported by ``matplotlib``</span>
+
+<span class="sd">        Example:</span>
+<span class="sd">            Please complete the `EONR.calculate_eonr`_ example first because</span>
+<span class="sd">            this example builds on the results of the ``my_eonr`` object.</span>
+
+<span class="sd">            &gt;&gt;&gt; my_eonr.plot_derivative()</span>
+
+<span class="sd">            .. image:: ../img/plot_derivative.png</span>
+
+<span class="sd">        .. _EONR.calculate_eonr: eonr.EONR.html#eonr.EONR.calculate_eonr</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">plotting_tools</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">plotting_tools</span> <span class="o">=</span> <span class="n">Plotting_tools</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">plotting_tools</span><span class="o">.</span><span class="n">update_eonr</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plotting_tools</span><span class="o">.</span><span class="n">plot_derivative</span><span class="p">(</span><span class="n">ci_type</span><span class="o">=</span><span class="n">ci_type</span><span class="p">,</span> <span class="n">ci_level</span><span class="o">=</span><span class="n">ci_level</span><span class="p">,</span>
+                                            <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fig_derivative</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plotting_tools</span><span class="o">.</span><span class="n">fig_derivative</span></div>
+
+<div class="viewcode-block" id="EONR.plot_eonr"><a class="viewcode-back" href="../../api/eonr.EONR.html#eonr.EONR.plot_eonr">[docs]</a>    <span class="k">def</span> <span class="nf">plot_eonr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ci_type</span><span class="o">=</span><span class="s1">&#39;profile-likelihood&#39;</span><span class="p">,</span> <span class="n">ci_level</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                   <span class="n">run_n</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">x_min</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">x_max</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">y_min</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">y_max</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                   <span class="n">show_model</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s1">&#39;ggplot&#39;</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Plots EONR, MRTN, GRTN, net return, and nitrogen cost</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Plots EONR, MRTN, GRTN, net return, and nitrogen cost.</span>
+
+<span class="sd">        If left as ``None``, ``x_min``, ``x_max``, ``y_min``, and ``y_max``</span>
+<span class="sd">        are set by ``Matplotlib``.</span>
 
 <span class="sd">        Parameters:</span>
 <span class="sd">            ci_type (``str``, optional): Indicates which confidence interval</span>
@@ -2312,16 +2535,19 @@
 <span class="sd">                (default: None)</span>
 <span class="sd">            show_model (str): Whether to display the type of fitted model in</span>
 <span class="sd">                the helper legend (default: True).</span>
-<span class="sd">            style (``str``, optional): The style of the plolt; can be any of</span>
-<span class="sd">                the options supported by ``matplotlib``</span>
+<span class="sd">            style (``str``, optional): The style of the plot; can be any of</span>
+<span class="sd">                the options supported by `matplotlib`_ (default: &#39;ggplot&#39;).</span>
 
-<span class="sd">        Note:</span>
-<span class="sd">            ``x_min``, ``x_max``, ``y_min``, and ``y_max`` are set by</span>
-<span class="sd">            Matplotlib if left as ``None``.</span>
+<span class="sd">        Example:</span>
+<span class="sd">            Please complete the `EONR.calculate_eonr`_ example first because</span>
+<span class="sd">            this example builds on the results of the ``my_eonr`` object.</span>
 
-<span class="sd">        .. _matplotlib:</span>
-<span class="sd">            https://tonysyu.github.io/raw_content/matplotlib-style-gallery/gallery.html</span>
+<span class="sd">            &gt;&gt;&gt; my_eonr.plot_eonr(x_min=-5, x_max=300, y_min=-100, y_max=1400)</span>
 
+<span class="sd">            .. image:: ../img/plot_eonr.png</span>
+
+<span class="sd">        .. _matplotlib: https://tonysyu.github.io/raw_content/matplotlib-style-gallery/gallery.html</span>
+<span class="sd">        .. _EONR.calculate_eonr: eonr.EONR.html#eonr.EONR.calculate_eonr</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">plotting_tools</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">plotting_tools</span> <span class="o">=</span> <span class="n">Plotting_tools</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
@@ -2332,7 +2558,7 @@
                                       <span class="n">y_min</span><span class="o">=</span><span class="n">y_min</span><span class="p">,</span> <span class="n">y_max</span><span class="o">=</span><span class="n">y_max</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fig_eonr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plotting_tools</span><span class="o">.</span><span class="n">fig_eonr</span></div>
 
-<div class="viewcode-block" id="EONR.plot_modify_size"><a class="viewcode-back" href="../../my_eonr.html#eonr.eonr.EONR.plot_modify_size">[docs]</a>    <span class="k">def</span> <span class="nf">plot_modify_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fig</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">plotsize_x</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">plotsize_y</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+<div class="viewcode-block" id="EONR.plot_modify_size"><a class="viewcode-back" href="../../api/eonr.EONR.html#eonr.EONR.plot_modify_size">[docs]</a>    <span class="k">def</span> <span class="nf">plot_modify_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fig</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">plotsize_x</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">plotsize_y</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
                          <span class="n">labelsize</span><span class="o">=</span><span class="mi">11</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Modifies the size of the last plot generated</span>
@@ -2346,12 +2572,24 @@
 <span class="sd">                (default: 4)</span>
 <span class="sd">            labelsize (``float``, optional): Sets tick and label</span>
 <span class="sd">                (defaulat: 11)</span>
+
+<span class="sd">        Example:</span>
+<span class="sd">            Please complete the `EONR.calculate_eonr`_ and</span>
+<span class="sd">            `EONR.plot_eonr`_ examples first because this example builds on</span>
+<span class="sd">            the results of the ``my_eonr.fig_eonr.fig`` object.</span>
+
+<span class="sd">            &gt;&gt;&gt; my_eonr.plot_modify_size(fig=my_eonr.fig_eonr.fig, plotsize_x=5, plotsize_y=3, labelsize=9)</span>
+
+<span class="sd">            .. image:: ../img/plot_modify_size.png</span>
+
+<span class="sd">        .. _EONR.calculate_eonr: eonr.EONR.html#eonr.EONR.calculate_eonr</span>
+<span class="sd">        .. _EONR.plot_eonr: eonr.EONR.html#eonr.EONR.plot_eonr</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">plotting_tools</span><span class="o">.</span><span class="n">modify_size</span><span class="p">(</span><span class="n">fig</span><span class="o">=</span><span class="n">fig</span><span class="p">,</span> <span class="n">plotsize_x</span><span class="o">=</span><span class="n">plotsize_x</span><span class="p">,</span>
                                         <span class="n">plotsize_y</span><span class="o">=</span><span class="n">plotsize_y</span><span class="p">,</span>
                                         <span class="n">labelsize</span><span class="o">=</span><span class="n">labelsize</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="EONR.plot_modify_title"><a class="viewcode-back" href="../../my_eonr.html#eonr.eonr.EONR.plot_modify_title">[docs]</a>    <span class="k">def</span> <span class="nf">plot_modify_title</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title_text</span><span class="p">,</span> <span class="n">g</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">size_font</span><span class="o">=</span><span class="mi">12</span><span class="p">):</span>
+<div class="viewcode-block" id="EONR.plot_modify_title"><a class="viewcode-back" href="../../api/eonr.EONR.html#eonr.EONR.plot_modify_title">[docs]</a>    <span class="k">def</span> <span class="nf">plot_modify_title</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title_text</span><span class="p">,</span> <span class="n">g</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">size_font</span><span class="o">=</span><span class="mi">12</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Allows user to replace the title text</span>
 
@@ -2360,10 +2598,22 @@
 <span class="sd">            g (``matplotlib.figure``): Matplotlib figure object to modify</span>
 <span class="sd">                (default: None)</span>
 <span class="sd">            size_font (``float``): Font size to use (default: 12)</span>
+
+<span class="sd">        Example:</span>
+<span class="sd">            Please complete the `EONR.calculate_eonr`_ and</span>
+<span class="sd">            `EONR.plot_eonr`_ examples first because this example builds on</span>
+<span class="sd">            the results of the ``my_eonr.fig_eonr.fig`` object.</span>
+
+<span class="sd">            &gt;&gt;&gt; my_eonr.plot_modify_title(&#39;Preplant N fertilizer - Stewart, MN 2012&#39;, g=my_eonr.fig_eonr.fig, size_font=15)</span>
+
+<span class="sd">            .. image:: ../img/plot_modify_title.png</span>
+
+<span class="sd">        .. _EONR.calculate_eonr: eonr.EONR.html#eonr.EONR.calculate_eonr</span>
+<span class="sd">        .. _EONR.plot_eonr: eonr.EONR.html#eonr.EONR.plot_eonr</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">plotting_tools</span><span class="o">.</span><span class="n">modify_title</span><span class="p">(</span><span class="n">title_text</span><span class="p">,</span> <span class="n">g</span><span class="o">=</span><span class="n">g</span><span class="p">,</span> <span class="n">size_font</span><span class="o">=</span><span class="n">size_font</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="EONR.plot_save"><a class="viewcode-back" href="../../my_eonr.html#eonr.eonr.EONR.plot_save">[docs]</a>    <span class="k">def</span> <span class="nf">plot_save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">base_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fig</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">):</span>
+<div class="viewcode-block" id="EONR.plot_save"><a class="viewcode-back" href="../../api/eonr.EONR.html#eonr.EONR.plot_save">[docs]</a>    <span class="k">def</span> <span class="nf">plot_save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">base_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fig</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Saves a generated matplotlib figure to file</span>
 
 <span class="sd">        Parameters:</span>
@@ -2375,55 +2625,30 @@
 <span class="sd">            dpi (``int``, optional): Resolution to save the figure to in dots</span>
 <span class="sd">                per inch (default: 300)</span>
 
+<span class="sd">        Example:</span>
+<span class="sd">            Please complete the `EONR.calculate_eonr`_ and</span>
+<span class="sd">            `EONR.plot_eonr`_ examples first because this example builds on</span>
+<span class="sd">            the results of the ``my_eonr.fig_eonr.fig`` object.</span>
+
+<span class="sd">            Set output filename</span>
+
+<span class="sd">            &gt;&gt;&gt; fname = r&#39;F:\\nigo0024\Downloads\eonr_fig.png&#39;</span>
+
+<span class="sd">            Save the most recent figure</span>
+
+<span class="sd">            &gt;&gt;&gt; my_eonr.plot_save(fname)</span>
+<span class="sd">            ``fig`` is None, so saving the current (most recent) figure.</span>
+
+<span class="sd">            &gt;&gt;&gt; os.path.isfile(fname)</span>
+<span class="sd">            True</span>
+
+<span class="sd">        .. _EONR.calculate_eonr: eonr.EONR.html#eonr.EONR.calculate_eonr</span>
+<span class="sd">        .. _EONR.plot_eonr: eonr.EONR.html#eonr.EONR.plot_eonr</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">plotting_tools</span><span class="o">.</span><span class="n">plot_save</span><span class="p">(</span><span class="n">fname</span><span class="o">=</span><span class="n">fname</span><span class="p">,</span> <span class="n">base_dir</span><span class="o">=</span><span class="n">base_dir</span><span class="p">,</span> <span class="n">fig</span><span class="o">=</span><span class="n">fig</span><span class="p">,</span>
                                       <span class="n">dpi</span><span class="o">=</span><span class="n">dpi</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="EONR.plot_delta_tstat"><a class="viewcode-back" href="../../my_eonr.html#eonr.eonr.EONR.plot_delta_tstat">[docs]</a>    <span class="k">def</span> <span class="nf">plot_delta_tstat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">level_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s1">&#39;ggplot&#39;</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Plots the test statistic as a function nitrogen rate</span>
-
-<span class="sd">        Parameters:</span>
-<span class="sd">            level_list (``list``): The confidence levels to plot; should be a</span>
-<span class="sd">                subset of items in EONR.ci_list (default: None).</span>
-<span class="sd">            style (``str``, optional): The style of the plolt; can be any of</span>
-<span class="sd">                the options supported by ``matplotlib``</span>
-<span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">plotting_tools</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">plotting_tools</span> <span class="o">=</span> <span class="n">Plotting_tools</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">plotting_tools</span><span class="o">.</span><span class="n">update_eonr</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">plotting_tools</span><span class="o">.</span><span class="n">plot_delta_tstat</span><span class="p">(</span><span class="n">level_list</span><span class="o">=</span><span class="n">level_list</span><span class="p">,</span>
-                                             <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">fig_delta_tstat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plotting_tools</span><span class="o">.</span><span class="n">fig_delta_tstat</span></div>
-
-<div class="viewcode-block" id="EONR.plot_derivative"><a class="viewcode-back" href="../../my_eonr.html#eonr.eonr.EONR.plot_derivative">[docs]</a>    <span class="k">def</span> <span class="nf">plot_derivative</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ci_type</span><span class="o">=</span><span class="s1">&#39;profile-likelihood&#39;</span><span class="p">,</span> <span class="n">ci_level</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                        <span class="n">style</span><span class="o">=</span><span class="s1">&#39;ggplot&#39;</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Plots a zoomed up view of the ONR and the derivative</span>
-
-<span class="sd">        Parameters:</span>
-<span class="sd">            ci_type (str): Indicates which confidence interval type should be</span>
-<span class="sd">                plotted. Options are &#39;wald&#39;, to plot the Wald</span>
-<span class="sd">                CIs; &#39;profile-likelihood&#39;, to plot the profile-likelihood</span>
-<span class="sd">                CIs; or &#39;bootstrap&#39;, to plot the bootstrap CIs (default:</span>
-<span class="sd">                &#39;profile-likelihood&#39;).</span>
-<span class="sd">            ci_level (float): The confidence interval level to be plotted, and</span>
-<span class="sd">                must be one of the values in EONR.ci_list. If None, uses the</span>
-<span class="sd">                EONR.ci_level (default: None).</span>
-<span class="sd">            level (``float``): The confidence levels to plot; should be a</span>
-<span class="sd">                value from EONR.ci_list (default: 0.90).</span>
-<span class="sd">            style (``str``, optional): The style of the plolt; can be any of</span>
-<span class="sd">                the options supported by ``matplotlib``</span>
-<span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">plotting_tools</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">plotting_tools</span> <span class="o">=</span> <span class="n">Plotting_tools</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">plotting_tools</span><span class="o">.</span><span class="n">update_eonr</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">plotting_tools</span><span class="o">.</span><span class="n">plot_derivative</span><span class="p">(</span><span class="n">ci_type</span><span class="o">=</span><span class="n">ci_type</span><span class="p">,</span> <span class="n">ci_level</span><span class="o">=</span><span class="n">ci_level</span><span class="p">,</span>
-                                            <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">fig_derivative</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plotting_tools</span><span class="o">.</span><span class="n">fig_derivative</span></div>
-
-<div class="viewcode-block" id="EONR.plot_tau"><a class="viewcode-back" href="../../my_eonr.html#eonr.eonr.EONR.plot_tau">[docs]</a>    <span class="k">def</span> <span class="nf">plot_tau</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y_axis</span><span class="o">=</span><span class="s1">&#39;t_stat&#39;</span><span class="p">,</span> <span class="n">emphasis</span><span class="o">=</span><span class="s1">&#39;profile-likelihood&#39;</span><span class="p">,</span>
+<div class="viewcode-block" id="EONR.plot_tau"><a class="viewcode-back" href="../../api/eonr.EONR.html#eonr.EONR.plot_tau">[docs]</a>    <span class="k">def</span> <span class="nf">plot_tau</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y_axis</span><span class="o">=</span><span class="s1">&#39;t_stat&#39;</span><span class="p">,</span> <span class="n">emphasis</span><span class="o">=</span><span class="s1">&#39;profile-likelihood&#39;</span><span class="p">,</span>
                  <span class="n">run_n</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s1">&#39;ggplot&#39;</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Plots the test statistic as a function nitrogen rate</span>
 
@@ -2443,6 +2668,16 @@
 <span class="sd">                run_n in ``EONR.df_ci`` (default: None).</span>
 <span class="sd">            style (``str``, optional): The style of the plolt; can be any of</span>
 <span class="sd">                the options supported by ``matplotlib``</span>
+
+<span class="sd">        Example:</span>
+<span class="sd">            Please complete the `EONR.calculate_eonr`_ example first because</span>
+<span class="sd">            this example builds on the results of the ``my_eonr`` object.</span>
+
+<span class="sd">            &gt;&gt;&gt; my_eonr.plot_tau()</span>
+
+<span class="sd">            .. image:: ../img/plot_tau.png</span>
+
+<span class="sd">        .. _EONR.calculate_eonr: eonr.EONR.html#eonr.EONR.calculate_eonr</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">plotting_tools</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">plotting_tools</span> <span class="o">=</span> <span class="n">Plotting_tools</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
@@ -2452,16 +2687,29 @@
                                      <span class="n">run_n</span><span class="o">=</span><span class="n">run_n</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fig_tau</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plotting_tools</span><span class="o">.</span><span class="n">fig_tau</span></div>
 
-<div class="viewcode-block" id="EONR.print_results"><a class="viewcode-back" href="../../my_eonr.html#eonr.eonr.EONR.print_results">[docs]</a>    <span class="k">def</span> <span class="nf">print_results</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Prints the results of the optimum nitrogen rate computation</span>
+<div class="viewcode-block" id="EONR.print_results"><a class="viewcode-back" href="../../api/eonr.EONR.html#eonr.EONR.print_results">[docs]</a>    <span class="k">def</span> <span class="nf">print_results</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Prints the results of the optimum nitrogen rate computation</span>
 
+<span class="sd">        Example:</span>
+<span class="sd">            Please complete the `EONR.calculate_eonr`_ example first because</span>
+<span class="sd">            this example builds on the results of the ``my_eonr`` object.</span>
+
+<span class="sd">            &gt;&gt;&gt; my_eonr.print_results()</span>
+<span class="sd">            Economic optimum N rate (EONR): 162.3 kg per ha [130.5, 207.8] (90.0% confidence)</span>
+<span class="sd">            Maximum return to N (MRTN): $767.93 per ha</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_print_results</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="EONR.set_column_names"><a class="viewcode-back" href="../../my_eonr.html#eonr.eonr.EONR.set_column_names">[docs]</a>    <span class="k">def</span> <span class="nf">set_column_names</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">col_n_app</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">col_yld</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">col_crop_nup</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<div class="viewcode-block" id="EONR.set_column_names"><a class="viewcode-back" href="../../api/eonr.EONR.html#eonr.EONR.set_column_names">[docs]</a>    <span class="k">def</span> <span class="nf">set_column_names</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">col_n_app</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">col_yld</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">col_crop_nup</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                          <span class="n">col_n_avail</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">col_year</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                          <span class="n">col_location</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">col_time_n</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Sets the column name(s) for ``EONR.df_data``</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Sets the column name(s) for ``EONR.df_data``</span>
+
+<span class="sd">        If these descriptions are used as metadata in the input dataset, they</span>
+<span class="sd">        are accessed for plotting purposes. These parameters do not affect the</span>
+<span class="sd">        calculation of the EONR or its confidence intervals in any way.</span>
 
 <span class="sd">        Parameters:</span>
 <span class="sd">            col_n_app (``str``, optional): Column name pointing to the rate of</span>
@@ -2481,10 +2729,22 @@
 <span class="sd">            col_time_n (``str``, optional): Column name pointing to nitrogen</span>
 <span class="sd">                application timing (default: None).</span>
 
-<span class="sd">        Note:</span>
-<span class="sd">            Year, location, or nitrogen timing (used for titles and axes labels</span>
-<span class="sd">            for plotting).</span>
+<span class="sd">        Example:</span>
+<span class="sd">            Load and initialize ``eonr``</span>
 
+<span class="sd">            &gt;&gt;&gt; from eonr import EONR</span>
+<span class="sd">            &gt;&gt;&gt; import os</span>
+<span class="sd">            &gt;&gt;&gt; import pandas as pd</span>
+<span class="sd">            &gt;&gt;&gt; base_dir = r&#39;F:\\nigo0024\Documents\GitHub\eonr\eonr&#39;</span>
+<span class="sd">            &gt;&gt;&gt; my_eonr = EONR(model=None, base_dir=base_dir)</span>
+
+<span class="sd">            Set the column names using ``EONR.set_column_names``</span>
+
+<span class="sd">            &gt;&gt;&gt; my_eonr.set_column_names(col_n_app=&#39;rate_n_applied_kgha&#39;, col_yld=&#39;yld_grain_dry_kgha&#39;)</span>
+<span class="sd">            &gt;&gt;&gt; print(my_eonr.col_n_app)</span>
+<span class="sd">            &gt;&gt;&gt; print(my_eonr.col_yld)</span>
+<span class="sd">            rate_n_applied_kgha</span>
+<span class="sd">            yld_grain_dry_kgha</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">if</span> <span class="n">col_n_app</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">col_n_app</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">col_n_app</span><span class="p">)</span>
@@ -2500,10 +2760,61 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">col_location</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">col_location</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">col_time_n</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">col_time_n</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">col_time_n</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_find_trial_details</span><span class="p">()</span>  <span class="c1"># Use new col_name(s) to update details</span></div>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_find_trial_details</span><span class="p">()</span>  <span class="c1"># Use new col_name(s) to update details</span></div>
 
-<div class="viewcode-block" id="EONR.set_trial_details"><a class="viewcode-back" href="../../my_eonr.html#eonr.eonr.EONR.set_trial_details">[docs]</a>    <span class="k">def</span> <span class="nf">set_trial_details</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">year</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">location</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n_timing</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Sets the year, location, or nitrogen timing</span>
+<div class="viewcode-block" id="EONR.set_units"><a class="viewcode-back" href="../../api/eonr.EONR.html#eonr.EONR.set_units">[docs]</a>    <span class="k">def</span> <span class="nf">set_units</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unit_currency</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">unit_fert</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">unit_grain</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                  <span class="n">unit_area</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Sets the units data in ``EONR.df_data`` and for reporting</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">            unit_currency (``str``, optional): Currency unit, e.g., &quot;$&quot;</span>
+<span class="sd">                (default: None).</span>
+<span class="sd">            unit_fert (``str``, optional): Fertilizer unit, e.g., &quot;lbs&quot;</span>
+<span class="sd">                (default: None).</span>
+<span class="sd">            unit_grain (``str``, optional): Grain unit, e.g., &quot;bu&quot; (default:</span>
+<span class="sd">                None).</span>
+<span class="sd">            unit_area (``str``, optional): Area unit, e.g., &quot;ac&quot; (default:</span>
+<span class="sd">                None).</span>
+
+<span class="sd">        Example:</span>
+<span class="sd">            Load and initialize ``eonr``</span>
+
+<span class="sd">            &gt;&gt;&gt; from eonr import EONR</span>
+<span class="sd">            &gt;&gt;&gt; import os</span>
+<span class="sd">            &gt;&gt;&gt; import pandas as pd</span>
+<span class="sd">            &gt;&gt;&gt; base_dir = r&#39;F:\\nigo0024\Documents\GitHub\eonr\eonr&#39;</span>
+<span class="sd">            &gt;&gt;&gt; my_eonr = EONR(model=None, base_dir=base_dir)</span>
+
+<span class="sd">            Set the units using ``EONR.set_units``</span>
+
+<span class="sd">            &gt;&gt;&gt; my_eonr.set_units(unit_currency=&#39;USD&#39;, unit_fert=&#39;kg&#39;, unit_grain=&#39;kg&#39;, unit_area=&#39;ha&#39;)</span>
+<span class="sd">            &gt;&gt;&gt; print(my_eonr.unit_currency)</span>
+<span class="sd">            &gt;&gt;&gt; print(my_eonr.unit_fert)</span>
+<span class="sd">            &gt;&gt;&gt; print(my_eonr.unit_grain)</span>
+<span class="sd">            &gt;&gt;&gt; print(my_eonr.unit_area)</span>
+<span class="sd">            USD</span>
+<span class="sd">            kg</span>
+<span class="sd">            kg</span>
+<span class="sd">            ha</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="n">unit_currency</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">unit_currency</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">unit_currency</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">unit_fert</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">unit_fert</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">unit_fert</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">unit_grain</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">unit_grain</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">unit_grain</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">unit_area</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">unit_area</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">unit_area</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="EONR.set_trial_details"><a class="viewcode-back" href="../../api/eonr.EONR.html#eonr.EONR.set_trial_details">[docs]</a>    <span class="k">def</span> <span class="nf">set_trial_details</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">year</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">location</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n_timing</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Sets the year, location, or nitrogen timing</span>
+
+<span class="sd">        If these descriptions are used as metadata in the input dataset, they</span>
+<span class="sd">        are accessed for plotting purposes. These parameters do not affect the</span>
+<span class="sd">        calculation of the EONR or its confidence intervals in any way.</span>
 
 <span class="sd">        Parameters:</span>
 <span class="sd">            year (``str`` or ``int``, optional): Year of experimental trial</span>
@@ -2513,10 +2824,24 @@
 <span class="sd">            n_timing (``str`` or ``int``, optional): Nitrogen timing of</span>
 <span class="sd">                experimental trial (default: None)</span>
 
-<span class="sd">        Note:</span>
-<span class="sd">            Year, location, or nitrogen timing (used for titles and axes labels</span>
-<span class="sd">            for plotting).</span>
+<span class="sd">        Example:</span>
+<span class="sd">            Load and initialize ``eonr``</span>
 
+<span class="sd">            &gt;&gt;&gt; from eonr import EONR</span>
+<span class="sd">            &gt;&gt;&gt; import os</span>
+<span class="sd">            &gt;&gt;&gt; import pandas as pd</span>
+<span class="sd">            &gt;&gt;&gt; base_dir = r&#39;F:\\nigo0024\Documents\GitHub\eonr\eonr&#39;</span>
+<span class="sd">            &gt;&gt;&gt; my_eonr = EONR(model=None, base_dir=base_dir)</span>
+
+<span class="sd">            Set the trial details using ``EONR.set_trial_details``</span>
+
+<span class="sd">            &gt;&gt;&gt; my_eonr.set_trial_details(year=2019, location=&#39;St. Paul, MN&#39;, n_timing=&#39;At planting&#39;)</span>
+<span class="sd">            &gt;&gt;&gt; print(my_eonr.year)</span>
+<span class="sd">            &gt;&gt;&gt; print(my_eonr.location)</span>
+<span class="sd">            &gt;&gt;&gt; print(my_eonr.n_timing)</span>
+<span class="sd">            2019</span>
+<span class="sd">            St. Paul, MN</span>
+<span class="sd">            At planting</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">if</span> <span class="n">year</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">year</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">year</span><span class="p">)</span>
@@ -2525,9 +2850,18 @@
         <span class="k">if</span> <span class="n">n_timing</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">n_timing</span> <span class="o">=</span> <span class="n">n_timing</span></div>
 
-<div class="viewcode-block" id="EONR.update_econ"><a class="viewcode-back" href="../../my_eonr.html#eonr.eonr.EONR.update_econ">[docs]</a>    <span class="k">def</span> <span class="nf">update_econ</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cost_n_fert</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cost_n_social</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<div class="viewcode-block" id="EONR.update_econ"><a class="viewcode-back" href="../../api/eonr.EONR.html#eonr.EONR.update_econ">[docs]</a>    <span class="k">def</span> <span class="nf">update_econ</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cost_n_fert</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cost_n_social</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                     <span class="n">costs_fixed</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">price_grain</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Sets or resets the nitrogen costs or grain price</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Sets or resets the nitrogen fertilizer cost, social cost of nitrogen,</span>
+<span class="sd">        fixed costs, and/or grain price.</span>
+
+<span class="sd">        The price ratio is recomputed based on the passed information, then</span>
+<span class="sd">        the the lowest level folder in the base directory is renamed/adjusted</span>
+<span class="sd">        (``EONR.base_dir``) based on to the price ratio. The folder name is</span>
+<span class="sd">        set according to the economic scenario (useful when running ``EONR``</span>
+<span class="sd">        for many different economic scenarios then plotting and saving results</span>
+<span class="sd">        for each scenario).</span>
 
 <span class="sd">        Parameters:</span>
 <span class="sd">            cost_n_fert (``float``, optional): Cost of nitrogen fertilizer</span>
@@ -2538,25 +2872,32 @@
 <span class="sd">            (default: None)</span>
 <span class="sd">            price_grain (``float``, optional): Price of grain (default: None).</span>
 
-<span class="sd">        Note:</span>
-<span class="sd">            ``update_econ()`` recomputes the price ratio based on the passed</span>
-<span class="sd">            information, then adjusts/renames the lowest level folder in the</span>
-<span class="sd">            base directory, ``EONR.base_dir``, based on to the ratio. The</span>
-<span class="sd">            folder name is set according to the economic scenario (useful when</span>
-<span class="sd">            running ``EONR`` for many different economic scenarios then</span>
-<span class="sd">            plotting and saving results for each scenario). See examples below.</span>
+<span class="sd">        Example:</span>
+<span class="sd">            Load and initialize ``eonr``</span>
 
-<span class="sd">            Example 1 (*how folder name is set when social cost of nitrogen is</span>
-<span class="sd">            zero*): folder name will be set to **&quot;trad_0010&quot;** if</span>
-<span class="sd">            ``cost_n_social == 0`` and ``price_ratio == 0.10``, coresponding to</span>
-<span class="sd">            *&quot;trad&quot;* and *&quot;0010&quot;* in the folder name, respectively.</span>
+<span class="sd">            &gt;&gt;&gt; from eonr import EONR</span>
+<span class="sd">            &gt;&gt;&gt; import os</span>
+<span class="sd">            &gt;&gt;&gt; import pandas as pd</span>
+<span class="sd">            &gt;&gt;&gt; base_dir = r&#39;F:\\nigo0024\Documents\GitHub\eonr\eonr&#39;</span>
+<span class="sd">            &gt;&gt;&gt; my_eonr = EONR(model=None, base_dir=base_dir)</span>
 
-<span class="sd">            Example 2 (*how folder name is set when social cost of nitrogen is</span>
-<span class="sd">            greater than zero*): folder name will be set to</span>
-<span class="sd">            **&quot;social_154_1100&quot;** if ``cost_n_social &gt; 0``,</span>
-<span class="sd">            ``price_ratio = 15.4``, and ``cost_n_social = 1.10``, corresponding</span>
-<span class="sd">            to *&quot;social&quot;*, *&quot;154&quot;*, and *&quot;1100&quot;* in the folder name,</span>
-<span class="sd">            respectively.</span>
+<span class="sd">            Set/update the cost of fertilizer and price of grain using</span>
+<span class="sd">            ``EONR.update_econ``</span>
+
+<span class="sd">            &gt;&gt;&gt; my_eonr.update_econ(cost_n_fert=0.88, price_grain=0.157)</span>
+<span class="sd">            &gt;&gt;&gt; print(my_eonr.price_ratio)</span>
+<span class="sd">            &gt;&gt;&gt; print(my_eonr.base_dir)</span>
+<span class="sd">            5.605095541</span>
+<span class="sd">            F:\\nigo0024\Documents\GitHub\eonr\eonr\trad_5605</span>
+
+<span class="sd">            Set/update the social cost of nitrogen, again using</span>
+<span class="sd">            ``EONR.update_econ``</span>
+
+<span class="sd">            &gt;&gt;&gt; my_eonr.update_econ(cost_n_social=1.1)</span>
+<span class="sd">            &gt;&gt;&gt; print(my_eonr.price_ratio)</span>
+<span class="sd">            &gt;&gt;&gt; print(my_eonr.base_dir)</span>
+<span class="sd">            12.61146496</span>
+<span class="sd">            F:\\nigo0024\Documents\GitHub\eonr\eonr\social_12611_1100</span>
 
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">if</span> <span class="n">cost_n_fert</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -2607,8 +2948,8 @@
       
     </p>
     <p>
-        &copy; Copyright 2019, Tyler J Nigon.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.0.0.<br/>
+        &copy; Copyright 2019-2020, Tyler J Nigon.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.3.1.<br/>
     </p>
   </div>
 </footer>

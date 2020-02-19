@@ -5,8 +5,21 @@ EONR Documentation
 
 *A Python tool for computing the optimum nitrogen rate and its confidence intervals from agricultural research data*
 
-.. |version_current| replace:: 0.2.0
+.. |version_current| replace:: 0.2.1
 Current version: |version_current|
+
+``EONR`` uses data from agronomic field trials to calculate the EONR under economic conditions defined by the user (i.e., grain price and fertilizer cost).
+
+**Check out the publication** in `Computers and Electronics in Agriculture <https://www.sciencedirect.com/science/article/pii/S0168169919309354>`_:
+
+.. image:: _images/compag_screenshot.png
+   :width: 600
+   :align: center
+   :alt: EONR COMPAG Publication
+
+**Citation:**
+
+Nigon, T., Yang, C., Mulla, D.J., and Kaiser, D.E. (2019). Computing uncertainty in the optimum nitrogen rate using a generalized cost function. *Computers and Electronics in Agriculture*, 167(2019). doi: `10.1016/j.compag.2019.105030 <https://www.sciencedirect.com/science/article/pii/S0168169919309354>`_.
 
 ##################
 Table of Contents
@@ -20,11 +33,11 @@ Table of Contents
    :titlesonly:
 
    Home <index>
-   installation
-   tutorial
-   advanced_tutorial
-   background
-   my_eonr
+   installation.ipynb
+   tutorial.ipynb
+   advanced_tutorial.ipynb
+   background.ipynb
+   eonr_api
    license
    changelog
 
@@ -46,9 +59,7 @@ It can be used for any crop (e.g., corn, wheat, potatoes, etc.), and as of versi
 
 **You should always exercise caution in making sure that the model being used is appropriate for your application.**
 
-The methods and algorithms used by the ``EONR`` package are documented in a manuscript submitted to `Computers and Electronics in Agriculture <https://www.journals.elsevier.com/computers-and-electronics-in-agriculture>`_ and is currently under peer-review:
-
-Nigon, T., Yang, C., Mulla, D.J., and Kaiser, D. (in review). Computing uncertainty in the optimum nitrogen rate using a generalized cost function. *Computers and Electronics in Agriculture*.
+The methods and algorithms used by the ``EONR`` package are documented in a manuscript published in `Computers and Electronics in Agriculture <https://www.journals.elsevier.com/computers-and-electronics-in-agriculture>`_.
 
 *If there is interest, future versions could add support for other models (spherical, linear-plateau, etc.) that may improve the fit of experimental yield response to nitrogen for various scenarios. Please reach out or contribute to the project if you would like to see support for a particular model.*
 
