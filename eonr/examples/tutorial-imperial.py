@@ -27,7 +27,8 @@ print('EONR version: {0}'.format(eonr.__version__))
 # In[2]:
 
 
-df_data = pd.read_csv(r'C:\Users\Tyler\Documents\GitHub\eonr\eonr\examples\data\minnesota_2012.csv')
+#df_data = pd.read_csv(r'C:\Users\Tyler\Documents\GitHub\eonr\eonr\examples\data\minnesota_2012.csv')
+df_data = pd.read_csv(r'C:\Users\Tyler\Dropbox\UMN\UMN_Publications\2019_hyperspectral\data\aerf_grain_yield_2019.csv')
 df_data
 
 #import seaborn as sns
@@ -43,10 +44,6 @@ df_data
 
 # In[3]:
 
-
-col_n_app = 'rate_n_applied_kgha'
-col_yld = 'yld_grain_dry_kgha'
-
 import pint
 
 def buac_to_kgha(buac=200, test_weight=56):
@@ -61,8 +58,17 @@ def kgha_to_buac(kgha=13500, test_weight=56):
     buac = ureg.convert(kgac, ureg.kg, ureg.lbs) / test_weight
     return buac
 
-df_data['rate_n_applied_lbsac'] = df_data['rate_n_applied_kgha'] / 1.12
-df_data['yld_grain_buac'] = kgha_to_buac(df_data['yld_grain_dry_kgha'])
+#df_data['rate_n_applied_lbsac'] = df_data['rate_n_applied_kgha'] / 1.12
+df_data['yld_grain_dry_kgha'] = buac_to_kgha(df_data['yld_grain_dry_buac'])
+df_data['location'] = 'AERF - Waseca'
+
+
+#col_n_app = 'rate_n_applied_kgha'
+col_n_app = 'rate_n_total_kgha'
+col_yld = 'yld_grain_dry_kgha'
+col_year = 'year'
+col_location  = 'location'
+col_time_n = 'timing'
 
 # Each row of data in our dataframe should correspond to a nitrogen rate treatment plot. It is common to have several other columns describing each treatment plot (e.g., year, location, replication, nitrogen timing, etc.). These aren't necessary, but `EONR` will try pull information from "year", "location", and "nitrogen timing" for labeling the plots that are generated (as you'll see towards the end of this tutorial).
 #
@@ -91,6 +97,9 @@ unit_area = 'ha'
 cost_n_fert = 0.88  # in USD per kg nitrogen
 price_grain = 0.157  # in USD per kg grain
 
+#cost_n_fert = 0.40  # in USD per lb nitrogen
+#price_grain = 4.00  # in USD per bu grain
+
 
 # - - -
 # ### Initialize `EONR`
@@ -112,6 +121,9 @@ my_eonr = eonr.EONR(cost_n_fert=cost_n_fert,
                     price_grain=price_grain,
                     col_n_app=col_n_app,
                     col_yld=col_yld,
+                    col_year=col_year,
+                    col_location=col_location,
+                    col_time_n=col_time_n,
                     unit_currency=unit_currency,
                     unit_grain=unit_grain,
                     unit_fert=unit_fert,
@@ -127,7 +139,8 @@ my_eonr = eonr.EONR(cost_n_fert=cost_n_fert,
 # In[7]:
 
 
-my_eonr.calculate_eonr(df_data)
+my_eonr.calculate_eonr(df_data[df_data['rep'] == 1])
+my_eonr.calculate_eonr(df_data[df_data['rep'] == 2])
 
 
 # It may take a few seconds to run, but it will take much longer if you choose to compute the bootstrap confidence intervals in addition to the profile-likelihood confidence intervals. Please see the [Advanced tutorial](advanced_tutorial.html#Bootstrap-confidence-intervals) describing how to compute the bootstrap CIs `EONR` does not run the bootstrap CIs by default).
@@ -142,6 +155,7 @@ my_eonr.calculate_eonr(df_data)
 
 
 my_eonr.plot_eonr(x_min=-5, x_max=300, y_min=-100, y_max=1400)
+my_eonr.plot_eonr(x_min=-5, x_max=300, y_min=-100, y_max=600)
 
 
 # * The blue points are **experimental data** (yield value in \\$ per ha as a function of nitrogen rate)
