@@ -1,0 +1,9 @@
+channels:
+    - conda-forge
+dependencies:
+    - python=3.8
+    - scikits-bootstrap=1.*
+    - seaborn=0.11.*
+    - uncertainties=3.*
+    - spyder=5.*
+    - pip=21.*
