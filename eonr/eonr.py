@@ -1196,9 +1196,9 @@ class EONR(object):
         '''
         Builds a template to store confidence intervals in a dataframe
         '''
-        df_ci = pd.DataFrame(data=[[self.df_data.iloc[0]['location'],
-                                    self.df_data.iloc[0]['year'],
-                                    self.df_data.iloc[0]['time_n'],
+        df_ci = pd.DataFrame(data=[[self.df_data.iloc[0][self.col_location],
+                                    self.df_data.iloc[0][self.col_year],
+                                    self.df_data.iloc[0][self.col_time_n],
                                     self.price_grain,
                                     self.cost_n_fert,
                                     self.cost_n_social,
@@ -1342,9 +1342,9 @@ class EONR(object):
                     boot_u = df_boot[df_boot['alpha']==alpha]['boot_u'].values[0]
             else:
                 boot_l, boot_u = np.nan, np.nan
-            df_row = pd.DataFrame([[self.df_data.iloc[0]['location'],
-                                    self.df_data.iloc[0]['year'],
-                                    self.df_data.iloc[0]['time_n'],
+            df_row = pd.DataFrame([[self.df_data.iloc[0][self.col_location],
+                                    self.df_data.iloc[0][self.col_year],
+                                    self.df_data.iloc[0][self.col_time_n],
                                     self.price_grain,
                                     self.cost_n_fert,
                                     self.cost_n_social,
@@ -1922,9 +1922,9 @@ class EONR(object):
             wald_l, wald_u = self._compute_wald(n, p, alpha)
             f_stat = stats.f.ppf(1-alpha, dfn=1, dfd=len(self.df_data)-3)
             t_stat = stats.t.ppf(1-alpha/2, len(self.df_data)-3)
-            df_row = pd.DataFrame([[self.df_data.iloc[0]['location'],
-                                    self.df_data.iloc[0]['year'],
-                                    self.df_data.iloc[0]['time_n'],
+            df_row = pd.DataFrame([[self.df_data.iloc[0][self.col_location],
+                                    self.df_data.iloc[0][self.col_year],
+                                    self.df_data.iloc[0][self.col_time_n],
                                     self.price_grain,
                                     self.cost_n_fert,
                                     self.cost_n_social,
@@ -2082,9 +2082,9 @@ class EONR(object):
             locs.sort()
             for loc in locs:
                 df_loc = df_year[df_year['location'] == loc]
-                times = df_loc['time_n'].unique()
+                times = df_loc[self.col_time_n].unique()
                 for time in times:
-                    df_yloct = df_loc[df_loc['time_n'] == time]
+                    df_yloct = df_loc[df_loc[self.col_time_n] == time]
                     eonr_base = df_yloct['eonr'].max()  # lowest fert:grain rat
                     eonr_delta = df_yloct['eonr'] - eonr_base
                     df_yloct.insert(8, 'eonr_delta', eonr_delta)
