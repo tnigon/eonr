@@ -1678,12 +1678,15 @@ class EONR(object):
         '''
         if pl_guess_init is None:
             pl_guess_init = pl_guess
+        if pl_guess <= 0:  # Should not be zero
+            pl_guess = 0.5  # just guessing this is where it should be
         if side == 'lower':
             initial_guess = theta2_opt - pl_guess
         elif side == 'upper':
             initial_guess = theta2_opt + pl_guess
         result = minimize(f, initial_guess, method=method)
 #            print(result)
+        # print(pl_guess)
         if pl_guess > 800:
             pl_out = None
         elif result.success is not True:

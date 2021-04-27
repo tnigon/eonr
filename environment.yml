@@ -2,8 +2,8 @@ channels:
     - conda-forge
 dependencies:
     - python=3.8
-    - scikits-bootstrap=1.*
-    - seaborn=0.11.*
-    - uncertainties=3.*
+    - eonr=0.*
+    - pint=0.*
     - spyder=5.*
+    - jupyter=1.*
     - pip=21.*
