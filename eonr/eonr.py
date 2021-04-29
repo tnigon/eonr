@@ -958,7 +958,7 @@ class EONR(object):
             f_model = self.models.quad_plateau
         else:
             raise NotImplementedError('{0} model not implemented'
-                                      ''.format(self.models.quadratic))
+                                      ''.format(self.model))
         popt, pcov = self._curve_fit_opt(f_model, x, y, p0=guess, info=info)
 
         # the following should be made robust to dynamically find the starting values for a dataset..
@@ -994,6 +994,7 @@ class EONR(object):
 
         if rerun is False:
             self.coefs_grtn = {
+                    'model': self.model_temp,
                     'b0': b0,
                     'b1': b1,
                     'b2': b2,
@@ -1027,6 +1028,7 @@ class EONR(object):
             self.coefs_grtn_primary = self.coefs_grtn.copy()
             self.coefs_grtn = {}
             self.coefs_grtn = {
+                    'model': self.model_temp,
                     'b0': b0,
                     'b1': b1,
                     'b2': b2,
@@ -1077,18 +1079,21 @@ class EONR(object):
         y_temp = (self.coefs_grtn['b0'].n +
                   (x1*self.coefs_grtn['b1'].n) +
                   (x1*x1*self.coefs_grtn['b2'].n))
-        y_max_idx = np.argmax(y_temp)
-        y2a = (self.coefs_grtn['b0'].n +
-               (x1a[:y_max_idx]*self.coefs_grtn['b1'].n) +
-               (x1a[:y_max_idx]*x1a[:y_max_idx]*self.coefs_grtn['b2'].n))
-        if self.eonr <= self.df_data[self.col_n_app].max():
-            y2b = np.linspace(y_max, y_max, num=n_steps-y_max_idx)
-        else:  # EONR is past the point of available data, plot last val again
-            last_pt = (self.coefs_grtn['b0'].n +
-                       (x1a[-1]*self.coefs_grtn['b1'].n) +
-                       (x1a[-1]*x1a[-1]*self.coefs_grtn['b2'].n))
-            y2b = np.linspace(last_pt, last_pt, num=n_steps-y_max_idx)
-        y_grtn = np.concatenate((y2a, y2b))
+        if self.coefs_grtn['model'] == 'quadratic-plateau':
+            y_max_idx = np.argmax(y_temp)
+            y2a = (self.coefs_grtn['b0'].n +
+                   (x1a[:y_max_idx]*self.coefs_grtn['b1'].n) +
+                   (x1a[:y_max_idx]*x1a[:y_max_idx]*self.coefs_grtn['b2'].n))
+            if self.eonr <= self.df_data[self.col_n_app].max():
+                y2b = np.linspace(y_max, y_max, num=n_steps-y_max_idx)
+            else:  # EONR is past the point of available data, plot last val again
+                last_pt = (self.coefs_grtn['b0'].n +
+                           (x1a[-1]*self.coefs_grtn['b1'].n) +
+                           (x1a[-1]*x1a[-1]*self.coefs_grtn['b2'].n))
+                y2b = np.linspace(last_pt, last_pt, num=n_steps-y_max_idx)
+            y_grtn = np.concatenate((y2a, y2b))
+        else:
+            y_grtn = y_temp.copy()
 
         # if necessary, modify y_grtn so it has correct number of values
         if len(y_grtn) < n_steps:
