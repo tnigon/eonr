@@ -283,7 +283,7 @@ class Plotting_tools(object):
         Draws N cost on plot
         '''
         g.ax.plot(self.df_linspace['x'],
-                  self.df_linspace['quad_plat'],
+                  self.df_linspace['grtn'],
 #                  self.linspace_qp[0],
 #                  self.linspace_qp[1],
                   color=palette[0],

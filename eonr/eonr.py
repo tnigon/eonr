@@ -640,7 +640,7 @@ class EONR(object):
         rtn_der2 = np.insert(abs(np.diff(rtn_der)), 0, np.nan)
         df_linspace = pd.DataFrame({'x': x1,
                                     'cost_n_fert': y_fert_n,
-                                    'quad_plat': y_grtn,
+                                    'grtn': y_grtn,
                                     'rtn': rtn,
                                     'rtn_der': rtn_der,
                                     'rtn_der2': rtn_der2})
@@ -734,19 +734,27 @@ class EONR(object):
             y_social_n = x1 * self.cost_n_social
             eonr_social_n = self.eonr * self.cost_n_social
         else:
-            if self.coefs_social['lin_r2'] > self.coefs_social['exp_r2']:
+            if self.coefs_social['lin_rmse'] < self.coefs_social['exp_rmse']:
                 y_social_n = self.coefs_social['lin_b'] +\
                         (x1 * self.coefs_social['lin_mx'])
                 eonr_social_n = self.coefs_social['lin_b'] +\
                         (self.eonr * self.coefs_social['lin_mx'])
             else:
-                x1_exp = self.coefs_social['exp_gamma0'] *\
-                        unp.exp(self.coefs_social['exp_gamma1'] * x1) +\
-                        self.coefs_social['exp_gamma2']
+                # x1_exp = self.coefs_social['exp_gamma0'] *\
+                #         unp.exp(self.coefs_social['exp_gamma1'] * x1) +\
+                #         self.coefs_social['exp_gamma2']
+                x1_exp = self.models.exp(
+                    x1, self.coefs_social['exp_gamma0'],
+                    self.coefs_social['exp_gamma1'],
+                    self.coefs_social['exp_gamma2'])
                 y_social_n = unp.nominal_values(x1_exp)
-                eonr_social_n = self.coefs_social['exp_gamma0'] *\
-                        unp.exp(self.coefs_social['exp_gamma1'] * self.eonr) +\
-                        self.coefs_social['exp_gamma2']
+                # eonr_social_n = self.coefs_social['exp_gamma0'] *\
+                #         unp.exp(self.coefs_social['exp_gamma1'] * self.eonr) +\
+                #         self.coefs_social['exp_gamma2']
+                eonr_social_n = self.models.exp(
+                    self.eonr, self.coefs_social['exp_gamma0'],
+                    self.coefs_social['exp_gamma1'],
+                    self.coefs_social['exp_gamma2'])
                 std = unp.std_devs(x1_exp)
                 ci_l = (y_social_n - 2 * std)
                 ci_u = (y_social_n - 2 * std)
@@ -1079,7 +1087,7 @@ class EONR(object):
         y_temp = (self.coefs_grtn['b0'].n +
                   (x1*self.coefs_grtn['b1'].n) +
                   (x1*x1*self.coefs_grtn['b2'].n))
-        if self.coefs_grtn['model'] == 'quadratic-plateau':
+        if self.coefs_grtn['model'] == 'quad_plateau':
             y_max_idx = np.argmax(y_temp)
             y2a = (self.coefs_grtn['b0'].n +
                    (x1a[:y_max_idx]*self.coefs_grtn['b1'].n) +
@@ -1414,7 +1422,6 @@ class EONR(object):
         res -= res.mean()
         df_temp = pd.DataFrame(data=res, index=df_data.index,
                                columns=['grtn_res'])
-        self.df_temp = df_temp
         df_data = pd.concat([df_data, df_temp], axis=1)
         self.df_data = df_data
 
