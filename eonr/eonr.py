@@ -212,6 +212,10 @@ class EONR(object):
             self.onr_name = 'Agronomic'
             self.onr_acr = 'AONR'
 
+        if self.model is None:
+            print('<eonr.model> is set to ``None``, so both quadratic and '
+                  'quadratic-plateau models will be checked for best fit.')
+
         self.models = Models(self)
         self.plotting_tools = Plotting_tools(self)
 
@@ -931,8 +935,6 @@ class EONR(object):
         #  TODO: Add a try/except to catch a bad guess.. or at least warn the
         # user that the guess is *extremely* sensitive
         if self.model is None and rerun is False:
-            print('Checking quadratic and quadric-plateau models for best '
-                  'fit..')
             model_q = self.models.quadratic
             model_qp = self.models.quad_plateau
             popt_q, pcov_q = self._curve_fit_opt(model_q, x, y,
@@ -949,12 +951,12 @@ class EONR(object):
                 self.model_temp = 'quadratic'
 #                model = self.models.quadratic
 #                popt, pcov = popt_q, pcov_q
-                print('Using the quadratic model..')
+                # print('Using the quadratic model..')
             else:
                 self.model_temp = 'quad_plateau'
 #                model = self.models.quad_plateau
 #                popt, pcov = popt_qp, pcov_qp
-                print('Using the quadratic-plateau model..')
+                # print('Using the quadratic-plateau model..')
         elif self.model is None and rerun is True:
             # Using self.model_temp because it was already determined
             pass
