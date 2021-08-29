@@ -102,7 +102,8 @@ class EONR(object):
                  unit_currency='$',
                  unit_fert='lbs', unit_grain='bu', unit_area='ac',
                  model='quad_plateau', ci_level=0.9, base_dir=None,
-                 base_zero=True, print_out=False):
+                 base_zero=True, print_out=False,
+                 sonr_method='C', curve_fit_maxfev=2000):
         self.df_data = None
         self.cost_n_fert = cost_n_fert
         self.cost_n_social = cost_n_social
@@ -129,6 +130,8 @@ class EONR(object):
         self.base_dir = base_dir
         self.base_zero = base_zero
         self.print_out = print_out
+        self.sonr_method = sonr_method
+        self.curve_fit_maxfev = curve_fit_maxfev
         self.location = None
         self.year = None
         self.time_n = None
@@ -298,6 +301,7 @@ class EONR(object):
                         self.price_grain, self.unit_grain,
                         self.costs_fixed, self.unit_area))
         if self.cost_n_social > 0:
+            print('Considering social costs (Method {0})'.format(self.sonr_method))
             print('Social cost of N: {0}{1:.2f} per {2}'
                   ''.format(self.unit_currency, self.cost_n_social,
                             self.unit_fert))
@@ -621,9 +625,12 @@ class EONR(object):
         eonr_fert_n = self.eonr * self.cost_n_fert
         y_grtn = self._setup_grtn_curve(x1, x1a, n_steps)
         if self.cost_n_social > 0:
-            y_social_n, eonr_social_n, _, _ = self._build_social_curve(
-                    x1, fixed=False)
-            rtn = y_grtn - (y_fert_n + y_social_n)
+            y_social_n, eonr_social_n, _, _ = self._build_social_curve(x1)
+            if self.sonr_method in ['B']:
+                rtn = y_grtn - (y_fert_n + y_social_n) + eonr_social_n
+            else:
+                rtn = y_grtn - (y_fert_n + y_social_n)
+
             self.linspace_cost_n_social = (x1, y_social_n)
         else:
             rtn = y_grtn - y_fert_n
@@ -641,10 +648,15 @@ class EONR(object):
                                     'rtn': rtn,
                                     'rtn_der': rtn_der,
                                     'rtn_der2': rtn_der2})
-        if self.cost_n_social > 0:
+        if self.cost_n_social != 0:
             df_linspace['cost_n_social'] = y_social_n
+            if self.sonr_method in ['A', 'B']:
+                self.costs_at_onr = eonr_fert_n + self.costs_fixed
+            elif self.sonr_method == 'C':
+                self.costs_at_onr = eonr_fert_n + eonr_social_n + self.costs_fixed
+        else:
+            self.costs_at_onr = eonr_fert_n + self.costs_fixed
         self.df_linspace = df_linspace
-        self.costs_at_onr = eonr_fert_n + eonr_social_n
 
     def _ci_pdf(self, run_n=None, n_steps=1000):
         '''
@@ -722,15 +734,16 @@ class EONR(object):
         except ValueError:
             self.coefs_nrtn['der_slope_upper'] = np.nan
 
-    def _build_social_curve(self, x1, fixed=False):
+    def _build_social_curve(self, x1):
         '''
         Generates an array for the Social cost of N curve
         '''
         ci_l, ci_u = None, None
-        if fixed is True:
-            y_social_n = x1 * self.cost_n_social
+        if self.sonr_method == 'A':
+            y_social_n = (x1 * self.cost_n_social) - (self.eonr * self.cost_n_social)
+            # y_social_n = x1 * self.cost_n_social
             eonr_social_n = self.eonr * self.cost_n_social
-        else:
+        elif self.sonr_method in ['B', 'C']:
             if self.coefs_social['lin_rmse'] < self.coefs_social['exp_rmse']:
                 y_social_n = self.coefs_social['lin_b'] +\
                         (x1 * self.coefs_social['lin_mx'])
@@ -755,6 +768,10 @@ class EONR(object):
                 std = unp.std_devs(x1_exp)
                 ci_l = (y_social_n - 2 * std)
                 ci_u = (y_social_n - 2 * std)
+            if self.sonr_method == 'B':
+                y_social_n[y_social_n < 0] = 0
+                eonr_social_n = 0 if eonr_social_n < 0 else eonr_social_n
+                self.mrtn = self.mrtn + eonr_social_n  # have to increase MRTN because we are not considering eonr_social_n a "fine"
         return y_social_n, eonr_social_n, ci_l, ci_u
 
     def _calc_grtn(self):
@@ -797,6 +814,10 @@ class EONR(object):
         by the social cost/price of N to get into units of $, which is a unit
         that can be used with the price ratio R.
         '''
+        if self.curve_fit_maxfev is None:
+            curve_fit_maxfev = 2000
+        else:
+            curve_fit_maxfev = self.curve_fit_maxfev
         df_data = self.df_data.copy()
         x = df_data[col_x].values
         y = df_data[col_y].values
@@ -814,7 +835,7 @@ class EONR(object):
                 ''.format(f_model_theta2,
                           col_x, col_y))
         popt, pcov = self._curve_fit_opt(f_model_theta2, x, y,
-                                         p0=guess, maxfev=3000, info=info)
+                                         p0=guess, maxfev=curve_fit_maxfev, info=info)
         res = y - f_model_theta2(x, *popt)
         # if cost_n_social > 0, this will be dif than coefs_grtn['ss_res']
         ss_res = np.sum(res**2)
@@ -835,7 +856,7 @@ class EONR(object):
                 'ss_res': ss_res
                 }
 
-    def _calc_social_cost(self, col_x, col_y):
+    def _fit_social_cost_to_unused_n(self):
         '''
         Computes the slope and intercept for the model describing the added
         social cost of N
@@ -846,9 +867,9 @@ class EONR(object):
             self.cost_n_social
         if self.print_out is True:
             print('Computing best-fit line between {0} and {1}..'
-                  ''.format(col_x, col_y))
-        self._best_fit_lin(col_x, col_y)
-        self._best_fit_exp(col_x, col_y)
+                  ''.format(self.col_n_avail, 'social_cost_n'))
+        self._best_fit_lin(self.col_n_avail, 'social_cost_n')
+        self._best_fit_exp(self.col_n_avail, 'social_cost_n')
         self.results_temp['scn_lin_r2'] = self.coefs_social['lin_r2']
         self.results_temp['scn_lin_rmse'] = self.coefs_social['lin_rmse']
         self.results_temp['scn_exp_r2'] = self.coefs_social['exp_r2']
@@ -1119,7 +1140,7 @@ class EONR(object):
         f_eonr2 = np.poly1d([self.coefs_grtn['b2'].n,
                             self.coefs_grtn['b1'].n,
                             self.coefs_grtn['b0'].n])
-        if self.cost_n_social > 0:
+        if self.cost_n_social != 0:
 #            if self.coefs_social['lin_r2'] > self.coefs_social['exp_r2']:
 #                print('method 1')
 #                # subtract only cost of fertilizer
@@ -1133,7 +1154,7 @@ class EONR(object):
 #            else:  # add together the cost of fertilizer and cost of social N
 #                print('method 2')
             x_max = self.df_data[self.col_n_app].max()
-            result = minimize_scalar(self.models.combine_rtn_cost,
+            result = minimize_scalar(self.models.combine_rtn_social_costs,
                                      bounds=[-100, x_max+100],
                                      method='bounded')
         else:
@@ -1146,6 +1167,8 @@ class EONR(object):
         # at a first order with an intercept of zero..
         self.eonr = result['x']
         self.mrtn = -result['fun']
+        if self.cost_n_social != 0 and self.sonr_method == 'A':
+            self.mrtn = -result['fun'] + (self.cost_n_social * result['x'])  # Add back the social cost because farmer isn't actually paying for it (just considering it for SONR)
 
     def _theta2_error(self):
         '''
@@ -2229,9 +2252,8 @@ class EONR(object):
         self._set_df(df)
         self._replace_missing_vals(missing_val='.')
         self._calc_grtn()
-        if self.cost_n_social > 0:
-            self._calc_social_cost(col_x=self.col_n_avail,
-                                   col_y='social_cost_n')
+        if self.cost_n_social > 0 and self.sonr_method in ['B', 'C']:
+            self._fit_social_cost_to_unused_n()
         self._calc_nrtn(col_x=self.col_n_app, col_y='grtn')
         self._solve_eonr()
         self._compute_R(col_x=self.col_n_app, col_y='grtn')  # models.update_eonr
@@ -2812,11 +2834,11 @@ class EONR(object):
                 join_name = '{0}_{1:.1f}_{2:.3f}'.format(
                         'social', self.price_ratio, self.cost_n_social)
             elif self.cost_n_social == 0 and self.metric is False:
-                join_name = '{0}_{1:.3f}'.format('trad', self.price_ratio)
+                join_name = '{0}_{1:.3f}_{2:.3f}'.format('trad', self.price_ratio, self.cost_n_fert)
             elif self.cost_n_social == 0 and self.metric is True:
-                join_name = '{0}_{1:.1f}'.format('trad', self.price_ratio)
+                join_name = '{0}_{1:.2f}_{2:.2f}'.format('trad', self.price_ratio, self.cost_n_fert)
             else:
-                join_name = '{0}_{1:.3f}'.format('trad', self.price_ratio)
+                join_name = '{0}_{1:.3f}_{2:.3f}'.format('trad', self.price_ratio, self.cost_n_fert)
             join_name = re.sub(r'[.]', '', join_name)
             self.base_dir = os.path.join(os.path.split(self.base_dir)[0],
                                          join_name)

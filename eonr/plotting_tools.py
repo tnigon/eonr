@@ -36,6 +36,7 @@ class Plotting_tools(object):
         self.base_dir = EONR.base_dir
         self.base_zero = EONR.base_zero
         self.print_out = EONR.print_out
+        self.sonr_method = EONR.sonr_method
         self.location = EONR.location
         self.year = EONR.year
         self.time_n = EONR.time_n
@@ -1250,7 +1251,7 @@ class Plotting_tools(object):
         g = sns.FacetGrid(self.df_data)
         self._plot_points(self.col_n_app, 'grtn', self.df_data,
                           [self.palette[0]], ax=g.ax)
-        if self.cost_n_social > 0:
+        if self.cost_n_social > 0 and self.sonr_method in ['B', 'C']:
             try:
                 self._plot_points(self.col_n_avail, 'social_cost_n',
                                   self.df_data, [self.palette[8]], ax=g.ax)
@@ -1406,6 +1407,7 @@ class Plotting_tools(object):
         self.base_dir = EONR.base_dir
         self.base_zero = EONR.base_zero
         self.print_out = EONR.print_out
+        self.sonr_method = EONR.sonr_method
         self.location = EONR.location
         self.year = EONR.year
         self.time_n = EONR.time_n

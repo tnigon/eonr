@@ -24,17 +24,21 @@ class Models(object):
         we have to pass a dynamic (but fixed from teh perspective of the model)
         variable from EONR class (e.g., R)
         '''
+        self.sonr_method = EONR.sonr_method
         self.R = EONR.R
         self.coefs_grtn = EONR.coefs_grtn
         self.cost_n_fert = EONR.cost_n_fert
+        self.cost_n_social = EONR.cost_n_social
         self.costs_fixed = EONR.costs_fixed
         self.coefs_social = EONR.coefs_social
 
     def update_eonr(self, EONR):
         '''Sets/updates all EONR variables required by the Models class'''
+        self.sonr_method = EONR.sonr_method
         self.R = EONR.R
         self.coefs_grtn = EONR.coefs_grtn
         self.cost_n_fert = EONR.cost_n_fert
+        self.cost_n_social = EONR.cost_n_social
         self.costs_fixed = EONR.costs_fixed
         self.coefs_social = EONR.coefs_social
 
@@ -151,7 +155,7 @@ class Models(object):
                            (x >= crit_x))
             return array_temp
 
-    def combine_rtn_cost(self, x):
+    def combine_rtn_social_costs(self, x):
         '''
         Social cost of N can take on an exponential form, while fertilizer
         cost is a first-order linear function. This function combines
@@ -173,15 +177,23 @@ class Models(object):
         gross_rtn = self.quad_plateau(x, b0=b0, b1=b1, b2=b2)
         # Subtractions
         fert_cost = x * self.cost_n_fert
-        if self.coefs_social['lin_r2'] > self.coefs_social['exp_r2']:
-            lin_b = self.coefs_social['lin_b']
-            lin_mx = self.coefs_social['lin_mx']
-            social_cost = self.poly(x, c=lin_b, b=lin_mx)
-        else:
-            exp_a = self.coefs_social['exp_gamma0']
-            exp_b = self.coefs_social['exp_gamma1']
-            exp_c = self.coefs_social['exp_gamma2']
-            social_cost = self.exp(x, a=exp_a, b=exp_b, c=exp_c)
+        if self.sonr_method == 'A':
+            social_cost = x * self.cost_n_social
+        elif self.sonr_method in ['B', 'C']:
+            if self.coefs_social['lin_r2'] > self.coefs_social['exp_r2']:
+                lin_b = self.coefs_social['lin_b']
+                lin_mx = self.coefs_social['lin_mx']
+                social_cost = self.poly(x, c=lin_b, b=lin_mx)
+            else:
+                exp_a = self.coefs_social['exp_gamma0']
+                exp_b = self.coefs_social['exp_gamma1']
+                exp_c = self.coefs_social['exp_gamma2']
+                social_cost = self.exp(x, a=exp_a, b=exp_b, c=exp_c)
+            if self.sonr_method == 'B':
+                if isinstance(social_cost, np.ndarray):
+                    social_cost[social_cost < 0] = 0  # sets all negative values to zero so producer isn't paid for net positive NUP relative to avail_n
+                else:
+                    social_cost = social_cost if social_cost >= 0 else 0
         result = gross_rtn - fert_cost - social_cost - self.costs_fixed
         return -result
 
